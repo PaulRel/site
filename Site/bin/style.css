@@ -1,0 +1,99 @@
+.root {
+	-fx-font-family: "Arial";
+    -fx-background-color: #f0f0f0
+}
+	
+.menu .label {
+    -fx-text-fill: #f0f0f0;
+}
+
+.menu-bar {
+    -fx-background-color: #333;
+    -fx-padding: 10;
+}
+
+.menu:hover {
+    -fx-background-color: #555;
+}
+
+/* Section des produits */
+.label {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-padding: 10 0 10 0;
+}
+
+.grid-pane {
+    -fx-padding: 10;
+    -fx-hgap: 20;
+    -fx-vgap: 20;
+}
+
+.vbox {
+    -fx-alignment: center;
+}
+
+.vbox .image-view {
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 5);
+    -fx-padding: 10;
+}
+
+.vbox .label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #333;
+}
+
+.vbox .label:nth-child(2) {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #000;
+}
+
+/* Filtres */
+.vbox > .check-box {
+    -fx-padding: 5 0 5 0;
+    -fx-font-size: 14px;
+    -fx-text-fill: #444;
+}
+
+.vbox > .check-box:hover {
+    -fx-text-fill: #000;
+}
+
+/* Filtres de catégories (Homme, Femme, Enfant) */
+.vbox .label:nth-child(1) {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-padding-bottom: 10;
+    -fx-text-fill: #333;
+}
+
+/* Bouton du panier */
+.button {
+    -fx-background-color: #ff4500;
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-padding: 10 20 10 20;
+    -fx-cursor: hand;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+}
+
+.button:hover {
+    -fx-background-color: #ff6347;
+}
+
+/* GridPane pour les produits */
+.grid-pane .vbox {
+    -fx-background-color: #fff;
+    -fx-border-color: #ddd;
+    -fx-border-width: 1px;
+    -fx-border-radius: 5;
+    -fx-padding: 10;
+}
+
+.grid-pane .vbox:hover {
+    -fx-border-color: #ff4500;
+    -fx-effect: dropshadow(three-pass-box, rgba(255,69,0,0.6), 10, 0, 0, 5);
+}
+
