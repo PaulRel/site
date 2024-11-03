@@ -1,0 +1,116 @@
+.root {
+	-fx-font-family: "Arial";
+    -fx-background-color: #f0f0f0
+}
+	
+.menu .label {
+    -fx-text-fill: #f0f0f0;
+}
+
+.menu-bar {
+    -fx-background-color: #333;
+    -fx-padding: 10;
+}
+
+.menu:hover {
+    -fx-background-color: #555;
+}
+
+/* Section des produits */
+.label {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-padding: 10 0 10 0;
+}
+
+.grid-pane {
+    -fx-padding: 10;
+    -fx-hgap: 20;
+    -fx-vgap: 20;
+    -fx-border-color: #ff4500;
+}
+
+.grid-pane .vbox:hover {
+    -fx-effect: dropshadow(three-pass-box, rgba(255,69,0,0.6), 10, 0, 0, 5);
+}
+
+/* Style pour chaque produit dans la grille */
+.produit-box { 				/* Vbox */
+    -fx-pref-width: 160px;  /* Largeur fixe de la cellule */
+    -fx-pref-height: 230px; /* Hauteur fixe de la cellule */
+    -fx-alignment: center;  /* Alignement centré */
+    -fx-spacing: 2px;       /* Espace entre les éléments internes */
+    -fx-border-radius: 10px; /* Bord arrondi */
+}
+
+/* Ombre lors du survol de la cellule */
+.produit-box:hover {
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 5, 0.5, 0, 5); /* Ombre grise légère */
+    -fx-background-color: #f9f9f9; /* Optionnel : légère couleur de fond pour l'effet de survol */
+}
+
+/* Style pour le label du nom du produit */
+.nom-produit {
+	-fx-font-size: 12px;
+    -fx-wrap-text: true;    /* Activer le retour à la ligne */
+    -fx-max-width: 140px;   /* Largeur maximale pour contrôler le retour à la ligne */
+    -fx-text-alignment: center; /* Alignement du texte centré */
+}
+
+/* Style pour le label du prix du produit */
+.prix-produit {
+	-fx-font-size: 12px;
+    -fx-wrap-text: true;
+    -fx-max-width: 140px;
+    -fx-alignment: center;
+    -fx-padding: 2px 0 0 0; /* Marge supérieure réduite */
+}
+
+/* Style pour le changement de curseur */
+.produit-box:hover {
+    -fx-cursor: hand;
+}
+
+.vbox {
+    -fx-alignment: center;
+}
+
+.vbox .image-view {
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 5);
+    -fx-padding: 10;
+}
+
+/* Filtres */
+.vbox > .check-box {
+    -fx-padding: 5 0 5 0;
+    -fx-font-size: 14px;
+    -fx-text-fill: #444;
+}
+
+.vbox > .check-box:hover {
+    -fx-text-fill: #000;
+}
+
+/* Filtres de catégories (Homme, Femme, Enfant) */
+.vbox .label:nth-child(1) {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-padding-bottom: 10;
+    -fx-text-fill: #333;
+}
+
+/* Bouton du panier */
+.button {
+    -fx-background-color: #ff4500;
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-padding: 10 20 10 20;
+    -fx-cursor: hand;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+}
+
+.button:hover {
+    -fx-background-color: #ff6347;
+}
+
