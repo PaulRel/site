@@ -36,28 +36,12 @@ public class TestView extends Application {
 	
     @Override
     public void start(Stage primaryStage) throws Exception {
-    	//Parent root2 = FXMLLoader.load(getClass().getResource("Style3.fxml"));
-    	
-    	// Barre supérieure avec nom du magasin
     	initializeRootLayout();
-        afficherInitialize(primaryStage);
-        createHeader();
+        createHeader(primaryStage);
         createProductSection(primaryStage);
         createFilterBox();
-        createScrollPane();
-        
-        setupMainScene(primaryStage);
-        
-        
-        // Section du panier
-        Button panierButton = new Button("Panier");
-        // Placer le bouton panier en bas
-        AnchorPane.setBottomAnchor(panierButton, 10.0);
-        AnchorPane.setLeftAnchor(panierButton, 100.0);
-        root.getChildren().addAll(panierButton);
-  
-        
-        
+        createScrollPane();        
+        setupMainScene(primaryStage);        
         primaryStage.show();
     }
     
@@ -65,20 +49,56 @@ public class TestView extends Application {
      * Création AnchorPane root
      */
     public void initializeRootLayout() {
-    	// Organisation de la mise en page principale
         root = new AnchorPane();
     }
     
     /**
-     * Crée l'en-tête de l'application, qui inclut le nom du magasin affiché en haut à gauche.
+     * Crée l'en-tête de l'application, qui inclut le nom du magasin, l'icône du compte et la barre de navigation.
+     * 
+     * @param primaryStage La scène principale de l'application.
      */
-    public void createHeader() {
+    public void createHeader(Stage primaryStage) {
     	Label Name = new Label("Shop");
     	Name.setStyle("-fx-text-fill: #333; -fx-font-size: 30px; -fx-font-weight: bold;");
     	//Placer le nom en haut à gauche
         AnchorPane.setTopAnchor(Name, 0.0);
         AnchorPane.setLeftAnchor(Name, 10.0);
-        root.getChildren().add(Name);
+        
+     // Icône du compte à droite (bouton avec icône)
+    	ImageView accountIcon = new ImageView(new Image(getClass().getResource("/Image/accountIcon.png").toExternalForm()));
+    	accountIcon.setFitHeight(30); // Ajuster la taille de l'image
+    	accountIcon.setFitWidth(30); 
+    	
+    	Button accountButton = new Button();
+
+    	//Placer l'icone du compte en haut à droite
+        AnchorPane.setTopAnchor(accountButton, 0.0);
+        AnchorPane.setRightAnchor(accountButton, 10.0);
+        
+    	accountButton.setGraphic(accountIcon); // Placer l'icône dans le bouton
+    	accountButton.setStyle("-fx-background-color: transparent;"); // Enlever le fond pour le bouton
+        
+    	// Gestion du clic sur le produit pour afficher les détails
+        accountButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                loginPage(primaryStage);
+            }
+        }); 	
+    	
+    	// Barre de menu
+        MenuBar menuBar = new MenuBar();
+        Menu menuVetements = new Menu("Vêtements");
+        Menu menuSacs = new Menu("Sacs");
+        Menu menuAccessoires = new Menu("Accessoires");
+        menuBar.getMenus().addAll(menuVetements, menuSacs, menuAccessoires);
+        
+        // Placer la barre de menu en haut
+        AnchorPane.setTopAnchor(menuBar, 50.0);
+        AnchorPane.setLeftAnchor(menuBar, 0.0);
+        AnchorPane.setRightAnchor(menuBar, 0.0);
+        
+        root.getChildren().addAll(Name, accountButton, menuBar);
     }
     
     /**
@@ -101,7 +121,6 @@ public class TestView extends Application {
      * Crée une boîte latérale contenant des filtres de produits.
      */
     private void createFilterBox() {
-    	// Création d'un panneau latéral pour les filtres
         VBox filtreBox = new VBox();
         AnchorPane.setTopAnchor(filtreBox, 120.0);
         AnchorPane.setRightAnchor(filtreBox, 10.0);
@@ -150,54 +169,6 @@ public class TestView extends Application {
         primaryStage.setTitle("Magasin de tennis");
         primaryStage.setScene(mainScene);
         primaryStage.setFullScreen(false); //A remettre vrai
-    }
-    
-    /**
-     * Affiche l'icône du compte en haut à droite de l'interface utilisateur.
-     * Ajoute également une barre de navigation avec plusieurs catégories.
-     * 
-     * @param primaryStage La scène principale de l'application.
-     */
-    public void afficherInitialize(Stage primaryStage) {
-    	// Icône du compte à droite (bouton avec icône)
-    	ImageView accountIcon = new ImageView(new Image(getClass().getResource("/Image/accountIcon.png").toExternalForm()));
-    	accountIcon.setFitHeight(30); // Ajuster la taille de l'image
-    	accountIcon.setFitWidth(30); 
-    	
-    	Button accountButton = new Button();
-
-    	//Placer l'icone du compte en haut à droite
-        AnchorPane.setTopAnchor(accountButton, 0.0);
-        AnchorPane.setRightAnchor(accountButton, 10.0);
-        
-    	accountButton.setGraphic(accountIcon); // Placer l'icône dans le bouton
-    	accountButton.setStyle("-fx-background-color: transparent;"); // Enlever le fond pour le bouton
-    	
-    	// Changement du curseur lors du survol du produit
-        accountButton.setOnMouseEntered(event -> accountButton.setCursor(javafx.scene.Cursor.HAND));
-        accountButton.setOnMouseExited(event -> accountButton.setCursor(javafx.scene.Cursor.DEFAULT));
-        
-     // Gestion du clic sur le produit pour afficher les détails
-        accountButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                loginPage(primaryStage);
-            }
-        }); 	
-    	
-    	// Barre de menu
-        MenuBar menuBar = new MenuBar();
-        Menu menuVetements = new Menu("Vêtements");
-        Menu menuSacs = new Menu("Sacs");
-        Menu menuAccessoires = new Menu("Accessoires");
-        menuBar.getMenus().addAll(menuVetements, menuSacs, menuAccessoires);
-        
-        // Placer la barre de menu en haut
-        AnchorPane.setTopAnchor(menuBar, 50.0);
-        AnchorPane.setLeftAnchor(menuBar, 0.0);
-        AnchorPane.setRightAnchor(menuBar, 0.0);
-        
-        root.getChildren().addAll(accountButton, menuBar);
     }
     
     /**
