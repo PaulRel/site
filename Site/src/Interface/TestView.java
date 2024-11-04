@@ -3,7 +3,10 @@ package Interface;
 import java.io.IOException;
 import java.util.List;
 
+import Products.Accessoire;
 import Products.Produit;
+import Products.Sac;
+import Products.Vetement;
 import database.ProduitDAO;
 import javafx.application.Application;
 import javafx.event.EventHandler;
@@ -23,6 +26,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -33,12 +37,13 @@ public class TestView extends Application {
 
 	private Scene mainScene;
 	private AnchorPane root;
+	private ScrollPane scrollPane;
 	
     @Override
     public void start(Stage primaryStage) throws Exception {
     	initializeRootLayout();
         createHeader(primaryStage);
-        createProductSection(primaryStage);
+        createProductSection(primaryStage, null);
         createFilterBox();
         createScrollPane();        
         setupMainScene(primaryStage);        
@@ -79,18 +84,19 @@ public class TestView extends Application {
     	accountButton.setStyle("-fx-background-color: transparent;"); // Enlever le fond pour le bouton
         
     	// Gestion du clic sur le produit pour afficher les détails
-        accountButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                loginPage(primaryStage);
-            }
-        }); 	
+    	accountButton.setOnMouseClicked(event -> loginPage(primaryStage));	
     	
     	// Barre de menu
         MenuBar menuBar = new MenuBar();
         Menu menuVetements = new Menu("Vêtements");
         Menu menuSacs = new Menu("Sacs");
         Menu menuAccessoires = new Menu("Accessoires");
+        
+     // Associer un événement de clic pour chaque type de produit
+        menuVetements.setOnAction(e -> createProductSection(primaryStage, Vetement.class));
+        menuSacs.setOnAction(e -> createProductSection(primaryStage, Sac.class));
+        menuAccessoires.setOnAction(e -> createProductSection(primaryStage, Accessoire.class));
+        
         menuBar.getMenus().addAll(menuVetements, menuSacs, menuAccessoires);
         
         // Placer la barre de menu en haut
@@ -106,9 +112,9 @@ public class TestView extends Application {
      * 
      * @param primaryStage La scène principale de l'application.
      */
-    public void createProductSection(Stage primaryStage) {
+    public void createProductSection(Stage primaryStage, Class<? extends Produit> typeProduit) {
         VBox sectionProduits = new VBox();
-        sectionProduits.getChildren().add(displayProducts(primaryStage));
+        sectionProduits.getChildren().add(displayProducts(primaryStage, typeProduit));
         
         AnchorPane.setTopAnchor(sectionProduits, 120.0);
         AnchorPane.setLeftAnchor(sectionProduits, 10.0);
@@ -118,91 +124,32 @@ public class TestView extends Application {
     }
     
     /**
-     * Crée une boîte latérale contenant des filtres de produits.
-     */
-    private void createFilterBox() {
-        VBox filtreBox = new VBox();
-        AnchorPane.setTopAnchor(filtreBox, 120.0);
-        AnchorPane.setRightAnchor(filtreBox, 10.0);
-        
-        // Ajout des filtres de taille et de sexe
-        Label filtreTaille = new Label("Tailles");
-        CheckBox tailleS = new CheckBox("Taille S");
-        CheckBox tailleM = new CheckBox("Taille M");
-        CheckBox tailleL = new CheckBox("Taille L");
-        filtreBox.getChildren().addAll(filtreTaille, tailleS, tailleM, tailleL);
-        
-        Label filtreSexe = new Label("Sexe");
-        CheckBox SexeHomme = new CheckBox("Hommes");
-        CheckBox SexeFemme = new CheckBox("Femmes");
-        CheckBox Enfant = new CheckBox("Enfants");
-        filtreBox.getChildren().addAll(filtreSexe, SexeHomme, SexeFemme, Enfant);
-        
-        root.getChildren().add(filtreBox);
-    }
-    
-    /**
-     * Crée un conteneur défilant (ScrollPane) pour la mise en page principale, permettant le défilement du contenu.
-     */
-    public void createScrollPane() {
-        ScrollPane scrollPane = new ScrollPane();
-        scrollPane.setContent(root);
-        scrollPane.setFitToWidth(true); // Le contenu s'adapte à la largeur de la fenêtre
-        scrollPane.setPannable(true);   // Permet le défilement via la souris
-    }
-    
-    /**
-     * Configure la scène principale de l'application et applique les styles CSS.
-     * 
-     * @param primaryStage La scène principale de l'application.
-     * @throws IOException En cas d'erreur de chargement des ressources.
-     */
-    public void setupMainScene(Stage primaryStage) throws IOException{
-    	// Création de la scène et affichage
-        mainScene = new Scene(root, 800, 600);
-        //scene.getStylesheets().add("file:/Site/resources/style.css");
-        String css = this.getClass().getResource("/style.css").toExternalForm();
-        mainScene.getStylesheets().add(css);
-        Image icon = new Image (getClass().getResource("/Image/logo.jpg").toExternalForm());
-        
-        primaryStage.getIcons().add(icon);
-        primaryStage.setTitle("Magasin de tennis");
-        primaryStage.setScene(mainScene);
-        primaryStage.setFullScreen(false); //A remettre vrai
-    }
-    
-    /**
      * Affiche une grille de produits dans une interface utilisateur de type GridPane.
      * 
      * @param primaryStage La scène principale de l'application.
      * @return Le GridPane contenant tous les produits.
      */
-    public GridPane displayProducts(Stage primaryStage) {
-        GridPane produitsGrid = new GridPane();
+    public FlowPane displayProducts(Stage primaryStage, Class<? extends Produit> typeProduit) {
+        FlowPane produitsGrid = new FlowPane();
         produitsGrid.setPadding(new Insets(10, 10, 10, 10));
         produitsGrid.setHgap(10);
         produitsGrid.setVgap(10);
+        produitsGrid.setPrefWrapLength(primaryStage.getWidth()); // Ajuste automatiquement avec la largeur
         
         // Récupérer les produits depuis la base de données
         ProduitDAO produitDAO = new ProduitDAO();
         List<Produit> produits = produitDAO.getAllProduits();
-        int colonne = 0;
-        int ligne = 0;
         
-        // Boucle pour ajouter chaque produit à la grille
         for (Produit produit : produits) {
         	VBox produitBox = createProductBox(primaryStage, produit);
-            
-            // Ajouter le produit à la grille
-            produitsGrid.add(produitBox, colonne, ligne);
-
-            // Gestion des positions (on remplit d'abord les colonnes, puis les lignes)
-            colonne++;
-            if (colonne > 2) { // Par exemple, 3 produits par ligne
-                colonne = 0;
-                ligne++;
-            }
+            produitsGrid.getChildren().add(produitBox);
         }
+        
+     // Ecouteur pour ajuster la largeur de wrap en fonction de la taille de la fenêtre
+        primaryStage.widthProperty().addListener((observable, oldValue, newValue) -> {
+            produitsGrid.setPrefWrapLength(newValue.doubleValue());
+        });
+        
         return produitsGrid;
     }   
     
@@ -233,6 +180,63 @@ public class TestView extends Application {
         
         return produitBox;
      }
+    
+    /**
+     * Crée une boîte latérale contenant des filtres de produits.
+     */
+    private void createFilterBox() {
+        VBox filtreBox = new VBox();
+        AnchorPane.setTopAnchor(filtreBox, 120.0);
+        AnchorPane.setRightAnchor(filtreBox, 10.0);
+        
+        // Ajout des filtres de taille et de sexe
+        Label filtreTaille = new Label("Tailles");
+        CheckBox tailleS = new CheckBox("Taille S");
+        CheckBox tailleM = new CheckBox("Taille M");
+        CheckBox tailleL = new CheckBox("Taille L");
+        filtreBox.getChildren().addAll(filtreTaille, tailleS, tailleM, tailleL);
+        
+        Label filtreSexe = new Label("Sexe");
+        CheckBox SexeHomme = new CheckBox("Hommes");
+        CheckBox SexeFemme = new CheckBox("Femmes");
+        CheckBox Enfant = new CheckBox("Enfants");
+        filtreBox.getChildren().addAll(filtreSexe, SexeHomme, SexeFemme, Enfant);
+        
+     // Vider les produits existants et ajouter la nouvelle section
+        //root.getChildren().clear();
+        root.getChildren().add(filtreBox);
+    }
+    
+    /**
+     * Crée un conteneur défilant (ScrollPane) pour la mise en page principale, permettant le défilement du contenu.
+     */
+    public void createScrollPane() {
+        ScrollPane scrollPane = new ScrollPane(root);
+        scrollPane.setFitToWidth(true); // Le contenu s'adapte à la largeur de la fenêtre
+        scrollPane.setPannable(true);   // Permet le défilement via la souris
+        scrollPane.getStyleClass().add("scroll-pane-style"); // Appliquer une classe CSS (facultatif)
+        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+    }
+    
+    /**
+     * Configure la scène principale de l'application et applique les styles CSS.
+     * 
+     * @param primaryStage La scène principale de l'application.
+     * @throws IOException En cas d'erreur de chargement des ressources.
+     */
+    public void setupMainScene(Stage primaryStage) throws IOException{
+    	// Création de la scène et affichage
+        mainScene = new Scene(root, 800, 600);
+        //scene.getStylesheets().add("file:/Site/resources/style.css");
+        String css = this.getClass().getResource("/style.css").toExternalForm();
+        mainScene.getStylesheets().add(css);
+        Image icon = new Image (getClass().getResource("/Image/logo.jpg").toExternalForm());
+        
+        primaryStage.getIcons().add(icon);
+        primaryStage.setTitle("Magasin de tennis");
+        primaryStage.setScene(mainScene);
+        primaryStage.setFullScreen(false); //A remettre vrai
+    }
     
     /**
      * Affiche les détails d'un produit spécifique dans une nouvelle scène.

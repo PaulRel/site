@@ -99,6 +99,11 @@
     -fx-text-fill: #333;
 }
 
+.scroll-pane-style {
+    -fx-background: transparent;
+    -fx-border-color: #e0e0e0;
+}
+
 /* Bouton du panier */
 .button {
     -fx-background-color: #ff4500;
