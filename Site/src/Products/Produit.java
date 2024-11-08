@@ -3,7 +3,7 @@ package Products;
 
 public class Produit {
 	private int id, QtDispo;
-	private String Description, Nom, Type, imagePath;
+	private String Description, Nom, Type, Marque, imagePath;
 	private double Price;
 
 	/**
@@ -13,17 +13,18 @@ public class Produit {
 	 * @param QtDispo
 	 * @param Type
 	 */
-	public Produit(int id, String Nom, String Description, double Price, int QtDispo, String Type, String imagePath) {
+	public Produit(int id, String Nom, String Description, String Type, String Marque, double Price, int QtDispo, String imagePath) {
 		this.Nom=Nom;
 		this.Description = Description;
 		this.Type = Type;
+		this.Marque= Marque;
 		this.Price = Price; 
 		this.QtDispo=QtDispo;
 		this.imagePath = imagePath;
 	}
 
 	public Produit RechercherPdt(String c) {
-		return new Produit(0, c,"ff", 2, 3, "Sac", "");
+		return new Produit(QtDispo, c, c, c, c, Price, QtDispo, c);
 	}
 	
 	@Override

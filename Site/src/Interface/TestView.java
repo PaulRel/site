@@ -30,6 +30,7 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -37,7 +38,6 @@ public class TestView extends Application {
 
 	private Scene mainScene;
 	private AnchorPane root;
-	private ScrollPane scrollPane;
 	
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -129,7 +129,7 @@ public class TestView extends Application {
      * @param primaryStage La scène principale de l'application.
      * @return Le GridPane contenant tous les produits.
      */
-    public FlowPane displayProducts(Stage primaryStage, Class<? extends Produit> typeProduit) {
+    public ScrollPane displayProducts(Stage primaryStage, Class<? extends Produit> typeProduit) {
         FlowPane produitsGrid = new FlowPane();
         produitsGrid.setPadding(new Insets(10, 10, 10, 10));
         produitsGrid.setHgap(10);
@@ -150,7 +150,14 @@ public class TestView extends Application {
             produitsGrid.setPrefWrapLength(newValue.doubleValue());
         });
         
-        return produitsGrid;
+     // Encapsuler le FlowPane dans un ScrollPane
+        ScrollPane scrollPane = new ScrollPane(produitsGrid);
+        scrollPane.setFitToWidth(true); // Adapter la largeur du contenu à celle de la fenêtre
+        scrollPane.setPannable(true);   // Activer le défilement pour une expérience fluide
+        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS); // Toujours afficher la barre de défilement verticale
+        scrollPane.setPrefViewportHeight(550);
+        //scrollPane.getStyleClass().add("scroll-pane-style"); // Appliquer une classe CSS        
+        return scrollPane;
     }   
     
     /**
@@ -202,7 +209,7 @@ public class TestView extends Application {
         CheckBox Enfant = new CheckBox("Enfants");
         filtreBox.getChildren().addAll(filtreSexe, SexeHomme, SexeFemme, Enfant);
         
-     // Vider les produits existants et ajouter la nouvelle section
+       // Vider les produits existants et ajouter la nouvelle section
         //root.getChildren().clear();
         root.getChildren().add(filtreBox);
     }
@@ -225,7 +232,6 @@ public class TestView extends Application {
      * @throws IOException En cas d'erreur de chargement des ressources.
      */
     public void setupMainScene(Stage primaryStage) throws IOException{
-    	// Création de la scène et affichage
         mainScene = new Scene(root, 800, 600);
         //scene.getStylesheets().add("file:/Site/resources/style.css");
         String css = this.getClass().getResource("/style.css").toExternalForm();

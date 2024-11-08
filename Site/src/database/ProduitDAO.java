@@ -13,7 +13,7 @@ public class ProduitDAO {
 
     public List<Produit> getAllProduits() {
         List<Produit> produits = new ArrayList<>();
-        String query = "SELECT id, Nom, Description, Prix, QtDispo, Type, imagePath FROM produit";
+        String query = "SELECT id, Nom, Description, Type, Marque, Prix, Qt_Dispo, image_Path FROM produit";
 
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query);
@@ -24,12 +24,13 @@ public class ProduitDAO {
             	int id = resultSet.getInt("id");
                 String nom = resultSet.getString("Nom");
                 String description = resultSet.getString("Description");
-                double prix = resultSet.getDouble("Prix");
-                int QtDispo = resultSet.getInt("QtDispo");
                 String Type = resultSet.getString("Type");
-                String imagePath = resultSet.getString("imagePath");
+                String marque = resultSet.getString("Marque");
+                double prix = resultSet.getDouble("Prix");
+                int QtDispo = resultSet.getInt("Qt_Dispo");
+                String imagePath = resultSet.getString("image_Path");
 
-                Produit produit = new Produit(id, nom, description, prix, QtDispo, Type, imagePath);
+                Produit produit = new Produit(id, nom, description, Type, marque, prix, QtDispo, imagePath);
                 produits.add(produit);
             }
 
