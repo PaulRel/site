@@ -1,26 +1,23 @@
 package Interface;
 
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
 public class AuthController {
-    private Scene authScene;
     private AnchorPane rootPane;
     private boolean isAuthenticated = false;
 
-    public AuthController(Stage primaryStage, Scene mainScene, VBox header) {
+    public AuthController(Stage primaryStage, Scene mainScene) {
     	// Création des labels principaux
         Label mainLabel = new Label("Identifiez-vous ou créez un compte");
         //mainLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
+        mainLabel.setOnMouseClicked(e -> primaryStage.setScene(mainScene));
                 
     	rootPane = new AnchorPane();
         createLeftBox();
@@ -28,11 +25,14 @@ public class AuthController {
         //AnchorPane rightPane = createRightPane();
         AnchorPane.setTopAnchor(mainLabel, 150.0);
         AnchorPane.setLeftAnchor(mainLabel, 20.0);
-
-        rootPane.getChildren().addAll(header, mainLabel);
-        String css = this.getClass().getResource("/style.css").toExternalForm();
         
         Scene authScene = new Scene(rootPane, 1350, 670);
+        
+        HeaderView v=new HeaderView(primaryStage, authScene);      
+        rootPane.getChildren().addAll(v.getHeader(), mainLabel);
+        String css = this.getClass().getResource("/style.css").toExternalForm();
+        
+        
         authScene.getStylesheets().add(css);
         primaryStage.setScene(authScene);
     }
