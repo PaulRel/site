@@ -76,6 +76,7 @@ public class TestView extends Application {
     	//Nom du magasin
     	Label Name = new Label("Shop");
     	Name.setStyle("-fx-text-fill: #333; -fx-font-size: 30px; -fx-font-weight: bold;");
+    	
         
     	// Icône du compte à droite (bouton avec icône)
     	ImageView accountIcon = new ImageView(new Image(getClass().getResource("/Image/accountIcon.png").toExternalForm()));
@@ -83,10 +84,6 @@ public class TestView extends Application {
     	accountIcon.setFitWidth(40); 
     	
     	Button accountButton = new Button();
-
-    	//Placer l'icone du compte en haut à droite
-        //AnchorPane.setTopAnchor(accountButton, 0.0);
-        //AnchorPane.setRightAnchor(accountButton, 10.0);
         
     	accountButton.setGraphic(accountIcon); // Placer l'icône dans le bouton
     	accountButton.setStyle("-fx-background-color: transparent;"); // Enlever le fond pour le bouton
@@ -98,7 +95,7 @@ public class TestView extends Application {
     	        System.out.println("Utilisateur authentifié");
     	        // Effectuez ici les actions nécessaires après l'authentification
     	    } else {
-    	        System.out.println("Échec de l'authentification");
+    	        //System.out.println("Échec de l'authentification");
     	    }
     	   });	
     		
@@ -253,7 +250,7 @@ public class TestView extends Application {
      * @throws IOException En cas d'erreur de chargement des ressources.
      */
     public void setupMainScene(Stage primaryStage) throws IOException{
-        mainScene = new Scene(root, 800, 600);
+        mainScene = new Scene(root, 1350, 670);
         //scene.getStylesheets().add("file:/Site/resources/style.css");
         String css = this.getClass().getResource("/style.css").toExternalForm();
         mainScene.getStylesheets().add(css);
@@ -304,4 +301,8 @@ public class TestView extends Application {
     public static void main(String[] args) {
         launch(args);
     }
+
+	public Scene getMainScene() {
+		return mainScene;
+	}
 }

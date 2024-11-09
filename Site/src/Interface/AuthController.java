@@ -1,5 +1,6 @@
 package Interface;
 
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -13,57 +14,89 @@ import javafx.stage.Stage;
 
 public class AuthController {
     private Scene authScene;
+    private AnchorPane rootPane;
     private boolean isAuthenticated = false;
 
     public AuthController(Stage primaryStage, Scene mainScene, VBox header) {
-    	AnchorPane rootPane = new AnchorPane();
-    	
-        AnchorPane leftPane = createLeftPane();
-        AnchorPane rightPane = createRightPane();
-
-        rootPane.getChildren().addAll(header, leftPane, rightPane);
+    	// Création des labels principaux
+        Label mainLabel = new Label("Identifiez-vous ou créez un compte");
+        //mainLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
+                
+    	rootPane = new AnchorPane();
+        createLeftBox();
         
-        Scene authScene = new Scene(rootPane, 800, 600);
+        //AnchorPane rightPane = createRightPane();
+        AnchorPane.setTopAnchor(mainLabel, 150.0);
+        AnchorPane.setLeftAnchor(mainLabel, 20.0);
+
+        rootPane.getChildren().addAll(header, mainLabel);
+        String css = this.getClass().getResource("/style.css").toExternalForm();
+        
+        Scene authScene = new Scene(rootPane, 1350, 670);
+        authScene.getStylesheets().add(css);
         primaryStage.setScene(authScene);
     }
 
-    private AnchorPane createLeftPane() {
-        AnchorPane leftPane = new AnchorPane();
-        leftPane.setPrefSize(250, 600);
-        AnchorPane.setTopAnchor(leftPane, 150.0);
-        leftPane.setStyle("-fx-background-color: #263F73;");
+    private void createLeftBox() {        
+        // Section pour les clients existants
+        VBox existingCustomerBox = new VBox(10);
+        existingCustomerBox.setPrefSize(600, 400);
+        AnchorPane.setTopAnchor(existingCustomerBox, 200.0);
+        AnchorPane.setLeftAnchor(existingCustomerBox, 20.0);
         
-        Label connectionLabel = new Label("Connexion");
-        connectionLabel.setLayoutX(4);
-        connectionLabel.setLayoutY(127);
-        connectionLabel.setPrefSize(220, 17.8);
-        connectionLabel.setAlignment(Pos.CENTER);
-        connectionLabel.setTextFill(Color.web("#f7f4f4"));
-        connectionLabel.setFont(Font.font("Verdana", FontWeight.BOLD, 24));
-        connectionLabel.setEffect(new DropShadow());
-        connectionLabel.setStyle("-fx-text-fill: #f7f4f4; -fx-alignment: center;");
-
-        Label shopLabel = new Label("TennisShop");
-        shopLabel.setLayoutX(4);
-        shopLabel.setLayoutY(170);
-        shopLabel.setPrefSize(220, 17.8);
-        shopLabel.setAlignment(Pos.CENTER);
-        shopLabel.setTextFill(Color.web("#f7f4f4"));
-        shopLabel.setFont(Font.font("Apple Braille Outline 6 Dot", 22));
-        shopLabel.setEffect(new DropShadow());
-        shopLabel.setStyle("-fx-text-fill: #f7f4f4; -fx-alignment: center;");
-
-        Line separatorLine = new Line(56.6, 164, 100, 164);
-        separatorLine.setStroke(Color.WHITE);
-        separatorLine.setStrokeWidth(2.0);
-        separatorLine.setEffect(new DropShadow());
-
-        leftPane.getChildren().addAll(connectionLabel, shopLabel, separatorLine);
-        return leftPane;
+        Label existingLabel = new Label("Déjà clients chez TennisShop.fr");
+        existingLabel.setStyle("-fx-font-weight: bold;");
+        
+        Label instructionLabel = new Label("Si vous avez déjà un compte, veuillez vous identifier.");
+        
+        // Champs de connexion
+        TextField emailField = new TextField();
+        emailField.setPromptText("Adresse mail *");
+        
+        PasswordField passwordField = new PasswordField();
+        passwordField.setPromptText("Mot de passe *");
+        
+        Hyperlink forgotPasswordLink = new Hyperlink("Mot de passe oublié ?");
+        
+        Button loginButton = new Button("CONNEXION");
+        
+        // Organisation des champs dans le VBox
+        existingCustomerBox.getChildren().addAll(existingLabel, instructionLabel, emailField, passwordField, forgotPasswordLink, loginButton);
+        
+        
+        
+        // Section pour les nouveaux clients
+        VBox newCustomerBox = new VBox(10);
+        newCustomerBox.setPrefSize(600, 400);
+        AnchorPane.setTopAnchor(newCustomerBox, 200.0);
+        AnchorPane.setRightAnchor(newCustomerBox, 20.0);
+        
+        Label newCustomerLabel = new Label("Vous êtes nouveau client chez TennisShop.fr");
+        newCustomerLabel.setStyle("-fx-font-weight: bold;");
+        
+        Label newCustomerInfo = new Label("En créant un compte sur notre boutique, vous pourrez passer vos commandes plus rapidement, enregistrer plusieurs adresses de livraison, consulter et suivre vos commandes, et plein d'autres choses encore.");
+        newCustomerInfo.setWrapText(true);
+        
+        Button createAccountButton = new Button("CRÉER UN COMPTE");
+        
+        newCustomerBox.getChildren().addAll(newCustomerLabel, newCustomerInfo, createAccountButton);
+        
+        /*
+     // Mise en page principale
+        HBox mainBox = new HBox(20);
+        mainBox.setPadding(new Insets(20));
+        mainBox.setAlignment(Pos.CENTER);
+        mainBox.getChildren().addAll(existingCustomerBox, newCustomerBox);
+        
+        VBox root = new VBox(15, mainBox);
+        root.setPadding(new Insets(20));
+        root.setAlignment(Pos.TOP_CENTER);*/
+        
+        rootPane.getChildren().addAll(existingCustomerBox, newCustomerBox);
     }
     
 
-    private AnchorPane createRightPane() {
+    private AnchorPane createRightBox() {
         AnchorPane rightPane = new AnchorPane();
         rightPane.setPrefSize(550, 600);
         AnchorPane.setTopAnchor(rightPane, 150.0);
