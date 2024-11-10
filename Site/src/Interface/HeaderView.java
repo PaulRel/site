@@ -49,13 +49,7 @@ public class HeaderView {
         
      // Gestion du clic pour afficher LoginPage
     	accountButton.setOnMouseClicked(event -> {
-    	    AuthController authController = new AuthController(primaryStage, mainScene);
-    	    if (authController.isAuthenticated()) {
-    	        System.out.println("Utilisateur authentifié");
-    	        // Effectuez ici les actions nécessaires après l'authentification
-    	    } else {
-    	        //System.out.println("Échec de l'authentification");
-    	    }
+    	    new AuthController(primaryStage, mainScene);
     	   });	
         
         // Barre de menu
