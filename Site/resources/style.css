@@ -1,6 +1,6 @@
 .root {
 	-fx-font-family: "Arial";
-    -fx-background-color: #f0f0f0
+    -fx-background-color: white;
 }
 /*	
 .menu .label {
@@ -122,4 +122,10 @@
 .button:hover {
     -fx-background-color: #696969;
 }
+
+.text-field {
+	-fx-max-width: 300px;
+    -fx-pref-height: 50px;
+}
+
 

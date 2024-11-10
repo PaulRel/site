@@ -35,7 +35,7 @@ public class HeaderView {
         
 
         // Nom du magasin
-        Label shopName = new Label("Shop");
+        Label shopName = new Label("TennisShop");
         shopName.setStyle("-fx-text-fill: #333; -fx-font-size: 30px; -fx-font-weight: bold;");
         shopName.setOnMouseClicked(e -> primaryStage.setScene(mainScene));
         
