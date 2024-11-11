@@ -27,10 +27,10 @@ import javafx.stage.Stage;
 public class SignUpController {
 	public SignUpController(Stage primaryStage, Scene mainScene) {
 		Label mainLabel = new Label("Créer un compte");
-        mainLabel.setOnMouseClicked(e -> primaryStage.setScene(mainScene));
-        
+
      // Champ civilité
         Label civilityLabel = new Label("Civilité");
+        civilityLabel.setStyle("-fx-font-weight: normal");
         RadioButton mrRadio = new RadioButton("M");
         RadioButton mmeRadio = new RadioButton("Mme");
         ToggleGroup civilityGroup = new ToggleGroup();
@@ -42,25 +42,30 @@ public class SignUpController {
         
      // Champ prénom
         Label firstNameLabel = new Label("Prénom");
+        firstNameLabel.setStyle("-fx-font-weight: normal");
         TextField firstNameField = new TextField();
         firstNameField.setPromptText("Prénom *");
 
         // Champ nom
         Label lastNameLabel = new Label("Nom");
+        lastNameLabel.setStyle("-fx-font-weight: normal");
         TextField lastNameField = new TextField();
         lastNameField.setPromptText("Nom *");
         
         Label addressLabel = new Label("Adresse");
+        addressLabel.setStyle("-fx-font-weight: normal");
         TextField addressField = new TextField();
         addressField.setPromptText("Adresse *");
 
         // Champ email
         Label emailLabel = new Label("E-mail");
+        emailLabel.setStyle("-fx-font-weight: normal");
         TextField emailField = new TextField();
         emailField.setPromptText("Adresse mail *");
 
         // Champ mot de passe
         Label passwordLabel = new Label("Mot de passe");
+        passwordLabel.setStyle("-fx-font-weight: normal");
         PasswordField passwordField = new PasswordField();
         passwordField.setPromptText("Mot de passe *");
         Button showPasswordButton = new Button("SHOW");
@@ -155,7 +160,7 @@ public class SignUpController {
         rootPane.getChildren().addAll(root);
                
         Scene createAccountScene = new Scene(rootPane, 1350, 670);
-        HeaderView v = new HeaderView(primaryStage, createAccountScene);
+        HeaderView v = new HeaderView(primaryStage, mainScene);
         rootPane.getChildren().addAll(v.getHeader());
                
         String css = this.getClass().getResource("/style.css").toExternalForm();        

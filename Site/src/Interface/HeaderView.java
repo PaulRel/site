@@ -50,11 +50,24 @@ public class HeaderView {
     	accountButton.setOnMouseClicked(event -> {
     	    new AuthController(primaryStage, mainScene);
     	   });
+    	
+    	// Bouton du cart
+        ImageView cartIcon = new ImageView(new Image(getClass().getResource("/Image/cartIcon.jpg").toExternalForm()));
+        cartIcon.setFitHeight(40);
+        cartIcon.setFitWidth(40);
+        Button cartButton = new Button();
+        cartButton.setGraphic(cartIcon);
+        cartButton.setStyle("-fx-background-color: transparent;");
         
+        // Gestion du clic pour afficher CartPage
+    	cartButton.setOnMouseClicked(event -> {
+    	    new CartController(primaryStage, mainScene);
+    	   });
+             
+                
         // Barre de menu
         MenuBar menuBar = new MenuBar(new Menu("VETEMENTS"), new Menu("SACS"), new Menu("CHAUSSURES"));
-        
-        
+                
         // Ecouteur pour ajuster la largeur de wrap en fonction de la taille de la fenêtre
         primaryStage.widthProperty().addListener((observable, oldValue, newValue) -> {
             header.setPrefWidth(newValue.doubleValue()-20);
@@ -63,7 +76,7 @@ public class HeaderView {
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
-        topBar.getChildren().addAll(logo, shopName, spacer, accountButton);
+        topBar.getChildren().addAll(logo, shopName, spacer, accountButton, cartButton);
         header.getChildren().addAll(topBar, menuBar);
         header.setPrefWidth(primaryStage.getWidth() - 20);
         

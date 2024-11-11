@@ -20,14 +20,13 @@ public class AuthController {
     public AuthController(Stage primaryStage, Scene mainScene) {
     	// Création des labels principaux
         mainLabel = new Label("Identifiez-vous ou créez un compte");
-        mainLabel.setOnMouseClicked(e -> primaryStage.setScene(mainScene));
         
     	rootPane = new AnchorPane();
         createBox(primaryStage, mainScene);
         
         Scene authScene = new Scene(rootPane, 1350, 670);
         
-        HeaderView v=new HeaderView(primaryStage, authScene);      
+        HeaderView v=new HeaderView(primaryStage, mainScene);      
         rootPane.getChildren().addAll(v.getHeader());
         String css = this.getClass().getResource("/style.css").toExternalForm();        
         authScene.getStylesheets().add(css);
