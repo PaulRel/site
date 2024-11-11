@@ -3,10 +3,6 @@ package Interface;
 import java.io.IOException;
 import java.util.List;
 
-import Products.Accessoire;
-import Products.Produit;
-import Products.Sac;
-import Products.Vetement;
 import database.ProduitDAO;
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -14,18 +10,14 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import products.Produit;
 
 public class MainView extends Application {
 

@@ -20,11 +20,10 @@ public class AuthController {
     public AuthController(Stage primaryStage, Scene mainScene) {
     	// Création des labels principaux
         mainLabel = new Label("Identifiez-vous ou créez un compte");
-        //mainLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
         mainLabel.setOnMouseClicked(e -> primaryStage.setScene(mainScene));
-                
+        
     	rootPane = new AnchorPane();
-        createLeftBox(primaryStage);
+        createBox(primaryStage, mainScene);
         
         Scene authScene = new Scene(rootPane, 1350, 670);
         
@@ -35,7 +34,7 @@ public class AuthController {
         primaryStage.setScene(authScene);
     }
 
-    private void createLeftBox(Stage primaryStage) {        
+    private void createBox(Stage primaryStage, Scene mainScene) {        
         // Section pour les clients existants (VBox gauche)
         VBox existingCustomerBox = new VBox(10);
         existingCustomerBox.setPrefSize(600, 400);
@@ -81,8 +80,15 @@ public class AuthController {
         newCustomerInfo.setWrapText(true);
         
         Button createAccountButton = new Button("CRÉER UN COMPTE");
+     // Gestion du clic pour afficher LoginPage
+    	createAccountButton.setOnMouseClicked(event -> {
+    	    new SignUpController(primaryStage, mainScene);
+    	   });	
         
         newCustomerBox.getChildren().addAll(newCustomerLabel, newCustomerInfo, createAccountButton);
+        
+        
+        
         
         
         // Mise en page principale (Hbox contenant 2 Vbox)
@@ -96,7 +102,7 @@ public class AuthController {
         root.setPadding(new Insets(50));
         AnchorPane.setTopAnchor(root, 116.0);
         root.setPrefSize(1350, 670);
-        root.setStyle("-fx-background-color: #CFCFCF");
+        root.setStyle("-fx-background-color: #EEEEEE");
         
         primaryStage.widthProperty().addListener((observable, oldValue, newValue) -> {
             root.setPrefWidth(newValue.doubleValue()); // Ajuste la largeur

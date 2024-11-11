@@ -1,4 +1,4 @@
-package Products;
+package products;
 
 public class Commande {
 	private static int nextId = 0;

@@ -32,7 +32,6 @@ public class HeaderView {
         ImageView logo = new ImageView(new Image(getClass().getResource("/Image/logo.jpg").toExternalForm()));
         logo.setFitHeight(40);
         logo.setFitWidth(40);
-        
 
         // Nom du magasin
         Label shopName = new Label("TennisShop");
@@ -47,10 +46,10 @@ public class HeaderView {
         accountButton.setGraphic(accountIcon);
         accountButton.setStyle("-fx-background-color: transparent;");
         
-     // Gestion du clic pour afficher LoginPage
+        // Gestion du clic pour afficher LoginPage
     	accountButton.setOnMouseClicked(event -> {
     	    new AuthController(primaryStage, mainScene);
-    	   });	
+    	   });
         
         // Barre de menu
         MenuBar menuBar = new MenuBar(new Menu("VETEMENTS"), new Menu("SACS"), new Menu("CHAUSSURES"));

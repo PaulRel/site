@@ -1,4 +1,4 @@
-package Products;
+package products;
 
 public class Chaussures extends Produit {
 	public enum Surface {	    
