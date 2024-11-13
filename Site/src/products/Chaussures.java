@@ -1,22 +1,51 @@
 package products;
 
-public class Chaussures extends Produit {
-	public enum Surface {	    
-		TOUTES_SURFACES,
-		TERRE_BATTUE,
-	    GAZON,
-	    DUR
-	}
-	
-	private Surface surface;
-	private String taille, genre, couleur;
+import java.util.HashMap;
 
-	public Chaussures(int id, String Nom, String Description, String Type, String Marque, double Price, int QtDispo,  String imagePath, Surface surface, String genre, String taille, String couleur) {
+public class Chaussures extends Produit {
+
+	
+	private String genre, couleur, surface;
+	private HashMap<String, Integer> tailleStock;
+
+	public Chaussures(int id, String Nom, String Description, String Type, String Marque, double Price, int QtDispo,  String imagePath, String surface, String genre, String couleur) {
 		super(id, Nom, Description, Type, Marque, Price, QtDispo, imagePath);
-		this.surface=surface;
-		this.taille=taille;
-		this.genre=genre;
-		this.couleur=couleur;
+		this.surface = surface;
+		this.tailleStock = new HashMap<>();
+		this.genre = genre;
+		this.couleur = couleur;
+	}	
+
+	public String getGenre() {
+		return genre;
+	}
+
+	public void setGenre(String genre) {
+		this.genre = genre;
+	}
+
+	public String getCouleur() {
+		return couleur;
+	}
+
+	public void setCouleur(String couleur) {
+		this.couleur = couleur;
+	}
+
+	public HashMap<String, Integer> getTailleStock() {
+		return tailleStock;
+	}
+
+	public void setTailleStock(HashMap<String, Integer> tailleStock) {
+		this.tailleStock = tailleStock;
+	}
+
+	public String getSurface() {
+		return surface;
+	}
+
+	public void setSurface(String surface) {
+		this.surface = surface;
 	}
 	
 

@@ -34,7 +34,7 @@ public class CartController {
 	    
 	    AnchorPane rootPane = new AnchorPane();
 	    rootPane.getChildren().addAll(root);
-	               
+	    
 	    Scene createAccountScene = new Scene(rootPane, 1350, 670);
 	    HeaderView v = new HeaderView(primaryStage, mainScene);
 	    rootPane.getChildren().addAll(v.getHeader());

@@ -41,7 +41,9 @@
     -fx-pref-height: 230px; /* Hauteur fixe de la cellule */
     -fx-alignment: center;  /* Alignement centré */
     -fx-spacing: 2px;       /* Espace entre les éléments internes */
-    -fx-border-radius: 10px; /* Bord arrondi */
+    -fx-border-radius: 5px; /* Bord arrondi */
+   	/*-fx-border-color: #696969; 
+    -fx-border-width: 1;*/
 }
 
 /* Ombre lors du survol de la cellule */

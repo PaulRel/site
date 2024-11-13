@@ -15,9 +15,12 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import products.Chaussures;
 import products.Produit;
+import products.Vetement;
 
 public class MainView extends Application {
 
@@ -27,11 +30,11 @@ public class MainView extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
     	initializeRootLayout();
-    	//createHeader(primaryStage);
-        createProductSection(primaryStage, null);
+    	//createHeader(primaryStage);   	
+        createProductSection(primaryStage, "tous les produits");
         createFilterBox();
-        createScrollPane();        
-        setupMainScene(primaryStage);        
+        createScrollPane();
+        setupMainScene(primaryStage);
         primaryStage.show();
     }
     
@@ -47,9 +50,9 @@ public class MainView extends Application {
      * 
      * @param primaryStage La scène principale de l'application.
      */
-    public void createProductSection(Stage primaryStage, Class<? extends Produit> typeProduit) {
+    public void createProductSection(Stage primaryStage, String type) {
         VBox sectionProduits = new VBox();
-        sectionProduits.getChildren().add(displayProducts(primaryStage, typeProduit));
+        sectionProduits.getChildren().add(displayProducts(primaryStage, type));
         
         AnchorPane.setTopAnchor(sectionProduits, 150.0);
         AnchorPane.setLeftAnchor(sectionProduits, 10.0);
@@ -64,22 +67,40 @@ public class MainView extends Application {
      * @param primaryStage La scène principale de l'application.
      * @return Le GridPane contenant tous les produits.
      */
-    public ScrollPane displayProducts(Stage primaryStage, Class<? extends Produit> typeProduit) {
+    public ScrollPane displayProducts(Stage primaryStage, String type) {
         FlowPane produitsGrid = new FlowPane();
         produitsGrid.setPadding(new Insets(10, 10, 10, 10));
         produitsGrid.setHgap(10);
         produitsGrid.setVgap(10);
         produitsGrid.setPrefWrapLength(primaryStage.getWidth()); // Ajuste automatiquement avec la largeur
-        
-        // Récupérer les produits depuis la base de données
-        ProduitDAO produitDAO = new ProduitDAO();
+        ProduitDAO produitDAO = new ProduitDAO();  // Récupérer les produits depuis la base de données
         List<Produit> produits = produitDAO.getAllProduits();
         
-        for (Produit produit : produits) {
-        	VBox produitBox = createProductBox(primaryStage, produit);
-            produitsGrid.getChildren().add(produitBox);
+        if (type.equals("vetement")){
+        	for (Produit produit : produits) {
+        		if (produit instanceof Vetement) {
+        			VBox produitBox = createProductBox(primaryStage, produit);
+        	        produitsGrid.getChildren().add(produitBox);
+        	        System.out.println(produit);
+        		}
+        	}		
+        }
+        else if (type.equals("chaussures")){
+        	for (Produit produit : produits) {
+        		if (produit instanceof Chaussures) {
+        			VBox produitBox = createProductBox(primaryStage, produit);
+        			produitsGrid.getChildren().add(produitBox);
+        			System.out.println(produit);
+        		}
+        	}
         }
         
+        else { //affiche tout
+        	for (Produit produit : produits) {
+        		VBox produitBox = createProductBox(primaryStage, produit);
+        		produitsGrid.getChildren().add(produitBox);
+        	}            
+        }
      // Ecouteur pour ajuster la largeur de wrap en fonction de la taille de la fenêtre
         primaryStage.widthProperty().addListener((observable, oldValue, newValue) -> {
             produitsGrid.setPrefWrapLength(newValue.doubleValue());
@@ -90,8 +111,8 @@ public class MainView extends Application {
         scrollPane.setFitToWidth(true); // Adapter la largeur du contenu à celle de la fenêtre
         scrollPane.setPannable(true);   // Activer le défilement pour une expérience fluide
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS); // Toujours afficher la barre de défilement verticale
-        scrollPane.setPrefViewportHeight(550);
-        //scrollPane.getStyleClass().add("scroll-pane-style"); // Appliquer une classe CSS        
+        scrollPane.setPrefViewportHeight(510);
+        //scrollPane.getStyleClass().add("scroll-pane-style"); // Appliquer une classe CSS
         return scrollPane;
     }   
     
@@ -190,27 +211,38 @@ public class MainView extends Application {
      */
     public void showProductDetails(Stage primaryStage, Produit produit) {
         // Création d'un nouveau conteneur pour les détails du produit
-        VBox detailsBox = new VBox();
+        HBox detailsBox = new HBox();
         detailsBox.setPadding(new Insets(20));
         detailsBox.setSpacing(10);
+        detailsBox.setMaxSize(1200, 500);
+        AnchorPane.setTopAnchor(detailsBox, 116.0);
         
         // Affichage des informations du produit
         Label nomLabel = new Label(produit.getNom());
         Label prixLabel = new Label("Prix : " + produit.getPrice() + "€");
+        Label descriptionLabel = new Label(produit.getDescription());
+        descriptionLabel.setStyle("-fx-font-weight: normal");
+        descriptionLabel.setWrapText(true);
         
         ImageView imageView = new ImageView(new Image(getClass().getResource(produit.getImagePath()).toExternalForm()));
-        imageView.setFitHeight(200);
-        imageView.setFitWidth(200);
+        imageView.setFitHeight(400);
+        imageView.setFitWidth(400);
         
-        // Bouton pour revenir à la scène principale
-        Button retourButton = new Button("Retour");
-        retourButton.setOnAction(e -> primaryStage.setScene(mainScene));  // revenir à la scène principale
-
+        Button addToCartButton = new Button("Ajouter au panier");
+        addToCartButton.setOnAction(e -> new CartController(primaryStage, mainScene));
+        
+        VBox descriptionBox = new VBox (nomLabel, prixLabel, descriptionLabel, addToCartButton);
+        
         // Ajouter les éléments à la boîte de détails
-        detailsBox.getChildren().addAll(nomLabel, prixLabel, imageView, retourButton);
+        detailsBox.getChildren().addAll(imageView, descriptionBox);
+        
+        HeaderView v=new HeaderView(primaryStage, mainScene);
+        AnchorPane rootPane = new AnchorPane();
+        rootPane.getChildren().addAll(v.getHeader(), detailsBox);
         
         // Nouvelle scène pour les détails
-        Scene detailScene = new Scene(detailsBox, 800, 600);
+        Scene detailScene = new Scene(rootPane, 1350, 670);
+        detailScene.getStylesheets().add(this.getClass().getResource("/style.css").toExternalForm());
         primaryStage.setScene(detailScene);
     }
 

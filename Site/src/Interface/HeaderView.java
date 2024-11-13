@@ -1,5 +1,6 @@
 package Interface;
 
+import database.ProduitDAO;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -13,11 +14,12 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import products.Produit;
 
-public class HeaderView {
+public class HeaderView extends MainView{
     private VBox header;
 
-    public HeaderView(Stage primaryStage, Scene mainScene) {
+    public HeaderView(Stage primaryStage, Scene mainScene){
         createHeader(primaryStage, mainScene);
     }
 
@@ -60,13 +62,19 @@ public class HeaderView {
         cartButton.setStyle("-fx-background-color: transparent;");
         
         // Gestion du clic pour afficher CartPage
-    	cartButton.setOnMouseClicked(event -> {
-    	    new CartController(primaryStage, mainScene);
-    	   });
-             
-                
+    	cartButton.setOnMouseClicked(event -> new CartController(primaryStage, mainScene));
+                          
         // Barre de menu
-        MenuBar menuBar = new MenuBar(new Menu("VETEMENTS"), new Menu("SACS"), new Menu("CHAUSSURES"));
+    	MenuBar menuBar = new MenuBar();
+        Menu menuVetements = new Menu("VETEMENTS");
+        Menu menuSacs = new Menu("SACS");
+        Menu menuChaussures = new Menu("CHAUSSURES");
+        menuBar.getMenus().addAll(menuVetements, menuSacs, menuChaussures);
+        
+        // Associer un événement de clic pour chaque type de produit       
+        menuVetements.setOnAction(e -> createProductSection(primaryStage, "vetements"));
+        menuSacs.setOnAction(e -> createProductSection(primaryStage, "sacs"));
+        menuChaussures.setOnAction(e -> createProductSection(primaryStage, "chaussures"));
                 
         // Ecouteur pour ajuster la largeur de wrap en fonction de la taille de la fenêtre
         primaryStage.widthProperty().addListener((observable, oldValue, newValue) -> {
