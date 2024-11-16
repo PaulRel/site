@@ -17,7 +17,7 @@ public class AuthController {
     private AnchorPane rootPane;
     private Label mainLabel;
 
-    public AuthController(Stage primaryStage, Scene mainScene) {
+    public AuthController(MainView mainView, Stage primaryStage, Scene mainScene) {
     	// Création des labels principaux
         mainLabel = new Label("Identifiez-vous ou créez un compte");
         
@@ -26,7 +26,7 @@ public class AuthController {
         
         Scene authScene = new Scene(rootPane, 1350, 670);
         
-        HeaderView v=new HeaderView(primaryStage, mainScene);      
+        HeaderView v=new HeaderView(mainView, primaryStage, mainScene);      
         rootPane.getChildren().addAll(v.getHeader());
         String css = this.getClass().getResource("/style.css").toExternalForm();        
         authScene.getStylesheets().add(css);

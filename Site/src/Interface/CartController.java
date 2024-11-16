@@ -36,8 +36,8 @@ public class CartController {
 	    rootPane.getChildren().addAll(root);
 	    
 	    Scene createAccountScene = new Scene(rootPane, 1350, 670);
-	    HeaderView v = new HeaderView(primaryStage, mainScene);
-	    rootPane.getChildren().addAll(v.getHeader());
+	    //HeaderView v = new HeaderView(primaryStage, mainScene);
+	    //rootPane.getChildren().addAll(v.getHeader());
 	               
 	    String css = this.getClass().getResource("/style.css").toExternalForm();        
 	    createAccountScene.getStylesheets().add(css);

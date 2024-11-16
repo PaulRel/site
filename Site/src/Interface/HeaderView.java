@@ -1,11 +1,14 @@
 package Interface;
 
+import java.util.function.Consumer;
+
 import database.ProduitDAO;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
@@ -14,17 +17,21 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import products.Chaussures;
 import products.Produit;
+import products.Sac;
+import products.Vetement;
 
-public class HeaderView extends MainView{
+public class HeaderView{
     private VBox header;
+    private Consumer<String> onButtonClicked;
 
-    public HeaderView(Stage primaryStage, Scene mainScene){
-        createHeader(primaryStage, mainScene);
+    public HeaderView(MainView mainView, Stage primaryStage, Scene mainScene){
+        createHeader(mainView, primaryStage, mainScene);
     }
 
-    private void createHeader(Stage primaryStage, Scene mainScene) {
-        HBox topBar = new HBox();
+    private void createHeader(MainView mainView, Stage primaryStage, Scene mainScene) {   	
+    	HBox topBar = new HBox();
         topBar.setPrefHeight(50);
 
         header = new VBox();
@@ -38,7 +45,8 @@ public class HeaderView extends MainView{
         // Nom du magasin
         Label shopName = new Label("TennisShop");
         shopName.setStyle("-fx-text-fill: #333; -fx-font-size: 30px; -fx-font-weight: bold;");
-        shopName.setOnMouseClicked(e -> primaryStage.setScene(mainScene));
+        //shopName.setOnMouseClicked(e -> primaryStage.setScene(mainScene));
+        shopName.setOnMouseClicked(e -> mainView.showProductView(Produit.class));
         
         // Bouton du compte
         ImageView accountIcon = new ImageView(new Image(getClass().getResource("/Image/accountIcon.png").toExternalForm()));
@@ -50,7 +58,7 @@ public class HeaderView extends MainView{
         
         // Gestion du clic pour afficher LoginPage
     	accountButton.setOnMouseClicked(event -> {
-    	    new AuthController(primaryStage, mainScene);
+    	    new AuthController(mainView, primaryStage, mainScene);
     	   });
     	
     	// Bouton du cart
@@ -69,13 +77,28 @@ public class HeaderView extends MainView{
         Menu menuVetements = new Menu("VETEMENTS");
         Menu menuSacs = new Menu("SACS");
         Menu menuChaussures = new Menu("CHAUSSURES");
+        
+        MenuItem vetementsItem = new MenuItem("VETEMENTS");
+        MenuItem sacsItem = new MenuItem("SACS");
+        MenuItem chaussuresItem = new MenuItem("CHAUSSURES");
+
+        // Associer un événement de clic pour chaque item de menu
+        vetementsItem.setOnAction(e -> {
+        	//if (onButtonClicked != null) {
+                //onButtonClicked.accept("VETEMENTS");
+                mainView.showProductView(Vetement.class);
+        	//}           
+        });
+        //menuSacs.setOnAction(e -> createProductSection(primaryStage, Sac.class));
+        //menuChaussures.setOnAction(e -> createProductSection(primaryStage, Chaussures.class));
+        
+        // Ajouter les items aux menus
+        menuVetements.getItems().add(vetementsItem);
+        menuSacs.getItems().add(sacsItem);
+        menuChaussures.getItems().add(chaussuresItem);
+        
         menuBar.getMenus().addAll(menuVetements, menuSacs, menuChaussures);
         
-        // Associer un événement de clic pour chaque type de produit       
-        menuVetements.setOnAction(e -> createProductSection(primaryStage, "vetements"));
-        menuSacs.setOnAction(e -> createProductSection(primaryStage, "sacs"));
-        menuChaussures.setOnAction(e -> createProductSection(primaryStage, "chaussures"));
-                
         // Ecouteur pour ajuster la largeur de wrap en fonction de la taille de la fenêtre
         primaryStage.widthProperty().addListener((observable, oldValue, newValue) -> {
             header.setPrefWidth(newValue.doubleValue()-20);
@@ -94,6 +117,9 @@ public class HeaderView extends MainView{
 
     public VBox getHeader() {
         return header;
+    }
+    public void setOnButtonClicked(Consumer<String> onButtonClicked) {
+        this.onButtonClicked = onButtonClicked;
     }
 }
 
