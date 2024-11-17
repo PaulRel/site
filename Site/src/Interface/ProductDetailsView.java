@@ -1,8 +1,12 @@
 package Interface;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -10,6 +14,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import products.Chaussures;
 import products.Produit;
 
 public class ProductDetailsView {
@@ -33,9 +38,37 @@ public class ProductDetailsView {
         // Affichage des informations du produit
         Label nomLabel = new Label(produit.getNom());
         Label prixLabel = new Label("Prix : " + produit.getPrice() + "€");
-        Label descriptionLabel = new Label(produit.getDescription());
+        Label descriptionLabel = new Label(produit.getDescription() + "\n Choisir la taille :");
         descriptionLabel.setStyle("-fx-font-weight: normal");
         descriptionLabel.setWrapText(true);
+        
+        ComboBox<String> taillesComboBox = new ComboBox<>();
+        
+        // ComboBox pour afficher les tailles et quantités disponibles
+        if (produit instanceof Chaussures) {
+        	Chaussures chaussure = (Chaussures) produit;
+        	HashMap<String, Integer> taillesStock = chaussure.getTailleStock();
+        	System.out.println("Map " + taillesStock);
+        	
+        	 // Ajouter les éléments formatés dans la ComboBox
+            for (Map.Entry<String, Integer> entry : taillesStock.entrySet()) {
+                String taille = entry.getKey();
+                int qtDispo = entry.getValue();
+                String texte;
+                if (qtDispo <= 5) {
+                    texte = "Plus que " + qtDispo + " en stock";
+                } else {
+                    texte = "Stock 5+";
+                }
+                taillesComboBox.getItems().add(taille + " : " + texte);
+            }
+
+            // Écouter les changements de sélection dans la ComboBox
+            taillesComboBox.setOnAction(event -> {
+                
+            });
+        }
+        	
         
         ImageView imageView = new ImageView(new Image(getClass().getResource(produit.getImagePath()).toExternalForm()));
         imageView.setFitHeight(400);
@@ -44,7 +77,7 @@ public class ProductDetailsView {
         Button addToCartButton = new Button("Ajouter au panier");
         addToCartButton.setOnAction(e -> new CartController(mainView, primaryStage));
         
-        VBox descriptionBox = new VBox (nomLabel, prixLabel, descriptionLabel, addToCartButton);
+        VBox descriptionBox = new VBox (nomLabel, prixLabel, descriptionLabel, taillesComboBox, addToCartButton);
         
         // Ajouter les éléments à la boîte de détails
         detailsBox.getChildren().addAll(imageView, descriptionBox);
