@@ -64,7 +64,7 @@ public class HeaderView{
         cartButton.setStyle("-fx-background-color: transparent;");
         
         // Gestion du clic pour afficher CartPage
-    	cartButton.setOnMouseClicked(event -> new CartController(mainView, primaryStage));
+    	cartButton.setOnMouseClicked(event -> new CartView(mainView, primaryStage));
                           
         // Barre de menu
     	MenuBar menuBar = new MenuBar();

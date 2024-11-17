@@ -3,6 +3,9 @@ package Interface;
 import java.util.HashMap;
 import java.util.Map;
 
+import customer.Cart;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -27,7 +30,7 @@ public class ProductDetailsView {
      * @param primaryStage La scène principale de l'application.
      * @param produit      Le produit dont les détails sont à afficher.
      */
-    public void showProductDetails(MainView mainView, Stage primaryStage, Produit produit) {
+    public void showProductDetails(MainView mainView, Stage primaryStage, Produit product) {
         // Création d'un nouveau conteneur pour les détails du produit
         HBox detailsBox = new HBox();
         detailsBox.setPadding(new Insets(20));
@@ -36,22 +39,29 @@ public class ProductDetailsView {
         AnchorPane.setTopAnchor(detailsBox, 116.0);
         
         // Affichage des informations du produit
-        Label nomLabel = new Label(produit.getNom());
-        Label prixLabel = new Label("Prix : " + produit.getPrice() + "€");
-        Label descriptionLabel = new Label(produit.getDescription() + "\n Choisir la taille :");
+        Label nameLabel = new Label(product.getNom());
+        Label priceLabel = new Label("Prix : " + product.getPrice() + "€");
+        Label descriptionLabel = new Label(product.getDescription() + "\n Choisir la taille :");
+        Label selectedQuantityLabel = new Label("Quantité souhaitée :  ");
         descriptionLabel.setStyle("-fx-font-weight: normal");
         descriptionLabel.setWrapText(true);
         
-        ComboBox<String> taillesComboBox = new ComboBox<>();
+     // ComboBox for the desired quantity
+        ComboBox<Integer> quantityComboBox = new ComboBox<>();
+        quantityComboBox.setDisable(true); // Disabled by default
+        quantityComboBox.getItems().add(1); // Default value
+        quantityComboBox.setValue(1); // Set default quantity
+        
+        ComboBox<String> sizeChoiceBox = new ComboBox<>();
         
         // ComboBox pour afficher les tailles et quantités disponibles
-        if (produit instanceof Chaussures) {
-        	Chaussures chaussure = (Chaussures) produit;
-        	HashMap<String, Integer> taillesStock = chaussure.getTailleStock();
-        	System.out.println("Map " + taillesStock);
+        if (product instanceof Chaussures) {
+        	Chaussures chaussure = (Chaussures) product;
+        	HashMap<String, Integer> sizesStock = chaussure.getTailleStock();
+        	System.out.println("Map " + sizesStock);
         	
         	 // Ajouter les éléments formatés dans la ComboBox
-            for (Map.Entry<String, Integer> entry : taillesStock.entrySet()) {
+            for (Map.Entry<String, Integer> entry : sizesStock.entrySet()) {
                 String taille = entry.getKey();
                 int qtDispo = entry.getValue();
                 String texte;
@@ -60,24 +70,53 @@ public class ProductDetailsView {
                 } else {
                     texte = "Stock 5+";
                 }
-                taillesComboBox.getItems().add(taille + " : " + texte);
+                sizeChoiceBox.getItems().add(taille + " : " + texte);
             }
 
-            // Écouter les changements de sélection dans la ComboBox
-            taillesComboBox.setOnAction(event -> {
-                
+            // Add a listener to the size selection ComboBox
+            sizeChoiceBox.setOnAction(event -> {
+            	String selectedSize = sizeChoiceBox.getValue(); // e.g., "39 : Plus que 1 en stock"
+
+                // Extract the size and find the available quantity
+                if (selectedSize != null) {
+                    String chosenSize = selectedSize.split(" :")[0];
+                    int availableQuantity = sizesStock.get(chosenSize);
+
+                    // Update the options in the quantity ComboBox
+                    ObservableList<Integer> quantities = FXCollections.observableArrayList();
+                    for (int i = 1; i <= Math.min(availableQuantity, 5); i++) {
+                        quantities.add(i);
+                    }
+
+                    quantityComboBox.setItems(quantities);
+                    quantityComboBox.setValue(1); // Reset default value
+                    quantityComboBox.setDisable(false); // Enable the ComboBox
+                }                
             });
         }
-        	
         
-        ImageView imageView = new ImageView(new Image(getClass().getResource(produit.getImagePath()).toExternalForm()));
+        // Integer chosenQuantity;
+        // Add a listener to the quantity selection ComboBox
+        quantityComboBox.setOnAction(event -> {
+            Integer chosenQuantity = quantityComboBox.getValue();
+            selectedQuantityLabel.setText("Selected quantity: " + chosenQuantity);
+        });
+        	       
+        ImageView imageView = new ImageView(new Image(getClass().getResource(product.getImagePath()).toExternalForm()));
         imageView.setFitHeight(400);
         imageView.setFitWidth(400);
         
+        Label addProductLabel = new Label();
+        		
         Button addToCartButton = new Button("Ajouter au panier");
-        addToCartButton.setOnAction(e -> new CartController(mainView, primaryStage));
+        addToCartButton.setOnAction(e -> {
+        	 String selectedSize = sizeChoiceBox.getValue();
+        	 //Cart.addProduct(product, selectedSize, chosenQuantity);
+
+        	 addProductLabel.setText("Produit ajouté au panier!");
+        });
         
-        VBox descriptionBox = new VBox (nomLabel, prixLabel, descriptionLabel, taillesComboBox, addToCartButton);
+        VBox descriptionBox = new VBox (nameLabel, priceLabel, descriptionLabel, sizeChoiceBox, selectedQuantityLabel, quantityComboBox, addToCartButton, addProductLabel);
         
         // Ajouter les éléments à la boîte de détails
         detailsBox.getChildren().addAll(imageView, descriptionBox);

@@ -10,9 +10,9 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import products.Produit;
 
-public class CartController {
+public class CartView {
 	
-	public CartController(MainView mainView, Stage primaryStage) {
+	public CartView(MainView mainView, Stage primaryStage) {
 		Label emptyCartLabel = new Label("Votre panier est vide");
 		Button continueButton = new Button("Continuer vos achats");
 		continueButton.setOnAction(e -> mainView.showProductView(Produit.class));
@@ -38,8 +38,6 @@ public class CartController {
 	    rootPane.getChildren().addAll(v.getHeader(), root);
 	    
 	    Scene createAccountScene = new Scene(rootPane, 1350, 670);
-	    //HeaderView v = new HeaderView(primaryStage, mainScene);
-	    //rootPane.getChildren().addAll(v.getHeader());
 	               
 	    String css = this.getClass().getResource("/style.css").toExternalForm();        
 	    createAccountScene.getStylesheets().add(css);
