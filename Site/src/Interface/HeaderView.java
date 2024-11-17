@@ -1,9 +1,5 @@
 package Interface;
 
-import java.util.function.Consumer;
-
-import database.ProduitDAO;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
@@ -44,7 +40,6 @@ public class HeaderView{
         // Nom du magasin
         Label shopName = new Label("TennisShop");
         shopName.setStyle("-fx-text-fill: #333; -fx-font-size: 30px; -fx-font-weight: bold;");
-        //shopName.setOnMouseClicked(e -> primaryStage.setScene(mainScene));
         shopName.setOnMouseClicked(e -> mainView.showProductView(Produit.class));
         
         // Bouton du compte
@@ -82,14 +77,9 @@ public class HeaderView{
         MenuItem chaussuresItem = new MenuItem("CHAUSSURES");
 
         // Associer un événement de clic pour chaque item de menu
-        vetementsItem.setOnAction(e -> {
-        	//if (onButtonClicked != null) {
-                //onButtonClicked.accept("VETEMENTS");
-                mainView.showProductView(Vetement.class);
-        	//}           
-        });
-        //menuSacs.setOnAction(e -> createProductSection(primaryStage, Sac.class));
-        //menuChaussures.setOnAction(e -> createProductSection(primaryStage, Chaussures.class));
+        vetementsItem.setOnAction(e -> mainView.showProductView(Vetement.class));
+        sacsItem.setOnAction(e -> mainView.showProductView(Sac.class));
+        chaussuresItem.setOnAction(e -> mainView.showProductView(Chaussures.class));
         
         // Ajouter les items aux menus
         menuVetements.getItems().add(vetementsItem);
