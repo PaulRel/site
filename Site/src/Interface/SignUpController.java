@@ -25,7 +25,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class SignUpController {
-	public SignUpController(Stage primaryStage, Scene mainScene) {
+	public SignUpController(Stage primaryStage) {
 		Label mainLabel = new Label("Créer un compte");
 
      // Champ civilité

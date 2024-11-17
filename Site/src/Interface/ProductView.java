@@ -50,7 +50,7 @@ public class ProductView {
        .filter(typeProduit::isInstance) // Filtrer les produits par type
        .forEach(produit -> {
        	// TESTS :  System.out.println(typeProduit); System.out.println("Nom de la classe : " + produit.getClass().getSimpleName());
-       	VBox produitBox = createProductBox(mainView, produit);
+       	VBox produitBox = createProductBox(mainView, primaryStage, produit);
        	produitsGrid.getChildren().add(produitBox);
        });
        	
@@ -76,7 +76,7 @@ public class ProductView {
     * @param produit      Le produit à afficher.
     * @return Un VBox contenant l'image, le nom et le prix du produit.
     */
-   private VBox createProductBox(MainView mainView, Produit produit) {
+   private VBox createProductBox(MainView mainView, Stage primaryStage, Produit produit) {
    	// Création des composants pour chaque produit
        ImageView imageView = new ImageView(new Image(getClass().getResource(produit.getImagePath()).toExternalForm()));
        imageView.setFitHeight(150);
@@ -92,7 +92,7 @@ public class ProductView {
        produitBox.getChildren().addAll(imageView, nomProduit, prixProduit);
        
        // Gestion du clic sur le produit pour afficher les détails
-       produitBox.setOnMouseClicked(event -> mainView.showDetailsProductView(Produit.class));
+       produitBox.setOnMouseClicked(event -> new ProductDetailsView(mainView, primaryStage, produit));
        
        return produitBox;
     }

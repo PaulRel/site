@@ -24,13 +24,12 @@ import products.Vetement;
 
 public class HeaderView{
     private VBox header;
-    private Consumer<String> onButtonClicked;
 
-    public HeaderView(MainView mainView, Stage primaryStage, Scene mainScene){
-        createHeader(mainView, primaryStage, mainScene);
+    public HeaderView(MainView mainView, Stage primaryStage){
+        createHeader(mainView, primaryStage);
     }
 
-    private void createHeader(MainView mainView, Stage primaryStage, Scene mainScene) {   	
+    private void createHeader(MainView mainView, Stage primaryStage) {   	
     	HBox topBar = new HBox();
         topBar.setPrefHeight(50);
 
@@ -58,7 +57,7 @@ public class HeaderView{
         
         // Gestion du clic pour afficher LoginPage
     	accountButton.setOnMouseClicked(event -> {
-    	    new AuthController(mainView, primaryStage, mainScene);
+    	    new AuthController(mainView, primaryStage);
     	   });
     	
     	// Bouton du cart
@@ -70,7 +69,7 @@ public class HeaderView{
         cartButton.setStyle("-fx-background-color: transparent;");
         
         // Gestion du clic pour afficher CartPage
-    	cartButton.setOnMouseClicked(event -> new CartController(primaryStage, mainScene));
+    	cartButton.setOnMouseClicked(event -> new CartController(mainView, primaryStage));
                           
         // Barre de menu
     	MenuBar menuBar = new MenuBar();
@@ -117,9 +116,6 @@ public class HeaderView{
 
     public VBox getHeader() {
         return header;
-    }
-    public void setOnButtonClicked(Consumer<String> onButtonClicked) {
-        this.onButtonClicked = onButtonClicked;
     }
 }
 

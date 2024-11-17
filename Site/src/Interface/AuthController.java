@@ -17,23 +17,23 @@ public class AuthController {
     private AnchorPane rootPane;
     private Label mainLabel;
 
-    public AuthController(MainView mainView, Stage primaryStage, Scene mainScene) {
+    public AuthController(MainView mainView, Stage primaryStage) {
     	// Création des labels principaux
         mainLabel = new Label("Identifiez-vous ou créez un compte");
         
     	rootPane = new AnchorPane();
-        createBox(primaryStage, mainScene);
+        createBox(primaryStage);
         
         Scene authScene = new Scene(rootPane, 1350, 670);
         
-        HeaderView v=new HeaderView(mainView, primaryStage, mainScene);      
+        HeaderView v=new HeaderView(mainView, primaryStage);      
         rootPane.getChildren().addAll(v.getHeader());
         String css = this.getClass().getResource("/style.css").toExternalForm();        
         authScene.getStylesheets().add(css);
         primaryStage.setScene(authScene);
     }
 
-    private void createBox(Stage primaryStage, Scene mainScene) {        
+    private void createBox(Stage primaryStage) {        
         // Section pour les clients existants (VBox gauche)
         VBox existingCustomerBox = new VBox(10);
         existingCustomerBox.setPrefSize(600, 400);
@@ -81,7 +81,7 @@ public class AuthController {
         Button createAccountButton = new Button("CRÉER UN COMPTE");
      // Gestion du clic pour afficher LoginPage
     	createAccountButton.setOnMouseClicked(event -> {
-    	    new SignUpController(primaryStage, mainScene);
+    	    new SignUpController(primaryStage);
     	   });	
         
         newCustomerBox.getChildren().addAll(newCustomerLabel, newCustomerInfo, createAccountButton);

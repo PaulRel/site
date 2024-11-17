@@ -24,7 +24,6 @@ import products.Vetement;
 
 public class MainView extends Application {
 
-	private AnchorPane root;
 	private Stage primaryStage;
 	private HeaderView headerView;
 	private String css;
@@ -33,16 +32,11 @@ public class MainView extends Application {
     public void start(Stage primaryStage) throws Exception {
     	this.primaryStage=primaryStage;
     	css = this.getClass().getResource("/style.css").toExternalForm();
+    	//root = new AnchorPane();
     	
-    	root = new AnchorPane();
-    	Scene mainScene = new Scene(root, 1350, 670);
-    	headerView = new HeaderView(this, primaryStage, mainScene);
-    	//headerView.setOnButtonClicked(this::handleHeaderAction);
-    	//createHeader(primaryStage);   
+       	headerView = new HeaderView(this, primaryStage); //utile ?
         
         showProductView(Produit.class);
-        
-        //createFilterBox();
         //createScrollPane();
         
         setupStage(primaryStage);
@@ -55,24 +49,15 @@ public class MainView extends Application {
      * @param primaryStage La scène principale de l'application.
      * @throws IOException En cas d'erreur de chargement des ressources.
      */
-    public void setupStage(Stage primaryStage) throws IOException{
-        //mainScene = new Scene(root, 1350, 670);
-        //scene.getStylesheets().add("file:/Site/resources/style.css");
-       
+    public void setupStage(Stage primaryStage) throws IOException{      
         Image icon = new Image (getClass().getResource("/Image/logo.jpg").toExternalForm());
-        //root.getChildren().add(headerView.getHeader());
-        
-        
         primaryStage.getIcons().add(icon);
         primaryStage.setTitle("Magasin de tennis");
-        //primaryStage.setScene(mainScene);
         primaryStage.setFullScreen(false); //A remettre vrai
     }
     
     /**
      * Crée et place la section de produits au centre de l'interface utilisateur.
-     * 
-     * @param primaryStage La scène principale de l'application.
      */
     public void showProductView(Class<? extends Produit> typeProduit) {
     	ProductView productSection = new ProductView(this, primaryStage, typeProduit);
@@ -82,33 +67,11 @@ public class MainView extends Application {
     	productScene.getStylesheets().add(css);
     	primaryStage.setScene(productScene);          
     }
-    
-    public void showDetailsProductView(Class<? extends Produit> typeProduit) {
-    	ProductView productSection = new ProductView(this, primaryStage, typeProduit);
-    	AnchorPane root = productSection.getRoot();
-    	root.getChildren().add(headerView.getHeader()); // Ajouter l'en-tête
-    	Scene productScene = new Scene(root, 1350, 670);
-    	productScene.getStylesheets().add(css);
-    	primaryStage.setScene(productScene);          
-    }
-    
-    /*
-    public showAuthView() {
-    	 cart = new CartController(primaryStage, mainScene);
-    }
-    */
+
 
     public static void main(String[] args) {
         launch(args);
     }
-
-	public AnchorPane getRoot() {
-		return root;
-	}
-
-	public void setRoot(AnchorPane root) {
-		this.root = root;
-	}
 
 		/**
 	     * Crée l'en-tête de l'application, qui inclut le nom du magasin, l'icône du compte et la barre de navigation.

@@ -8,13 +8,14 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import products.Produit;
 
 public class CartController {
 	
-	public CartController(Stage primaryStage, Scene mainScene) {
+	public CartController(MainView mainView, Stage primaryStage) {
 		Label emptyCartLabel = new Label("Votre panier est vide");
 		Button continueButton = new Button("Continuer vos achats");
-		continueButton.setOnAction(e -> primaryStage.setScene(mainScene));
+		continueButton.setOnAction(e -> mainView.showProductView(Produit.class));
 				
 		// Mise en page principale
         //VBox main = new VBox(emptyCartLabel, continueButton);
@@ -33,7 +34,8 @@ public class CartController {
 	    primaryStage.heightProperty().addListener((observable, oldValue, newValue) -> {root.setPrefHeight(newValue.doubleValue()-116);}); // Ajuste la hauteur
 	    
 	    AnchorPane rootPane = new AnchorPane();
-	    rootPane.getChildren().addAll(root);
+	    HeaderView v = new HeaderView(mainView, primaryStage);      
+	    rootPane.getChildren().addAll(v.getHeader(), root);
 	    
 	    Scene createAccountScene = new Scene(rootPane, 1350, 670);
 	    //HeaderView v = new HeaderView(primaryStage, mainScene);

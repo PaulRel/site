@@ -13,8 +13,8 @@ import javafx.stage.Stage;
 import products.Produit;
 
 public class ProductDetailsView {
-	public ProductDetailsView(Stage primaryStage) {
-		showProductDetails(primaryStage, null);
+	public ProductDetailsView(MainView mainView, Stage primaryStage, Produit produit) {
+		showProductDetails(mainView, primaryStage, produit);
 	}
 	/**
      * Affiche les détails d'un produit spécifique dans une nouvelle scène.
@@ -22,7 +22,7 @@ public class ProductDetailsView {
      * @param primaryStage La scène principale de l'application.
      * @param produit      Le produit dont les détails sont à afficher.
      */
-    public void showProductDetails(Stage primaryStage, Produit produit) {
+    public void showProductDetails(MainView mainView, Stage primaryStage, Produit produit) {
         // Création d'un nouveau conteneur pour les détails du produit
         HBox detailsBox = new HBox();
         detailsBox.setPadding(new Insets(20));
@@ -42,16 +42,16 @@ public class ProductDetailsView {
         imageView.setFitWidth(400);
         
         Button addToCartButton = new Button("Ajouter au panier");
-        addToCartButton.setOnAction(e -> new CartController(primaryStage, mainScene));
+        addToCartButton.setOnAction(e -> new CartController(mainView, primaryStage));
         
         VBox descriptionBox = new VBox (nomLabel, prixLabel, descriptionLabel, addToCartButton);
         
         // Ajouter les éléments à la boîte de détails
         detailsBox.getChildren().addAll(imageView, descriptionBox);
         
-        //HeaderView v=new HeaderView(primaryStage, mainScene);
+        HeaderView v=new HeaderView(mainView, primaryStage);
         AnchorPane rootPane = new AnchorPane();
-        //rootPane.getChildren().addAll(v.getHeader(), detailsBox);
+        rootPane.getChildren().addAll(v.getHeader(), detailsBox);
         
         // Nouvelle scène pour les détails
         Scene detailScene = new Scene(rootPane, 1350, 670);
