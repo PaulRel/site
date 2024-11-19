@@ -118,6 +118,26 @@ public class AuthController {
         //rootPane.getChildren().addAll(existingCustomerBox, newCustomerBox);
         rootPane.getChildren().addAll(root);
     }
+    
+    public static void handleLogin(String email, String password) {
+    	Customer customer = authenticate(email, password);
+    	
+    	if (customer != null) {
+            Alert alert = new Alert(AlertType.INFORMATION);
+            alert.setTitle("Connexion réussie");
+            alert.setHeaderText(null);
+            alert.setContentText("Bienvenue " + customer.getFirstName()+" !");
+            alert.showAndWait();
+            
+            MainView.setCurrentCustomer(customer);            
+        } else {
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Échec de la connexion");
+            alert.setHeaderText(null);
+            alert.setContentText("Adresse e-mail ou mot de passe incorrect.");
+            alert.showAndWait();
+        }
+    }
 
  // Méthode pour vérifier les identifiants
     public static Customer authenticate(String email, String password) {
@@ -152,27 +172,7 @@ public class AuthController {
         return null; // Authentification échouée
     }
     
-    public static void handleLogin(String email, String password) {
-    	Customer customer = authenticate(email, password);
-    		
-    	if (customer != null) {
-            Alert alert = new Alert(AlertType.INFORMATION);
-            alert.setTitle("Connexion réussie");
-            alert.setHeaderText(null);
-            alert.setContentText("Bienvenue " + customer.getFirstName()+" !");
-            alert.showAndWait();
-            
-         // Pass the authenticated customer to the application
-         //  AppController.setCurrentCustomer(customer);
-        } else {
-            Alert alert = new Alert(AlertType.ERROR);
-            alert.setTitle("Échec de la connexion");
-            alert.setHeaderText(null);
-            alert.setContentText("Adresse e-mail ou mot de passe incorrect.");
-            alert.showAndWait();
-        }
-    }
-    public void authenticateUser() {
+    public static void syncUserCart() {
     	Customer customer = MainView.getCurrentCustomer(); // Get the logged-in user
         if (customer != null) {
         	Cart userCart = customer.getCart();

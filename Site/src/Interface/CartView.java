@@ -21,6 +21,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import products.Produit;
@@ -29,7 +30,8 @@ public class CartView {
 	private TableView<CartItem> cartTable = new TableView<CartItem>();
     Cart cart = CartManager.getTempCart();
     private VBox root;
-    private Button continueButton;
+    private HBox buttonsBox;
+    private Button continueButton, orderButton;
 	
 	public CartView(MainView mainView, Stage primaryStage) {
 		continueButton = new Button("Continuer vos achats");
@@ -48,7 +50,7 @@ public class CartView {
 			AnchorPane.setTopAnchor(root, 116.0);
 		}
 		else {
-			displayCart();
+			displayCart(mainView, primaryStage);
 		}
 	    root.setPadding(new Insets(30));
 	    root.setPrefSize(1350, 550);
@@ -69,7 +71,7 @@ public class CartView {
 	    primaryStage.setScene(createAccountScene);
 	}
 	
-	public void displayCart() {
+	public void displayCart(MainView mainView, Stage primaryStage) {
 		if (cartTable.getColumns().isEmpty()) {
 			// Ajouter une colonne pour l'image
 	        TableColumn<CartItem, ImageView> imageColumn = new TableColumn<>("Image");
@@ -124,17 +126,22 @@ public class CartView {
 	    }
 		ObservableList<CartItem> observableItems = FXCollections.observableArrayList(cart.getItems());
 	    cartTable.setItems(observableItems);
-	    root = new VBox(20, cartTable, continueButton);
-		AnchorPane.setTopAnchor(root, 116.0);    
+	    orderButton = new Button("Commander");
+	    orderButton.setOnAction(e -> validateOrder(mainView, primaryStage));
+	    buttonsBox = new HBox(100, continueButton, orderButton);
+	    root = new VBox(30, cartTable, buttonsBox);
+		AnchorPane.setTopAnchor(root, 116.0);
 	}
 	
-	private void validateOrder() {
+	private void validateOrder(MainView mainView, Stage primaryStage) {
+		if (MainView.getCurrentCustomer()==null) {
+			new AuthController(mainView, primaryStage);
+		}
 	    Customer currentCustomer = MainView.getCurrentCustomer();
+	    AuthController.syncUserCart();
 		Order order = new Order(currentCustomer, currentCustomer.getCart().getItems());
 
-	    // Insert the order into the database (to be implemented)
 	    for (CartItem item : cart.getItems()) {
-	        // Decrement stock in the database
 	        order.decrementStock(item.getProduct().getId(), item.getSize(), item.getQuantity());
 	    }
 
