@@ -5,6 +5,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import customer.Cart;
+import customer.CartItem;
+import customer.CartManager;
+import customer.Customer;
 import database.DatabaseConnection;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -116,37 +120,73 @@ public class AuthController {
     }
 
  // Méthode pour vérifier les identifiants
-    public static boolean authenticate(String email, String password) {
-        String query = "SELECT Passwords FROM Customer WHERE Email = ?";
+    public static Customer authenticate(String email, String password) {
+        String query = "SELECT * FROM Customer WHERE Email = ?";
         
         try (Connection conn = DatabaseConnection.getConnection();
             PreparedStatement statement = conn.prepareStatement(query)) {       	
         	statement.setString(1, email); // Paramètre l'email dans la requête       	
         	ResultSet rs = statement.executeQuery();
                        
-            // Vérifie si un utilisateur existe avec cet e-mail
+        	// Check if a user exists with this email
             while (rs.next()) {
-                if (password.equals(rs.getString("Passwords")))  {            
-                return true;} // Authentification réussie
+            	String storedPassword = rs.getString("Passwords");
+                if (password.equals(storedPassword))  {
+                	 // Create and return a Customer object
+                    String firstName = rs.getString("FirstName");
+                    String lastName = rs.getString("LastName");
+                    String phoneNumber = rs.getString("PhoneNumber");
+                    String address = rs.getString("Address");
+                    String civilityString = rs.getString("Civility");
+                    String roleString = rs.getString("Role");
+                    
+                    // Map civility and role enums
+                    Customer.Civility civility = Customer.Civility.valueOf(civilityString);
+                    Customer.Role role = Customer.Role.valueOf(roleString);
+
+                    return new Customer(firstName, lastName, civility, email, phoneNumber, storedPassword, role, address);
+                }
             }
         } catch (SQLException e) {e.printStackTrace();}
         
-        return false; // Authentification échouée
+        return null; // Authentification échouée
     }
     
     public static void handleLogin(String email, String password) {
-        if (authenticate(email, password)) {
+    	Customer customer = authenticate(email, password);
+    		
+    	if (customer != null) {
             Alert alert = new Alert(AlertType.INFORMATION);
             alert.setTitle("Connexion réussie");
             alert.setHeaderText(null);
-            alert.setContentText("Bienvenue !");
+            alert.setContentText("Bienvenue " + customer.getFirstName()+" !");
             alert.showAndWait();
+            
+         // Pass the authenticated customer to the application
+         //  AppController.setCurrentCustomer(customer);
         } else {
             Alert alert = new Alert(AlertType.ERROR);
             alert.setTitle("Échec de la connexion");
             alert.setHeaderText(null);
             alert.setContentText("Adresse e-mail ou mot de passe incorrect.");
             alert.showAndWait();
+        }
+    }
+    public void authenticateUser() {
+    	Customer customer = MainView.getCurrentCustomer(); // Get the logged-in user
+        if (customer != null) {
+        	Cart userCart = customer.getCart();
+        	Cart tempCart = CartManager.getTempCart();
+
+        	// Merge the temporary cart into the user's cart
+        	for (CartItem tempItem : tempCart.getItems()) {
+        		userCart.addProduct(tempItem.getProduct(), tempItem.getSize(), tempItem.getQuantity());
+        	}
+
+        	// Clear the temporary cart
+        	CartManager.clearTempCart();
+        } else {
+        	System.out.println("No user is authenticated.");
         }
     }
 }

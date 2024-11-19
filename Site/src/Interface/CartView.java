@@ -1,21 +1,38 @@
 package Interface;
 
+import customer.Cart;
+import customer.CartItem;
+import customer.CartManager;
+import customer.Customer;
+import customer.Order;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import products.Produit;
 
 public class CartView {
+	private TableView<CartItem> cartTable = new TableView<CartItem>();
+    Cart cart = CartManager.getTempCart();
+    private VBox root;
+    private Button continueButton;
 	
 	public CartView(MainView mainView, Stage primaryStage) {
-		Label emptyCartLabel = new Label("Votre panier est vide");
-		Button continueButton = new Button("Continuer vos achats");
+		continueButton = new Button("Continuer vos achats");
 		continueButton.setOnAction(e -> mainView.showProductView(Produit.class));
+		if (cart == null || cart.getItems().isEmpty()) {
+			Label emptyCartLabel = new Label("Votre panier est vide");
 				
 		// Mise en page principale
         //VBox main = new VBox(emptyCartLabel, continueButton);
@@ -24,8 +41,12 @@ public class CartView {
         //main.setAlignment(Pos.CENTER);
         //main.setStyle("-fx-background-color: white");
 		
-		VBox root = new VBox(20, emptyCartLabel, continueButton);
-	    AnchorPane.setTopAnchor(root, 116.0);
+			root = new VBox(20, emptyCartLabel, continueButton);
+			AnchorPane.setTopAnchor(root, 116.0);
+		}
+		else {
+			displayCart();
+		}
 	    root.setPadding(new Insets(30));
 	    root.setPrefSize(1350, 550);
 	    root.setStyle("-fx-background-color: #EEEEEE");
@@ -43,6 +64,65 @@ public class CartView {
 	    createAccountScene.getStylesheets().add(css);
 	        
 	    primaryStage.setScene(createAccountScene);
+	}
+	
+
+	public void displayCart() {
+		if (cartTable.getColumns().isEmpty()) {
+	        TableColumn<CartItem, String> productColumn = new TableColumn<>("Produit");
+	        productColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getProduct().getNom()));
+
+	        TableColumn<CartItem, String> sizeColumn = new TableColumn<>("Taille");
+	        sizeColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getSize()));
+
+	        TableColumn<CartItem, Integer> quantityColumn = new TableColumn<>("Quantité");
+	        quantityColumn.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getQuantity()).asObject());
+	        
+	     // Créer une colonne pour le bouton d'action
+	        TableColumn<CartItem, Void> actionColumn = new TableColumn<>("Action");
+	        actionColumn.setCellFactory(param -> new TableCell<>() {
+	            private final Button deleteButton = new Button("Supprimer"); {
+	                deleteButton.setOnAction(event -> {	                    
+	                    CartItem cartItem = getTableView().getItems().get(getIndex()); // Récupérer l'article correspondant à cette ligne                    
+	                    cart.getItems().remove(cartItem); // Supprimer l'article du panier
+	                    getTableView().getItems().remove(cartItem); // Mettre à jour la TableView
+	                });
+	            }
+
+	            @Override
+	            protected void updateItem(Void item, boolean empty) {
+	                super.updateItem(item, empty);
+	                if (empty) {
+	                    setGraphic(null); // Pas de bouton pour les lignes vides
+	                } else {
+	                    setGraphic(deleteButton); // Afficher le bouton pour les lignes valides
+	                }
+	            }
+	        });	        
+	        
+	        cartTable.getColumns().add(productColumn);
+	        cartTable.getColumns().add(sizeColumn);
+	        cartTable.getColumns().add(quantityColumn);
+	        cartTable.getColumns().add(actionColumn);
+	    }
+		ObservableList<CartItem> observableItems = FXCollections.observableArrayList(cart.getItems());
+	    cartTable.setItems(observableItems);
+	    root = new VBox(20, cartTable, continueButton);
+		AnchorPane.setTopAnchor(root, 116.0);    
+	}
+	
+	private void validateOrder() {
+	    Customer currentCustomer = MainView.getCurrentCustomer();
+		Order order = new Order(currentCustomer, currentCustomer.getCart().getItems());
+
+	    // Insert the order into the database (to be implemented)
+	    for (CartItem item : cart.getItems()) {
+	        // Decrement stock in the database
+	        order.decrementStock(item.getProduct().getId(), item.getSize(), item.getQuantity());
+	    }
+
+	    cart.clearCart();
+	    //showMessage("Order validated!");
 	}
 
 }

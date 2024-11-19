@@ -21,18 +21,28 @@ public class Cart {
             }
         }
         items.add(new CartItem(product, size, quantity));
+        System.out.println(this.toString());
     }
 
     public void removeProduct(int productId, String size) {
         items.removeIf(ligne -> ligne.getProduct().getId() == productId && ligne.getSize().equals(size));
     }
 
-    public List<CartItem> getitems() {
+    public List<CartItem> getItems() {
         return items;
     }
 
     public void clearCart() {
         items.clear();
+    }
+    
+    @Override
+    public String toString() {
+    	String s = "";
+    	for (CartItem ligne : items) {
+    		s +=ligne.getProduct().getNom();
+    	}
+    	return s;
     }
 }
 

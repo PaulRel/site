@@ -1,8 +1,13 @@
 package customer;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
+import database.DatabaseConnection;
 
 public class Order {
 	private int orderId;
@@ -24,6 +29,19 @@ public class Order {
 
     public void deliverOrder() {
         this.status = "Delivered";
+    }
+    
+    public void decrementStock(int productId, String size, int quantity) {
+        String query = "UPDATE SizeStock SET qt_dispo = qt_dispo - ? WHERE Product_ID = ? AND size = ?";
+        try (Connection connection = DatabaseConnection.getConnection();
+        		PreparedStatement pstmt = connection.prepareStatement(query)) {
+            pstmt.setInt(1, quantity);
+            pstmt.setInt(2, productId);
+            pstmt.setString(3, size);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
 	public int getOrderId() {

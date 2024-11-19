@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import customer.Cart;
+import customer.CartManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -21,6 +22,9 @@ import products.Chaussures;
 import products.Produit;
 
 public class ProductDetailsView {
+	private int chosenQuantity;
+	Cart cart = CartManager.getTempCart();
+	
 	public ProductDetailsView(MainView mainView, Stage primaryStage, Produit produit) {
 		showProductDetails(mainView, primaryStage, produit);
 	}
@@ -44,7 +48,10 @@ public class ProductDetailsView {
         Label descriptionLabel = new Label(product.getDescription() + "\n Choisir la taille :");
         Label selectedQuantityLabel = new Label("Quantité souhaitée :  ");
         descriptionLabel.setStyle("-fx-font-weight: normal");
-        descriptionLabel.setWrapText(true);
+        descriptionLabel.setWrapText(true);        
+        
+        Button addToCartButton = new Button("Ajouter au panier");
+        addToCartButton.setDisable(true); // Le bouton est désactivé par défaut
         
      // ComboBox for the desired quantity
         ComboBox<Integer> quantityComboBox = new ComboBox<>();
@@ -75,6 +82,7 @@ public class ProductDetailsView {
 
             // Add a listener to the size selection ComboBox
             sizeChoiceBox.setOnAction(event -> {
+            	addToCartButton.setDisable(sizeChoiceBox.getValue() == null);
             	String selectedSize = sizeChoiceBox.getValue(); // e.g., "39 : Plus que 1 en stock"
 
                 // Extract the size and find the available quantity
@@ -94,13 +102,6 @@ public class ProductDetailsView {
                 }                
             });
         }
-        
-        // Integer chosenQuantity;
-        // Add a listener to the quantity selection ComboBox
-        quantityComboBox.setOnAction(event -> {
-            Integer chosenQuantity = quantityComboBox.getValue();
-            selectedQuantityLabel.setText("Selected quantity: " + chosenQuantity);
-        });
         	       
         ImageView imageView = new ImageView(new Image(getClass().getResource(product.getImagePath()).toExternalForm()));
         imageView.setFitHeight(400);
@@ -108,11 +109,13 @@ public class ProductDetailsView {
         
         Label addProductLabel = new Label();
         		
-        Button addToCartButton = new Button("Ajouter au panier");
         addToCartButton.setOnAction(e -> {
-        	 String selectedSize = sizeChoiceBox.getValue();
-        	 //Cart.addProduct(product, selectedSize, chosenQuantity);
-
+        	 String selectedSize = sizeChoiceBox.getValue().split(" :")[0];
+        	 chosenQuantity = quantityComboBox.getValue();
+        	 System.out.println("Size : "+ selectedSize);
+        	 System.out.println("Quantity : "+ chosenQuantity);
+        	 cart.addProduct(product, selectedSize, chosenQuantity);
+        	 
         	 addProductLabel.setText("Produit ajouté au panier!");
         });
         

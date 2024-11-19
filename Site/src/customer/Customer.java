@@ -11,6 +11,7 @@ public class Customer {
 	}
     private String firstName, lastName, email, phoneNumber, password, address;
     private Role role; private Civility civility;
+    private Cart cart;
 
     public Customer(String firstName, String lastName, Civility civility, String email, String phoneNumber, String password, Role role, String address) {
         this.firstName = firstName;
@@ -21,8 +22,15 @@ public class Customer {
         this.password = password;
         this.role = role;
         this.address = address;
-        
-        
+        this.cart = new Cart(); // Initialize with an empty cart       
+    }
+    
+    public Cart getCart() {
+        return cart;
+    }
+
+    public void setCart(Cart cart) {
+        this.cart = cart;
     }
 
 	public Civility getCivility() {

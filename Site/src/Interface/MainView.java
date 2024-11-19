@@ -3,6 +3,7 @@ package Interface;
 import java.io.IOException;
 import java.util.List;
 
+import customer.Customer;
 import database.ProduitDAO;
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -27,6 +28,7 @@ public class MainView extends Application {
 	private Stage primaryStage;
 	private HeaderView headerView;
 	private String css;
+	private static Customer currentCustomer;
 	
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -66,6 +68,14 @@ public class MainView extends Application {
     	Scene productScene = new Scene(root, 1350, 670);
     	productScene.getStylesheets().add(css);
     	primaryStage.setScene(productScene);          
+    }
+    
+    public static Customer getCurrentCustomer() {
+        return currentCustomer;
+    }
+
+    public static void setCurrentCustomer(Customer customer) {
+        currentCustomer = customer;
     }
 
 
