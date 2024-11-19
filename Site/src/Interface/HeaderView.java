@@ -52,8 +52,13 @@ public class HeaderView{
         
         // Gestion du clic pour afficher LoginPage
     	accountButton.setOnMouseClicked(event -> {
-    	    new AuthController(mainView, primaryStage);
-    	   });
+    		if (MainView.getCurrentCustomer()==null){
+    			new AuthController(mainView, primaryStage);
+    		}
+    		else {
+    			new AccountView(mainView, primaryStage);
+    		}
+    	});
     	
     	// Bouton du cart
         ImageView cartIcon = new ImageView(new Image(getClass().getResource("/Image/cartIcon.jpg").toExternalForm()));

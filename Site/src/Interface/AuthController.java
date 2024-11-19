@@ -9,6 +9,7 @@ import customer.Cart;
 import customer.CartItem;
 import customer.CartManager;
 import customer.Customer;
+import customer.Order;
 import database.DatabaseConnection;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -26,7 +27,7 @@ public class AuthController {
         mainLabel = new Label("Identifiez-vous ou créez un compte");
         
     	rootPane = new AnchorPane();
-        createBox(primaryStage);
+        createBox(mainView, primaryStage);
         
         Scene authScene = new Scene(rootPane, 1350, 670);
         
@@ -37,7 +38,7 @@ public class AuthController {
         primaryStage.setScene(authScene);
     }
 
-    private void createBox(Stage primaryStage) {        
+    private void createBox(MainView mainView, Stage primaryStage) {        
         // Section pour les clients existants (VBox gauche)
         VBox existingCustomerBox = new VBox(10);
         existingCustomerBox.setPrefSize(600, 400);
@@ -63,7 +64,11 @@ public class AuthController {
         	String password = passwordField.getText();
         
         	// Appelle la méthode d'authentification
-        	handleLogin(email, password);});
+        	handleLogin(email, password);
+        	if (MainView.getCurrentCustomer() != null) {
+        		new AccountView(mainView, primaryStage);
+        	}
+        });
         
         // Organisation des champs dans le VBox
         existingCustomerBox.getChildren().addAll(existingLabel, instructionLabel, emailField, passwordField, forgotPasswordLink, loginButton);
@@ -123,13 +128,21 @@ public class AuthController {
     	Customer customer = authenticate(email, password);
     	
     	if (customer != null) {
+    		MainView.setCurrentCustomer(customer);
+    		Cart cart = CartManager.getTempCart();
+    		if (cart!=null) {
+    			AuthController.syncUserCart();
+    			Order order = new Order(customer, customer.getCart().getItems());
+    			for (CartItem item : cart.getItems()) {
+    				order.decrementStock(item.getProduct().getId(), item.getSize(), item.getQuantity());
+    			}
+    			cart.clearCart();
+    		}
             Alert alert = new Alert(AlertType.INFORMATION);
             alert.setTitle("Connexion réussie");
             alert.setHeaderText(null);
             alert.setContentText("Bienvenue " + customer.getFirstName()+" !");
-            alert.showAndWait();
-            
-            MainView.setCurrentCustomer(customer);            
+            alert.showAndWait(); 
         } else {
             Alert alert = new Alert(AlertType.ERROR);
             alert.setTitle("Échec de la connexion");
@@ -162,7 +175,7 @@ public class AuthController {
                     
                     // Map civility and role enums
                     Customer.Civility civility = Customer.Civility.valueOf(civilityString);
-                    Customer.Role role = Customer.Role.valueOf(roleString);
+                    Customer.Role role = Customer.Role.valueOf(roleString.toUpperCase());
 
                     return new Customer(firstName, lastName, civility, email, phoneNumber, storedPassword, role, address);
                 }
