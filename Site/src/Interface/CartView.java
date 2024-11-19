@@ -6,6 +6,7 @@ import customer.CartManager;
 import customer.Customer;
 import customer.Order;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -17,6 +18,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -69,6 +72,21 @@ public class CartView {
 
 	public void displayCart() {
 		if (cartTable.getColumns().isEmpty()) {
+			// Ajouter une colonne pour l'image
+	        TableColumn<CartItem, ImageView> imageColumn = new TableColumn<>("Image");
+	        imageColumn.setCellValueFactory(cellData -> {
+	            // Charger l'image à partir du chemin de l'image
+	            String imagePath = cellData.getValue().getProduct().getImagePath();
+	            ImageView imageView = new ImageView(new Image(getClass().getResource(imagePath).toExternalForm()));
+
+	            // Configurer les dimensions de l'image (facultatif)
+	            imageView.setFitWidth(50); // Largeur de l'image
+	            imageView.setFitHeight(50); // Hauteur de l'image
+	            imageView.setPreserveRatio(true);
+
+	            return new SimpleObjectProperty<>(imageView);
+	        });
+	        
 	        TableColumn<CartItem, String> productColumn = new TableColumn<>("Produit");
 	        productColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getProduct().getNom()));
 
@@ -99,7 +117,7 @@ public class CartView {
 	                }
 	            }
 	        });	        
-	        
+	        cartTable.getColumns().add(imageColumn);
 	        cartTable.getColumns().add(productColumn);
 	        cartTable.getColumns().add(sizeColumn);
 	        cartTable.getColumns().add(quantityColumn);

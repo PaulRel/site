@@ -130,4 +130,8 @@
     -fx-pref-height: 50px;
 }
 
+.table-cell {
+    -fx-alignment: center; /* Centre horizontalement et verticalement */
+}
+
 
