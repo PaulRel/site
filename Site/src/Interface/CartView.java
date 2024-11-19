@@ -69,7 +69,6 @@ public class CartView {
 	    primaryStage.setScene(createAccountScene);
 	}
 	
-
 	public void displayCart() {
 		if (cartTable.getColumns().isEmpty()) {
 			// Ajouter une colonne pour l'image

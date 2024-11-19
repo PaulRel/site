@@ -2,7 +2,7 @@ package products;
 
 import java.util.HashMap;
 
-public class Chaussures extends Produit {
+public class Chaussures extends Produit implements ProductWithSize{
 
 	
 	private String genre, couleur, surface;
@@ -31,7 +31,8 @@ public class Chaussures extends Produit {
 	public void setCouleur(String couleur) {
 		this.couleur = couleur;
 	}
-
+	
+	@Override
 	public HashMap<String, Integer> getTailleStock() {
 		return tailleStock;
 	}

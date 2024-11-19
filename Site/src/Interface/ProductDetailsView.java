@@ -19,6 +19,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import products.Chaussures;
+import products.ProductWithSize;
 import products.Produit;
 
 public class ProductDetailsView {
@@ -62,14 +63,15 @@ public class ProductDetailsView {
         ComboBox<String> sizeChoiceBox = new ComboBox<>();
         
         // ComboBox pour afficher les tailles et quantités disponibles
-        if (product instanceof Chaussures) {
-        	Chaussures chaussure = (Chaussures) product;
-        	HashMap<String, Integer> sizesStock = chaussure.getTailleStock();
+        if (product instanceof ProductWithSize) {
+        	ProductWithSize productWithSize = (ProductWithSize) product;
+        	HashMap<String, Integer> sizesStock = productWithSize.getTailleStock();
         	System.out.println("Map " + sizesStock);
         	
         	 // Ajouter les éléments formatés dans la ComboBox
+        	sizeChoiceBox.getItems().clear();
             for (Map.Entry<String, Integer> entry : sizesStock.entrySet()) {
-                String taille = entry.getKey();
+                String size = entry.getKey();
                 int qtDispo = entry.getValue();
                 String texte;
                 if (qtDispo <= 5) {
@@ -77,7 +79,7 @@ public class ProductDetailsView {
                 } else {
                     texte = "Stock 5+";
                 }
-                sizeChoiceBox.getItems().add(taille + " : " + texte);
+                sizeChoiceBox.getItems().add(size + " : " + texte);
             }
 
             // Add a listener to the size selection ComboBox
