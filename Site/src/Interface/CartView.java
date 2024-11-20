@@ -149,7 +149,7 @@ public class CartView {
 			}
 			cart.clearCart();
 			Alert alert = new Alert(AlertType.INFORMATION);
-            alert.setTitle("Connexion réussie");
+            alert.setTitle("Commande");
             alert.setHeaderText(null);
             alert.setContentText("Commande validée");
             alert.showAndWait(); 

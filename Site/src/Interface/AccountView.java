@@ -7,13 +7,14 @@ import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+import products.Produit;
 
 public class AccountView {
 	private AnchorPane rootPane;
 
     public AccountView(MainView mainView, Stage primaryStage) {        
         rootPane = new AnchorPane();
-        createLeftMenu();
+        createLeftMenu(mainView);
         createMainSection();
         
         Scene accountScene = new Scene(rootPane, 1350, 670);
@@ -25,7 +26,7 @@ public class AccountView {
         primaryStage.setScene(accountScene);
     }
     
-    public void createLeftMenu() {
+    public void createLeftMenu(MainView mainView) {
 
         // Menu de gauche
         VBox menuBox = new VBox(15);
@@ -43,6 +44,10 @@ public class AccountView {
         Label userNameLabel = new Label("Bonjour,\n" + MainView.getCurrentCustomer().getFirstName() + " " + MainView.getCurrentCustomer().getLastName());
         userNameLabel.setStyle("-fx-font-weight: bold; -fx-text-align: center;");   
         Button logoutButton = new Button("Déconnexion");
+        logoutButton.setOnAction(e -> {
+        	MainView.setCurrentCustomer(null);
+        	mainView.showProductView(Produit.class);
+        });
         //logoutButton.setStyle("-fx-background-color: #FFFFFF; -fx-border-color: #000; -fx-padding: 5 10;");
         userBox.getChildren().addAll(profileIcon, userNameLabel, logoutButton);
 

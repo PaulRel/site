@@ -44,6 +44,7 @@ public class ProductView {
        produitsGrid.setPadding(new Insets(10));
        produitsGrid.setHgap(10);
        produitsGrid.setVgap(10);
+       produitsGrid.setPrefWrapLength(primaryStage.getWidth()-300);
        ProduitDAO produitDAO = new ProduitDAO();  // Récupérer les produits depuis la base de données
        List<Produit> produits = produitDAO.getAllProduits();
        
