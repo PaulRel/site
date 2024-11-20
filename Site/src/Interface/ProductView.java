@@ -11,6 +11,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import products.Produit;
@@ -21,13 +22,14 @@ public class ProductView {
 	
 	public ProductView(MainView mainView, Stage primaryStage, Class<? extends Produit> typeProduit) {
 		root = new AnchorPane();
-		VBox sectionProduits = new VBox();
+		HBox sectionProduits = new HBox();
+		sectionProduits.setPadding(new Insets(10, 20, 10, 20)); // Espace  Haut, Droite>, Bas, Gauche<  de l'AnchorPane
+		sectionProduits.setSpacing(50); // Espacement entre filtre et grid
 		sectionProduits.getChildren().clear();
-        sectionProduits.getChildren().add(displayProducts(mainView, primaryStage, typeProduit));
+        sectionProduits.getChildren().addAll(createFilterBox(), displayProducts(mainView, primaryStage, typeProduit));
         
         AnchorPane.setTopAnchor(sectionProduits, 150.0);
         AnchorPane.setLeftAnchor(sectionProduits, 10.0);
-        AnchorPane.setRightAnchor(sectionProduits, 200.0); // Ajuster la largeur du côté droit pour les filtres
         root.getChildren().add(sectionProduits);
 	}
 	
@@ -39,10 +41,9 @@ public class ProductView {
     */
    public ScrollPane displayProducts(MainView mainView, Stage primaryStage, Class<? extends Produit> typeProduit) {
        FlowPane produitsGrid = new FlowPane();
-       produitsGrid.setPadding(new Insets(10, 10, 10, 10));
+       produitsGrid.setPadding(new Insets(10));
        produitsGrid.setHgap(10);
        produitsGrid.setVgap(10);
-       produitsGrid.setPrefWrapLength(primaryStage.getWidth()); // Ajuste automatiquement avec la largeur
        ProduitDAO produitDAO = new ProduitDAO();  // Récupérer les produits depuis la base de données
        List<Produit> produits = produitDAO.getAllProduits();
        
@@ -54,18 +55,14 @@ public class ProductView {
        	produitsGrid.getChildren().add(produitBox);
        });
        	
-    // Ecouteur pour ajuster la largeur de wrap en fonction de la taille de la fenêtre
+       // Ecouteur pour ajuster automatiquement avec la largeur de la fenêtre
        primaryStage.widthProperty().addListener((observable, oldValue, newValue) -> {
-           produitsGrid.setPrefWrapLength(newValue.doubleValue());
+           produitsGrid.setPrefWrapLength(newValue.doubleValue()-300);
        });
        
-    // Encapsuler le FlowPane dans un ScrollPane
-       ScrollPane scrollPane = new ScrollPane(produitsGrid);
-       scrollPane.setFitToWidth(true); // Adapter la largeur du contenu à celle de la fenêtre
-       scrollPane.setPannable(true);   // Activer le défilement pour une expérience fluide
-       scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS); // Toujours afficher la barre de défilement verticale
+       // Encapsuler le FlowPane dans un ScrollPane
+       ScrollPane scrollPane = MainView.createScrollPane(produitsGrid);
        scrollPane.setPrefViewportHeight(510);
-       //scrollPane.getStyleClass().add("scroll-pane-style"); // Appliquer une classe CSS
        return scrollPane;
    }   
    
@@ -100,11 +97,9 @@ public class ProductView {
    /**
     * Crée une boîte latérale contenant des filtres de produits.
     */
-   private void createFilterBox() {
+   private VBox createFilterBox() {
        VBox filtreBox = new VBox();
-       AnchorPane.setTopAnchor(filtreBox, 150.0);
-       AnchorPane.setRightAnchor(filtreBox, 10.0);
-       
+
        // Ajout des filtres de taille et de sexe
        Label filtreTaille = new Label("Tailles");
        CheckBox tailleS = new CheckBox("Taille S");
@@ -117,21 +112,8 @@ public class ProductView {
        CheckBox SexeFemme = new CheckBox("Femmes");
        CheckBox Enfant = new CheckBox("Enfants");
        filtreBox.getChildren().addAll(filtreSexe, SexeHomme, SexeFemme, Enfant);
-       
-      // Vider les produits existants et ajouter la nouvelle section
-       //root.getChildren().clear();
-       root.getChildren().add(filtreBox);
-   }
-   
-   /**
-    * Crée un conteneur défilant (ScrollPane) pour la mise en page principale, permettant le défilement du contenu.
-    */
-   public void createScrollPane() {
-       ScrollPane scrollPane = new ScrollPane(root);
-       scrollPane.setFitToWidth(true); // Le contenu s'adapte à la largeur de la fenêtre
-       scrollPane.setPannable(true);   // Permet le défilement via la souris
-       scrollPane.getStyleClass().add("scroll-pane-style"); // Appliquer une classe CSS (facultatif)
-       scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+
+       return filtreBox;
    }
 
 public AnchorPane getRoot() {

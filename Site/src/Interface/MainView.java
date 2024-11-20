@@ -1,27 +1,15 @@
 package Interface;
 
 import java.io.IOException;
-import java.util.List;
-
 import customer.Customer;
-import database.ProduitDAO;
 import javafx.application.Application;
-import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import products.Chaussures;
 import products.Produit;
-import products.Vetement;
 
 public class MainView extends Application {
 
@@ -76,6 +64,18 @@ public class MainView extends Application {
 
     public static void setCurrentCustomer(Customer customer) {
         currentCustomer = customer;
+    }
+    
+    /**
+     * Crée un conteneur défilant (ScrollPane) pour la mise en page principale, permettant le défilement du contenu.
+     */
+    public static ScrollPane createScrollPane(Pane root) {
+        ScrollPane scrollPane = new ScrollPane(root);
+        scrollPane.setFitToWidth(true); // Le contenu s'adapte à la largeur de la fenêtre
+        scrollPane.setPannable(true);   // Permet le défilement via la souris
+        //scrollPane.getStyleClass().add("scroll-pane-style"); // Appliquer une classe CSS (facultatif)
+        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);  // Toujours afficher la barre de défilement verticale
+        return scrollPane;
     }
 
 

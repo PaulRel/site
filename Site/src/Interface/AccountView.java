@@ -56,7 +56,7 @@ public class AccountView {
         // Appliquer un style aux boutons
         for (Button button : new Button[]{dashboardButton, accountInfoButton, addressBookButton, ordersButton, paymentMethodsButton}) {
          //   button.setStyle("-fx-background-color: transparent; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 10;");
-        	  button.setPrefWidth(250.0);
+        	  button.setPrefWidth(220.0);
         }
 
         menuBox.getChildren().addAll(userBox, dashboardButton, accountInfoButton, addressBookButton, ordersButton, paymentMethodsButton);
@@ -67,7 +67,8 @@ public class AccountView {
     public void createMainSection() {
         VBox mainContent = new VBox(15);
         AnchorPane.setTopAnchor(mainContent, 116.0);
-        mainContent.setMaxSize(1000, 500);
+        mainContent.setMaxSize(900, 660);
+        mainContent.setSpacing(10);
         mainContent.setPadding(new Insets(20));
         mainContent.setStyle("-fx-background-color: #FFFFFF;");
 
@@ -78,6 +79,8 @@ public class AccountView {
 
         // Table des commandes récentes
         TableView<String> ordersTable = new TableView<>();
+        ordersTable.setMinHeight(200);
+        ordersTable.setMaxHeight(300);
         ordersTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         TableColumn<String, String> orderNumberCol = new TableColumn<>("Commande n°");
