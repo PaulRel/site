@@ -7,6 +7,7 @@ import customer.CartItem;
 import customer.CartManager;
 import customer.Customer;
 import customer.Order;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -106,6 +107,9 @@ public class CartView {
 	        TableColumn<CartItem, Integer> quantityColumn = new TableColumn<>("Quantité");
 	        quantityColumn.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getQuantity()).asObject());
 	        
+	        TableColumn<CartItem, Double> priceColumn = new TableColumn<>("Prix à l'unite");
+	        priceColumn.setCellValueFactory(cellData -> new SimpleDoubleProperty(cellData.getValue().getProduct().getPrice()).asObject());
+	        
 	     // Créer une colonne pour le bouton d'action
 	        TableColumn<CartItem, Void> actionColumn = new TableColumn<>("Action");
 	        actionColumn.setCellFactory(param -> new TableCell<>() {
@@ -114,6 +118,9 @@ public class CartView {
 	                    CartItem cartItem = getTableView().getItems().get(getIndex()); // Récupérer l'article correspondant à cette ligne                    
 	                    cart.getItems().remove(cartItem); // Supprimer l'article du panier
 	                    getTableView().getItems().remove(cartItem); // Mettre à jour la TableView
+	                    if (cart.getItems().isEmpty()) {
+	            			new CartView(mainView, primaryStage);
+	                    }
 	                });
 	            }
 
@@ -130,6 +137,7 @@ public class CartView {
 	        cartTable.getColumns().add(imageColumn);
 	        cartTable.getColumns().add(productColumn);
 	        cartTable.getColumns().add(sizeColumn);
+	        cartTable.getColumns().add(priceColumn);
 	        cartTable.getColumns().add(quantityColumn);
 	        cartTable.getColumns().add(actionColumn);
 	    }
