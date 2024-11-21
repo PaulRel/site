@@ -15,29 +15,28 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.*;
-import javafx.stage.Stage;
 
 public class AuthController {
     private AnchorPane rootPane;
     private Label mainLabel;
 
-    public AuthController(MainView mainView, Stage primaryStage) {
+    public AuthController(MainView mainView) {
     	// Création des labels principaux
         mainLabel = new Label("Identifiez-vous ou créez un compte");
         
     	rootPane = new AnchorPane();
-        createBox(mainView, primaryStage);
+        createBox(mainView);
         
         Scene authScene = new Scene(rootPane, 1350, 670);
         
-        HeaderView v=new HeaderView(mainView, primaryStage);      
+        HeaderView v=new HeaderView(mainView);      
         rootPane.getChildren().addAll(v.getHeader());
         String css = this.getClass().getResource("/style.css").toExternalForm();        
         authScene.getStylesheets().add(css);
-        primaryStage.setScene(authScene);
+        mainView.getPrimaryStage().setScene(authScene);
     }
 
-    private void createBox(MainView mainView, Stage primaryStage) {        
+    private void createBox(MainView mainView) {        
         // Section pour les clients existants (VBox gauche)
         VBox existingCustomerBox = new VBox(10);
         existingCustomerBox.setPrefSize(600, 400);
@@ -65,7 +64,7 @@ public class AuthController {
         	// Appelle la méthode d'authentification
         	handleLogin(email, password);
         	if (MainView.getCurrentCustomer() != null) {
-        		new AccountView(mainView, primaryStage);
+        		new AccountView(mainView);
         	}
         });
         
@@ -86,7 +85,7 @@ public class AuthController {
         Button createAccountButton = new Button("CRÉER UN COMPTE");
         
     	createAccountButton.setOnMouseClicked(event -> {
-    	    new SignUpController(primaryStage);
+    	    new SignUpController(mainView);
     	   });	
         
         newCustomerBox.getChildren().addAll(newCustomerLabel, newCustomerInfo, createAccountButton);
@@ -108,11 +107,11 @@ public class AuthController {
         root.setPrefSize(1350, 670);
         root.setStyle("-fx-background-color: #EEEEEE");
         
-        primaryStage.widthProperty().addListener((observable, oldValue, newValue) -> {
+        mainView.getPrimaryStage().widthProperty().addListener((observable, oldValue, newValue) -> {
             root.setPrefWidth(newValue.doubleValue()); // Ajuste la largeur
         });
 
-        primaryStage.heightProperty().addListener((observable, oldValue, newValue) -> {
+        mainView.getPrimaryStage().heightProperty().addListener((observable, oldValue, newValue) -> {
             root.setPrefHeight(newValue.doubleValue()); // Ajuste la hauteur
         });
         

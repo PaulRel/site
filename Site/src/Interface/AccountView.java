@@ -6,24 +6,23 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
-import javafx.stage.Stage;
 import products.Produit;
 
 public class AccountView {
 	private AnchorPane rootPane;
 
-    public AccountView(MainView mainView, Stage primaryStage) {        
+    public AccountView(MainView mainView) {        
         rootPane = new AnchorPane();
         createLeftMenu(mainView);
         createMainSection();
         
         Scene accountScene = new Scene(rootPane, 1350, 670);
         
-        HeaderView v=new HeaderView(mainView, primaryStage);      
+        HeaderView v = new HeaderView(mainView);      
         rootPane.getChildren().addAll(v.getHeader());
         String css = this.getClass().getResource("/style.css").toExternalForm();        
         accountScene.getStylesheets().add(css);
-        primaryStage.setScene(accountScene);
+        mainView.getPrimaryStage().setScene(accountScene);
     }
     
     public void createLeftMenu(MainView mainView) {

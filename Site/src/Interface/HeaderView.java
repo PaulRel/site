@@ -12,7 +12,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import products.Chaussures;
 import products.Produit;
 import products.Sac;
@@ -21,11 +20,11 @@ import products.Vetement;
 public class HeaderView{
     private VBox header;
 
-    public HeaderView(MainView mainView, Stage primaryStage){
-        createHeader(mainView, primaryStage);
+    public HeaderView(MainView mainView){
+        createHeader(mainView);
     }
 
-    private void createHeader(MainView mainView, Stage primaryStage) {   	
+    private void createHeader(MainView mainView) {   	
     	HBox topBar = new HBox();
         topBar.setPrefHeight(50);
 
@@ -53,10 +52,10 @@ public class HeaderView{
         // Gestion du clic pour afficher LoginPage
     	accountButton.setOnMouseClicked(event -> {
     		if (MainView.getCurrentCustomer()==null){
-    			new AuthController(mainView, primaryStage);
+    			new AuthController(mainView);
     		}
     		else {
-    			new AccountView(mainView, primaryStage);
+    			new AccountView(mainView);
     		}
     	});
     	
@@ -69,7 +68,7 @@ public class HeaderView{
         cartButton.setStyle("-fx-background-color: transparent;");
         
         // Gestion du clic pour afficher CartPage
-    	cartButton.setOnMouseClicked(event -> new CartView(mainView, primaryStage));
+    	cartButton.setOnMouseClicked(event -> new CartView(mainView));
                           
         // Barre de menu
     	MenuBar menuBar = new MenuBar();
@@ -94,7 +93,7 @@ public class HeaderView{
         menuBar.getMenus().addAll(menuVetements, menuSacs, menuChaussures);
         
         // Ecouteur pour ajuster la largeur de wrap en fonction de la taille de la fenêtre
-        primaryStage.widthProperty().addListener((observable, oldValue, newValue) -> {
+        mainView.getPrimaryStage().widthProperty().addListener((observable, oldValue, newValue) -> {
             header.setPrefWidth(newValue.doubleValue()-20);
         });
 
@@ -103,7 +102,7 @@ public class HeaderView{
 
         topBar.getChildren().addAll(logo, shopName, spacer, accountButton, cartButton);
         header.getChildren().addAll(topBar, menuBar);
-        header.setPrefWidth(primaryStage.getWidth() - 20);
+        header.setPrefWidth(mainView.getPrimaryStage().getWidth() - 20);
         
         AnchorPane.setTopAnchor(header, 10.0);
         AnchorPane.setLeftAnchor(header, 10.0);

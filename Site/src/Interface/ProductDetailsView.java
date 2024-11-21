@@ -17,7 +17,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import products.ProductWithSize;
 import products.Produit;
 
@@ -25,8 +24,8 @@ public class ProductDetailsView {
 	private int chosenQuantity;
 	Cart cart = CartManager.getTempCart();
 	
-	public ProductDetailsView(MainView mainView, Stage primaryStage, Produit produit) {
-		showProductDetails(mainView, primaryStage, produit);
+	public ProductDetailsView(MainView mainView, Produit produit) {
+		showProductDetails(mainView, produit);
 	}
 	/**
      * Affiche les détails d'un produit spécifique dans une nouvelle scène.
@@ -34,7 +33,7 @@ public class ProductDetailsView {
      * @param primaryStage La scène principale de l'application.
      * @param produit      Le produit dont les détails sont à afficher.
      */
-    public void showProductDetails(MainView mainView, Stage primaryStage, Produit product) {
+    public void showProductDetails(MainView mainView, Produit product) {
         // Création d'un nouveau conteneur pour les détails du produit
         HBox detailsBox = new HBox();
         detailsBox.setPadding(new Insets(20));
@@ -126,13 +125,13 @@ public class ProductDetailsView {
         // Ajouter les éléments à la boîte de détails
         detailsBox.getChildren().addAll(imageView, descriptionBox);
         
-        HeaderView v=new HeaderView(mainView, primaryStage);
+        HeaderView v=new HeaderView(mainView);
         AnchorPane rootPane = new AnchorPane();
         rootPane.getChildren().addAll(v.getHeader(), detailsBox);
         
         // Nouvelle scène pour les détails
         Scene detailScene = new Scene(rootPane, 1350, 670);
         detailScene.getStylesheets().add(this.getClass().getResource("/style.css").toExternalForm());
-        primaryStage.setScene(detailScene);
+        mainView.getPrimaryStage().setScene(detailScene);
     }
 }

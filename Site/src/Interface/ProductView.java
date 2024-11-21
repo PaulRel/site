@@ -13,20 +13,19 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import products.Produit;
 
 public class ProductView {
 	
 	private AnchorPane root;
 	
-	public ProductView(MainView mainView, Stage primaryStage, Class<? extends Produit> typeProduit) {
+	public ProductView(MainView mainView, Class<? extends Produit> typeProduit) {
 		root = new AnchorPane();
 		HBox sectionProduits = new HBox();
 		sectionProduits.setPadding(new Insets(10, 20, 10, 20)); // Espace  Haut, Droite>, Bas, Gauche<  de l'AnchorPane
 		sectionProduits.setSpacing(50); // Espacement entre filtre et grid
 		sectionProduits.getChildren().clear();
-        sectionProduits.getChildren().addAll(createFilterBox(), displayProducts(mainView, primaryStage, typeProduit));
+        sectionProduits.getChildren().addAll(createFilterBox(), displayProducts(mainView, typeProduit));
         
         AnchorPane.setTopAnchor(sectionProduits, 150.0);
         AnchorPane.setLeftAnchor(sectionProduits, 10.0);
@@ -39,12 +38,12 @@ public class ProductView {
     * @param primaryStage La scène principale de l'application.
     * @return Le GridPane contenant tous les produits.
     */
-   public ScrollPane displayProducts(MainView mainView, Stage primaryStage, Class<? extends Produit> typeProduit) {
+   public ScrollPane displayProducts(MainView mainView, Class<? extends Produit> typeProduit) {
        FlowPane produitsGrid = new FlowPane();
        produitsGrid.setPadding(new Insets(10));
        produitsGrid.setHgap(10);
        produitsGrid.setVgap(10);
-       produitsGrid.setPrefWrapLength(primaryStage.getWidth()-300);
+       produitsGrid.setPrefWrapLength(mainView.getPrimaryStage().getWidth()-300);
        ProduitDAO produitDAO = new ProduitDAO();  // Récupérer les produits depuis la base de données
        List<Produit> produits = produitDAO.getAllProduits();
        
@@ -52,12 +51,12 @@ public class ProductView {
        .filter(typeProduit::isInstance) // Filtrer les produits par type
        .forEach(produit -> {
        	// TESTS :  System.out.println(typeProduit); System.out.println("Nom de la classe : " + produit.getClass().getSimpleName());
-       	VBox produitBox = createProductBox(mainView, primaryStage, produit);
+       	VBox produitBox = createProductBox(mainView, produit);
        	produitsGrid.getChildren().add(produitBox);
        });
        	
        // Ecouteur pour ajuster automatiquement avec la largeur de la fenêtre
-       primaryStage.widthProperty().addListener((observable, oldValue, newValue) -> {
+       mainView.getPrimaryStage().widthProperty().addListener((observable, oldValue, newValue) -> {
            produitsGrid.setPrefWrapLength(newValue.doubleValue()-300);
        });
        
@@ -74,7 +73,7 @@ public class ProductView {
     * @param produit      Le produit à afficher.
     * @return Un VBox contenant l'image, le nom et le prix du produit.
     */
-   private VBox createProductBox(MainView mainView, Stage primaryStage, Produit produit) {
+   private VBox createProductBox(MainView mainView, Produit produit) {
    	// Création des composants pour chaque produit
        ImageView imageView = new ImageView(new Image(getClass().getResource(produit.getImagePath()).toExternalForm()));
        imageView.setFitHeight(150);
@@ -90,7 +89,7 @@ public class ProductView {
        produitBox.getChildren().addAll(imageView, nomProduit, prixProduit);
        
        // Gestion du clic sur le produit pour afficher les détails
-       produitBox.setOnMouseClicked(event -> new ProductDetailsView(mainView, primaryStage, produit));
+       produitBox.setOnMouseClicked(event -> new ProductDetailsView(mainView, produit));
        
        return produitBox;
     }

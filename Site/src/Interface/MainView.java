@@ -24,7 +24,7 @@ public class MainView extends Application {
     	css = this.getClass().getResource("/style.css").toExternalForm();
     	//root = new AnchorPane();
     	
-       	headerView = new HeaderView(this, primaryStage); //utile ?
+       	headerView = new HeaderView(this); //utile ?
         
         showProductView(Produit.class);
         //createScrollPane();
@@ -50,7 +50,7 @@ public class MainView extends Application {
      * Crée et place la section de produits au centre de l'interface utilisateur.
      */
     public void showProductView(Class<? extends Produit> typeProduit) {
-    	ProductView productSection = new ProductView(this, primaryStage, typeProduit);
+    	ProductView productSection = new ProductView(this, typeProduit);
     	AnchorPane root = productSection.getRoot();
     	root.getChildren().add(headerView.getHeader()); // Ajouter l'en-tête
     	Scene productScene = new Scene(root, 1350, 670);
@@ -82,6 +82,10 @@ public class MainView extends Application {
     public static void main(String[] args) {
         launch(args);
     }
+
+	public Stage getPrimaryStage() {
+		return primaryStage;
+	}
 
 		/**
 	     * Crée l'en-tête de l'application, qui inclut le nom du magasin, l'icône du compte et la barre de navigation.

@@ -30,7 +30,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import products.Produit;
 
 public class CartView {
@@ -40,7 +39,7 @@ public class CartView {
     private HBox buttonsBox;
     private Button continueButton, orderButton;
 	
-	public CartView(MainView mainView, Stage primaryStage) {
+	public CartView(MainView mainView) {
 		continueButton = new Button("Continuer vos achats");
 		continueButton.setOnAction(e -> mainView.showProductView(Produit.class));
 		if (MainView.getCurrentCustomer() != null) {cart = MainView.getCurrentCustomer().getCart();}
@@ -58,17 +57,17 @@ public class CartView {
 			AnchorPane.setTopAnchor(root, 116.0);
 		}
 		else {
-			displayCart(mainView, primaryStage);
+			displayCart(mainView);
 		}
 	    root.setPadding(new Insets(30));
 	    root.setPrefSize(1350, 550);
 	    root.setStyle("-fx-background-color: #EEEEEE");
 	    root.setAlignment(Pos.TOP_CENTER);
-	    primaryStage.widthProperty().addListener((observable, oldValue, newValue) -> {root.setPrefWidth(newValue.doubleValue());}); // Ajuste la largeur
-	    primaryStage.heightProperty().addListener((observable, oldValue, newValue) -> {root.setPrefHeight(newValue.doubleValue()-116);}); // Ajuste la hauteur
+	    mainView.getPrimaryStage().widthProperty().addListener((observable, oldValue, newValue) -> {root.setPrefWidth(newValue.doubleValue());}); // Ajuste la largeur
+	    mainView.getPrimaryStage().heightProperty().addListener((observable, oldValue, newValue) -> {root.setPrefHeight(newValue.doubleValue()-116);}); // Ajuste la hauteur
 	    
 	    AnchorPane rootPane = new AnchorPane();
-	    HeaderView v = new HeaderView(mainView, primaryStage);
+	    HeaderView v = new HeaderView(mainView);
 	    rootPane.getChildren().addAll(v.getHeader(), root);
 	    
 	    Scene createAccountScene = new Scene(rootPane, 1350, 670);
@@ -76,10 +75,10 @@ public class CartView {
 	    String css = this.getClass().getResource("/style.css").toExternalForm();
 	    createAccountScene.getStylesheets().add(css);
 	        
-	    primaryStage.setScene(createAccountScene);
+	    mainView.getPrimaryStage().setScene(createAccountScene);
 	}
 	
-	public void displayCart(MainView mainView, Stage primaryStage) {
+	public void displayCart(MainView mainView) {
 		
 		if (cartTable.getColumns().isEmpty()) {
 			
@@ -119,7 +118,7 @@ public class CartView {
 	                    cart.getItems().remove(cartItem); // Supprimer l'article du panier
 	                    getTableView().getItems().remove(cartItem); // Mettre à jour la TableView
 	                    if (cart.getItems().isEmpty()) {
-	            			new CartView(mainView, primaryStage);
+	            			new CartView(mainView);
 	                    }
 	                });
 	            }
@@ -145,15 +144,15 @@ public class CartView {
 		ObservableList<CartItem> observableItems = FXCollections.observableArrayList(cart.getItems());
 	    cartTable.setItems(observableItems);
 	    orderButton = new Button("Commander");
-	    orderButton.setOnAction(e -> validateOrder(mainView, primaryStage));
+	    orderButton.setOnAction(e -> validateOrder(mainView));
 	    buttonsBox = new HBox(100, continueButton, orderButton);
 	    root = new VBox(30, cartTable, buttonsBox);
 		AnchorPane.setTopAnchor(root, 116.0);
 	}
 	
-	private void validateOrder(MainView mainView, Stage primaryStage) {
+	private void validateOrder(MainView mainView) {
 		if (MainView.getCurrentCustomer()==null) {
-			displayLoginWarning(mainView, primaryStage);
+			displayLoginWarning(mainView);
 		}
 		else {
 			Customer currentCustomer = MainView.getCurrentCustomer();
@@ -172,7 +171,7 @@ public class CartView {
 		}
 	}
 	
-	public void displayLoginWarning(MainView mainView, Stage primaryStage) {
+	public void displayLoginWarning(MainView mainView) {
 		Alert alert = new Alert(Alert.AlertType.WARNING);
 		alert.setTitle("Authentification requise");
 		alert.setHeaderText("Vous n'êtes pas connecté");
@@ -186,7 +185,7 @@ public class CartView {
 
 		Optional<ButtonType> result = alert.showAndWait();
 		if (result.isPresent() && result.get() == loginButton) {
-			new AuthController(mainView, primaryStage);
+			new AuthController(mainView);
 		}
 
 	}

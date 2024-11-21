@@ -22,10 +22,9 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 
 public class SignUpController {
-	public SignUpController(Stage primaryStage) {
+	public SignUpController(MainView mainView) {
 		Label mainLabel = new Label("Créer un compte");
 
      // Champ civilité
@@ -149,10 +148,10 @@ public class SignUpController {
         root.setPrefSize(1350, 550);
         root.setStyle("-fx-background-color: #EEEEEE");
         root.setAlignment(Pos.CENTER);
-        primaryStage.widthProperty().addListener((observable, oldValue, newValue) -> {
+        mainView.getPrimaryStage().widthProperty().addListener((observable, oldValue, newValue) -> {
             root.setPrefWidth(newValue.doubleValue()); // Ajuste la largeur
         });       
-        primaryStage.heightProperty().addListener((observable, oldValue, newValue) -> {
+        mainView.getPrimaryStage().heightProperty().addListener((observable, oldValue, newValue) -> {
             root.setPrefHeight(newValue.doubleValue()-116); // Ajuste la hauteur
         });
 
@@ -166,7 +165,7 @@ public class SignUpController {
         String css = this.getClass().getResource("/style.css").toExternalForm();        
         createAccountScene.getStylesheets().add(css);
         
-        primaryStage.setScene(createAccountScene);
+        mainView.getPrimaryStage().setScene(createAccountScene);
 	}
 	
 	public void handleSignUp(Customer customer) {
