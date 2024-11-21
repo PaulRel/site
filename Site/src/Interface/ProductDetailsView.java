@@ -78,7 +78,7 @@ public class ProductDetailsView {
                     texte = "Plus que " + qtDispo + " en stock";
                 } else {
                     texte = "Stock 5+";
-                }
+                }	
                 sizeChoiceBox.getItems().add(size + " : " + texte);
             }
 
@@ -116,6 +116,7 @@ public class ProductDetailsView {
         	 chosenQuantity = quantityComboBox.getValue();
         	 System.out.println("Size : "+ selectedSize);
         	 System.out.println("Quantity : "+ chosenQuantity);
+        	 if (MainView.getCurrentCustomer() != null) {cart = MainView.getCurrentCustomer().getCart();}
         	 cart.addProduct(product, selectedSize, chosenQuantity);
         	 
         	 addProductLabel.setText("Produit ajouté au panier!");
