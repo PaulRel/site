@@ -32,7 +32,7 @@ public class Order {
     }
     
     public void decrementStock(int productId, String size, int quantity) {
-        String query = "UPDATE SizeStock SET qt_dispo = qt_dispo - ? WHERE Product_ID = ? AND size = ?";
+        String query = "UPDATE taillestock SET qt_dispo = qt_dispo - ? WHERE produit_id = ? AND taille = ?";
         try (Connection connection = DatabaseConnection.getConnection();
         		PreparedStatement pstmt = connection.prepareStatement(query)) {
             pstmt.setInt(1, quantity);

@@ -132,11 +132,6 @@ public class AuthController {
     		Cart cart = CartManager.getTempCart();
     		if (cart!=null) {
     			AuthController.syncUserCart();
-    			Order order = new Order(customer, customer.getCart().getItems());
-    			for (CartItem item : cart.getItems()) {
-    				order.decrementStock(item.getProduct().getId(), item.getSize(), item.getQuantity());
-    			}
-    			cart.clearCart();
     		}
             Alert alert = new Alert(AlertType.INFORMATION);
             alert.setTitle("Connexion réussie");

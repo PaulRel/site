@@ -1,5 +1,7 @@
 package Interface;
 
+import java.util.Optional;
+
 import customer.Cart;
 import customer.CartItem;
 import customer.CartManager;
@@ -15,6 +17,8 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -38,6 +42,7 @@ public class CartView {
 	public CartView(MainView mainView, Stage primaryStage) {
 		continueButton = new Button("Continuer vos achats");
 		continueButton.setOnAction(e -> mainView.showProductView(Produit.class));
+		if (MainView.getCurrentCustomer() != null) {cart = MainView.getCurrentCustomer().getCart();}
 		if (cart == null || cart.getItems().isEmpty()) {
 			Label emptyCartLabel = new Label("Votre panier est vide");
 				
@@ -74,7 +79,9 @@ public class CartView {
 	}
 	
 	public void displayCart(MainView mainView, Stage primaryStage) {
+		
 		if (cartTable.getColumns().isEmpty()) {
+			
 			// Ajouter une colonne pour l'image
 	        TableColumn<CartItem, ImageView> imageColumn = new TableColumn<>("Image");
 	        imageColumn.setCellValueFactory(cellData -> {
@@ -126,6 +133,7 @@ public class CartView {
 	        cartTable.getColumns().add(quantityColumn);
 	        cartTable.getColumns().add(actionColumn);
 	    }
+	
 		ObservableList<CartItem> observableItems = FXCollections.observableArrayList(cart.getItems());
 	    cartTable.setItems(observableItems);
 	    orderButton = new Button("Commander");
@@ -137,7 +145,7 @@ public class CartView {
 	
 	private void validateOrder(MainView mainView, Stage primaryStage) {
 		if (MainView.getCurrentCustomer()==null) {
-			new AuthController(mainView, primaryStage);
+			displayLoginWarning(mainView, primaryStage);
 		}
 		else {
 			Customer currentCustomer = MainView.getCurrentCustomer();
@@ -152,7 +160,26 @@ public class CartView {
             alert.setTitle("Commande");
             alert.setHeaderText(null);
             alert.setContentText("Commande validée");
-            alert.showAndWait(); 
+            alert.showAndWait();
 		}
+	}
+	
+	public void displayLoginWarning(MainView mainView, Stage primaryStage) {
+		Alert alert = new Alert(Alert.AlertType.WARNING);
+		alert.setTitle("Authentification requise");
+		alert.setHeaderText("Vous n'êtes pas connecté");
+		alert.setContentText("Veuillez vous authentifier pour passer votre commande.");
+
+		// Ajouter un bouton pour rediriger vers la page de connexion
+		ButtonType loginButton = new ButtonType("Se connecter");
+		ButtonType cancelButton = new ButtonType("Annuler", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+		alert.getButtonTypes().setAll(loginButton, cancelButton);
+
+		Optional<ButtonType> result = alert.showAndWait();
+		if (result.isPresent() && result.get() == loginButton) {
+			new AuthController(mainView, primaryStage);
+		}
+
 	}
 }
