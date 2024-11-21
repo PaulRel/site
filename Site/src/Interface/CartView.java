@@ -67,12 +67,12 @@ public class CartView {
 	    primaryStage.heightProperty().addListener((observable, oldValue, newValue) -> {root.setPrefHeight(newValue.doubleValue()-116);}); // Ajuste la hauteur
 	    
 	    AnchorPane rootPane = new AnchorPane();
-	    HeaderView v = new HeaderView(mainView, primaryStage);      
+	    HeaderView v = new HeaderView(mainView, primaryStage);
 	    rootPane.getChildren().addAll(v.getHeader(), root);
 	    
 	    Scene createAccountScene = new Scene(rootPane, 1350, 670);
-	               
-	    String css = this.getClass().getResource("/style.css").toExternalForm();        
+	    
+	    String css = this.getClass().getResource("/style.css").toExternalForm();
 	    createAccountScene.getStylesheets().add(css);
 	        
 	    primaryStage.setScene(createAccountScene);
@@ -126,7 +126,7 @@ public class CartView {
 	                    setGraphic(deleteButton); // Afficher le bouton pour les lignes valides
 	                }
 	            }
-	        });	        
+	        });
 	        cartTable.getColumns().add(imageColumn);
 	        cartTable.getColumns().add(productColumn);
 	        cartTable.getColumns().add(sizeColumn);

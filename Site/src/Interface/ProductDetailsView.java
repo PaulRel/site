@@ -18,7 +18,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import products.Chaussures;
 import products.ProductWithSize;
 import products.Produit;
 
@@ -46,10 +45,10 @@ public class ProductDetailsView {
         // Affichage des informations du produit
         Label nameLabel = new Label(product.getNom());
         Label priceLabel = new Label("Prix : " + product.getPrice() + "€");
-        Label descriptionLabel = new Label(product.getDescription() + "\n Choisir la taille :");
+        Label descriptionLabel = new Label(product.getDescription() + "\nChoisir la taille :");
         Label selectedQuantityLabel = new Label("Quantité souhaitée :  ");
         descriptionLabel.setStyle("-fx-font-weight: normal");
-        descriptionLabel.setWrapText(true);        
+        descriptionLabel.setWrapText(true);
         
         Button addToCartButton = new Button("Ajouter au panier");
         addToCartButton.setDisable(true); // Le bouton est désactivé par défaut
@@ -101,16 +100,16 @@ public class ProductDetailsView {
                     quantityComboBox.setItems(quantities);
                     quantityComboBox.setValue(1); // Reset default value
                     quantityComboBox.setDisable(false); // Enable the ComboBox
-                }                
+                }
             });
         }
-        	       
+        
         ImageView imageView = new ImageView(new Image(getClass().getResource(product.getImagePath()).toExternalForm()));
         imageView.setFitHeight(400);
         imageView.setFitWidth(400);
         
         Label addProductLabel = new Label();
-        		
+        
         addToCartButton.setOnAction(e -> {
         	 String selectedSize = sizeChoiceBox.getValue().split(" :")[0];
         	 chosenQuantity = quantityComboBox.getValue();

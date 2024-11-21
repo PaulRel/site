@@ -17,7 +17,7 @@ public class Produit {
 		this.Nom=Nom;
 		this.Description = Description;
 		this.Type = Type;
-		this.Marque= Marque;
+		this.setMarque(Marque);
 		this.Price = Price; 
 		this.QtDispo=QtDispo;
 		this.imagePath = imagePath;
@@ -74,5 +74,13 @@ public class Produit {
 
 	public String getNom() {
 		return Nom;
+	}
+
+	public String getMarque() {
+		return Marque;
+	}
+
+	public void setMarque(String marque) {
+		Marque = marque;
 	}
 }

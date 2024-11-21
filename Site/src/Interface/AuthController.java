@@ -9,7 +9,6 @@ import customer.Cart;
 import customer.CartItem;
 import customer.CartManager;
 import customer.Customer;
-import customer.Order;
 import database.DatabaseConnection;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -70,7 +69,6 @@ public class AuthController {
         	}
         });
         
-        // Organisation des champs dans le VBox
         existingCustomerBox.getChildren().addAll(existingLabel, instructionLabel, emailField, passwordField, forgotPasswordLink, loginButton);
         
         
@@ -78,8 +76,6 @@ public class AuthController {
         // Section pour les nouveaux clients (VBox droite)
         VBox newCustomerBox = new VBox(10);
         newCustomerBox.setPrefSize(600, 400);
-        //AnchorPane.setTopAnchor(newCustomerBox, 200.0);
-        //AnchorPane.setRightAnchor(newCustomerBox, 20.0);
         
         Label newCustomerLabel = new Label("Vous êtes nouveau client chez TennisShop");
         
@@ -88,7 +84,7 @@ public class AuthController {
         newCustomerInfo.setWrapText(true);
         
         Button createAccountButton = new Button("CRÉER UN COMPTE");
-     // Gestion du clic pour afficher LoginPage
+        
     	createAccountButton.setOnMouseClicked(event -> {
     	    new SignUpController(primaryStage);
     	   });	
@@ -120,7 +116,6 @@ public class AuthController {
             root.setPrefHeight(newValue.doubleValue()); // Ajuste la hauteur
         });
         
-        //rootPane.getChildren().addAll(existingCustomerBox, newCustomerBox);
         rootPane.getChildren().addAll(root);
     }
     
@@ -181,7 +176,7 @@ public class AuthController {
     }
     
     public static void syncUserCart() {
-    	Customer customer = MainView.getCurrentCustomer(); // Get the logged-in user
+    	Customer customer = MainView.getCurrentCustomer();
         if (customer != null) {
         	Cart userCart = customer.getCart();
         	Cart tempCart = CartManager.getTempCart();
