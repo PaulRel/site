@@ -3,7 +3,10 @@ package Interface;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Optional;
 
+import customer.Cart;
+import customer.CartManager;
 import customer.Customer;
 import customer.Customer.Civility;
 import customer.Customer.Role;
@@ -11,7 +14,9 @@ import database.DatabaseConnection;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -119,7 +124,8 @@ public class SignUpController {
             Customer newCustomer = new Customer(firstName, lastName, civility, email, null, password, role, address);
             
         	// Appelle la méthode d'authentification
-        	handleSignUp(newCustomer);});
+        	handleSignUp(newCustomer, mainView);
+        });
 
         // Disposition du formulaire
         GridPane gridPane = new GridPane();
@@ -159,8 +165,8 @@ public class SignUpController {
         rootPane.getChildren().addAll(root);
                
         Scene createAccountScene = new Scene(rootPane, 1350, 670);
-        //HeaderView v = new HeaderView(primaryStage, mainScene);
-        //rootPane.getChildren().addAll(v.getHeader());
+        HeaderView v = new HeaderView(mainView);
+        rootPane.getChildren().addAll(v.getHeader());
                
         String css = this.getClass().getResource("/style.css").toExternalForm();        
         createAccountScene.getStylesheets().add(css);
@@ -168,7 +174,7 @@ public class SignUpController {
         mainView.getPrimaryStage().setScene(createAccountScene);
 	}
 	
-	public void handleSignUp(Customer customer) {
+	public void handleSignUp(Customer customer, MainView mainView) {
 		String query = "INSERT INTO Customer (FirstName, LastName, Civility, Email, Passwords, Address) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = DatabaseConnection.getConnection();
@@ -186,10 +192,31 @@ public class SignUpController {
             int rowsInserted = statement.executeUpdate();
             if (rowsInserted > 0) {
                 System.out.println("Le client a été ajouté avec succès !");
+                
+                // Initialise la session
+                MainView.setCurrentCustomer(customer);
+        		Cart cart = CartManager.getTempCart();
+        		if (cart!=null) {
+        			AuthController.syncUserCart();
+        		}
+                
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        		alert.setTitle("Création de compte réussie");
+        		alert.setHeaderText("Votre compte a bien été créée.");
+        		alert.setContentText("Vous pouvez désormais modifier vos informations dans les paramètres du compte.");
+
+        		// Ajouter un bouton pour rediriger vers la page du compte
+        		ButtonType loginButton = new ButtonType("Continuer");
+
+        		alert.getButtonTypes().setAll(loginButton);
+
+        		Optional<ButtonType> result = alert.showAndWait();
+        		if (result.isPresent() && result.get() == loginButton) {
+        			new AccountView(mainView);
+        		}
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        }	
+        }
 	}
-
 }

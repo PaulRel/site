@@ -1,4 +1,6 @@
-/Interface/
-/customer/
 /META-INF/
+/Interface/
+/.gitignore
+/customer/
+/database/
 /products/
