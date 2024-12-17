@@ -85,7 +85,7 @@ public class AuthentificationView {
         Button createAccountButton = new Button("CRÉER UN COMPTE");
         
     	createAccountButton.setOnMouseClicked(event -> {
-    	    new SignUpController(mainView);
+    	    new SignUpView(mainView);
     	   });	
         
         newCustomerBox.getChildren().addAll(newCustomerLabel, newCustomerInfo, createAccountButton);

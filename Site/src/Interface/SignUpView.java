@@ -30,8 +30,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
-public class SignUpController {
-	public SignUpController(MainView mainView) {
+public class SignUpView {
+	public SignUpView(MainView mainView) {
 		Label mainLabel = new Label("Créer un compte");
 
      // Champ civilité
