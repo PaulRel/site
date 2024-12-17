@@ -1,9 +1,15 @@
 package Interface;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
+import database.DatabaseConnection;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import products.Produit;
@@ -55,15 +61,19 @@ public class AccountView {
         Button accountInfoButton = new Button("Informations du compte");
         Button addressBookButton = new Button("Carnet d'adresses");
         Button ordersButton = new Button("Mes commandes");
-        Button paymentMethodsButton = new Button("Mes moyens de paiement");
+        Button deleteAccountButton = new Button("Supprimer mon compte");
+        deleteAccountButton.setOnAction(e -> {
+        	deleteAccount();
+        	mainView.showProductView(Produit.class);
+        });
 
         // Appliquer un style aux boutons
-        for (Button button : new Button[]{dashboardButton, accountInfoButton, addressBookButton, ordersButton, paymentMethodsButton}) {
+        for (Button button : new Button[]{dashboardButton, accountInfoButton, addressBookButton, ordersButton, deleteAccountButton}) {
          //   button.setStyle("-fx-background-color: transparent; -fx-font-size: 14px; -fx-alignment: CENTER_LEFT; -fx-padding: 10;");
         	  button.setPrefWidth(220.0);
         }
 
-        menuBox.getChildren().addAll(userBox, dashboardButton, accountInfoButton, addressBookButton, ordersButton, paymentMethodsButton);
+        menuBox.getChildren().addAll(userBox, dashboardButton, accountInfoButton, addressBookButton, ordersButton, deleteAccountButton);
         rootPane.getChildren().add(menuBox);
     }
     
@@ -110,6 +120,28 @@ public class AccountView {
         mainContent.getChildren().addAll(dashboardTitle, dashboardDesc, tableHeader, ordersTable);
         AnchorPane.setLeftAnchor(mainContent, 250.0);
         AnchorPane.setTopAnchor(mainContent, 116.0);
-        rootPane.getChildren().add(mainContent);    	
+        rootPane.getChildren().add(mainContent);
+    }
+    
+    public void deleteAccount() {
+    	String query = "DELETE FROM customer WHERE id = ?";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+        	PreparedStatement statement = conn.prepareStatement(query)) {
+
+            // On définit l'ID du client à supprimer dans la requête
+            statement.setInt(1, MainView.getCurrentCustomer().getId());
+
+            int rowsAffected = statement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                MainView.showAlert("Succès", null, "Votre compte a été supprimé avec succès.", AlertType.INFORMATION);
+                MainView.setCurrentCustomer(null); // On réinitialise l'instance après suppression
+            }
+            }
+        catch (SQLException e) {
+            MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);
+            e.printStackTrace();
+        }
     }
 }

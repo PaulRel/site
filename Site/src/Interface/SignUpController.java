@@ -2,6 +2,7 @@ package Interface;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
 
@@ -23,6 +24,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -178,7 +180,7 @@ public class SignUpController {
 		String query = "INSERT INTO Customer (FirstName, LastName, Civility, Email, Passwords, Address) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement statement = conn.prepareStatement(query)) {
+        	PreparedStatement statement = conn.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS)) {
 
             // Remplace les paramètres de la requête par les valeurs de l'objet Customer
             statement.setString(1, customer.getFirstName());
@@ -193,11 +195,22 @@ public class SignUpController {
             if (rowsInserted > 0) {
                 System.out.println("Le client a été ajouté avec succès !");
                 
+                // Récupérer l'ID généré automatiquement
+                try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        int generatedId = generatedKeys.getInt(1); // Récupérer l'ID généré
+                        customer.setId(generatedId); // Assigner l'ID généré à l'objet Customer
+                        System.out.println("ID du nouveau client : " + generatedId);
+                    } else {
+                        throw new SQLException("Échec de récupération de l'ID généré.");
+                    }
+                }
+                
                 // Initialise la session
                 MainView.setCurrentCustomer(customer);
         		Cart cart = CartManager.getTempCart();
         		if (cart!=null) {
-        			AuthController.syncUserCart();
+        			AuthentificationView.syncUserCart();
         		}
                 
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -216,6 +229,7 @@ public class SignUpController {
         		}
             }
         } catch (SQLException e) {
+        	MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);
             e.printStackTrace();
         }
 	}

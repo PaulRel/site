@@ -156,18 +156,14 @@ public class CartView {
 		}
 		else {
 			Customer currentCustomer = MainView.getCurrentCustomer();
-			AuthController.syncUserCart();
+			AuthentificationView.syncUserCart();
 			Order order = new Order(currentCustomer, currentCustomer.getCart().getItems());
 
 			for (CartItem item : cart.getItems()) {
 				order.decrementStock(item.getProduct().getId(), item.getSize(), item.getQuantity());
 			}
 			cart.clearCart();
-			Alert alert = new Alert(AlertType.INFORMATION);
-            alert.setTitle("Commande");
-            alert.setHeaderText(null);
-            alert.setContentText("Commande validée");
-            alert.showAndWait();
+			MainView.showAlert("Commande", null, "Commande validée", AlertType.INFORMATION);
 		}
 	}
 	
@@ -185,7 +181,7 @@ public class CartView {
 
 		Optional<ButtonType> result = alert.showAndWait();
 		if (result.isPresent() && result.get() == loginButton) {
-			new AuthController(mainView);
+			new AuthentificationView(mainView);
 		}
 
 	}

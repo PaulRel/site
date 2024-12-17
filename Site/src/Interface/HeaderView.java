@@ -52,7 +52,7 @@ public class HeaderView{
         // Gestion du clic pour afficher LoginPage
     	accountButton.setOnMouseClicked(event -> {
     		if (MainView.getCurrentCustomer()==null){
-    			new AuthController(mainView);
+    			new AuthentificationView(mainView);
     		}
     		else {
     			new AccountView(mainView);

@@ -16,11 +16,11 @@ import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.*;
 
-public class AuthController {
+public class AuthentificationView {
     private AnchorPane rootPane;
     private Label mainLabel;
 
-    public AuthController(MainView mainView) {
+    public AuthentificationView(MainView mainView) {
     	// Création des labels principaux
         mainLabel = new Label("Identifiez-vous ou créez un compte");
         
@@ -125,19 +125,11 @@ public class AuthController {
     		MainView.setCurrentCustomer(customer);
     		Cart cart = CartManager.getTempCart();
     		if (cart!=null) {
-    			AuthController.syncUserCart();
+    			AuthentificationView.syncUserCart();
     		}
-            Alert alert = new Alert(AlertType.INFORMATION);
-            alert.setTitle("Connexion réussie");
-            alert.setHeaderText(null);
-            alert.setContentText("Bienvenue " + customer.getFirstName()+" !");
-            alert.showAndWait(); 
+    		MainView.showAlert("Connexion réussie", null, "Bienvenue " + customer.getFirstName()+" !", AlertType.INFORMATION);
         } else {
-            Alert alert = new Alert(AlertType.ERROR);
-            alert.setTitle("Échec de la connexion");
-            alert.setHeaderText(null);
-            alert.setContentText("Adresse e-mail ou mot de passe incorrect.");
-            alert.showAndWait();
+        	MainView.showAlert("Échec de la connexion", null, "Adresse e-mail ou mot de passe incorrect.", AlertType.ERROR);
         }
     }
 
@@ -155,6 +147,7 @@ public class AuthController {
             	String storedPassword = rs.getString("Passwords");
                 if (password.equals(storedPassword))  {
                 	 // Create and return a Customer object
+                	int id = rs.getInt("CustomerID");
                     String firstName = rs.getString("FirstName");
                     String lastName = rs.getString("LastName");
                     String phoneNumber = rs.getString("PhoneNumber");
@@ -166,10 +159,13 @@ public class AuthController {
                     Customer.Civility civility = Customer.Civility.valueOf(civilityString);
                     Customer.Role role = Customer.Role.valueOf(roleString.toUpperCase());
 
-                    return new Customer(firstName, lastName, civility, email, phoneNumber, storedPassword, role, address);
+                    return new Customer(id, firstName, lastName, civility, email, phoneNumber, storedPassword, role, address);
                 }
             }
-        } catch (SQLException e) {e.printStackTrace();}
+        } catch (SQLException e) {
+        	MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);
+        	e.printStackTrace();
+        }
         
         return null; // Authentification échouée
     }

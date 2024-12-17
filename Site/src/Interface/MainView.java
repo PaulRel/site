@@ -4,6 +4,8 @@ import java.io.IOException;
 import customer.Customer;
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
@@ -86,6 +88,17 @@ public class MainView extends Application {
 	public Stage getPrimaryStage() {
 		return primaryStage;
 	}
+	
+	// Méthode pour afficher une boîte d'alerte
+    public static void showAlert(String title, String headerText, String message, AlertType type) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(headerText);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+    
+    
 
 		/**
 	     * Crée l'en-tête de l'application, qui inclut le nom du magasin, l'icône du compte et la barre de navigation.
