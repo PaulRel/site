@@ -107,7 +107,7 @@
     -fx-border-color: #e0e0e0;
 }
 
-/* Bouton du panier */
+
 .button {
     -fx-background-color: #000000;
     -fx-text-fill: white;
@@ -132,6 +132,11 @@
 
 .table-cell {
     -fx-alignment: center; /* Centre horizontalement et verticalement */
+}
+
+#ordersTable .column-header .label{
+    -fx-padding: 2px; /* Espace interne des en-têtes */
+    -fx-font-size: 12px;
 }
 
 

@@ -190,7 +190,6 @@ public class SignUpView {
             statement.setString(5, customer.getPassword());
             statement.setString(6, customer.getAddress());
 
-            // Exécute l'insertion dans la base de données
             int rowsInserted = statement.executeUpdate();
             if (rowsInserted > 0) {
                 System.out.println("Le client a été ajouté avec succès !");
