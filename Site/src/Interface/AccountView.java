@@ -61,10 +61,9 @@ public class AccountView {
         	MainView.setCurrentCustomer(null);
         	mainView.showProductView(Produit.class);
         });
-        //logoutButton.setStyle("-fx-background-color: #FFFFFF; -fx-border-color: #000; -fx-padding: 5 10;");
+        
         userBox.getChildren().addAll(profileIcon, userNameLabel, logoutButton);
 
-        // Liens du menu
         Button dashboardButton = new Button("Mon Tableau de bord");
         Button accountInfoButton = new Button("Mes informations");
         Button ordersButton = new Button("Mes commandes");
@@ -115,7 +114,7 @@ public class AccountView {
         
         Label dashboardDesc = new Label("Depuis le tableau de bord 'Mon compte', vous pouvez avoir un aperçu de vos récentes activités et mettre à jour les informations de votre compte. Sélectionnez un lien ci-dessous pour voir ou modifier les informations.");
         dashboardDesc.setWrapText(true);
-        dashboardDesc.setStyle("-fx-font-size: 12px;");
+        dashboardDesc.setStyle("-fx-font-size: 12px; -fx-font-weight: normal");
         
         Label recentOrdersTitle = new Label ("Commandes récentes");
         recentOrdersTitle.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
@@ -191,8 +190,7 @@ public class AccountView {
     	        	MainView.getCurrentCustomer().setAddress(newAddress);
     	        	
     	        	MainView.showAlert("Succès", null, "Vos informations ont été mis à jour avec succès.", AlertType.INFORMATION);
-    	        }
-    	        
+    	        }    	        
     	    } catch (SQLException e) {
     	    	MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);
     	        e.printStackTrace();
@@ -207,7 +205,7 @@ public class AccountView {
     	
     	Label subtitle = new Label("L'ensemble de vos commandes sont affichées dans le tableau ci-dessous. Vous pouvez suivre leurs états d'avancement, les visualiser, télécharger vos factures.");
         subtitle.setWrapText(true);
-        subtitle.setStyle("-fx-font-size: 12px;");
+        subtitle.setStyle("-fx-font-size: 12px; -fx-font-weight: normal");
         
         TableView<Order> tableSection = createOrdersTable();
         

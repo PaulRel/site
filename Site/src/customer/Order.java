@@ -30,7 +30,6 @@ import products.Produit;
 	        CartItem detail = new CartItem(product, size, quantity);
 	        products.add(detail);
 	        calculateTotalPrice();
-	        System.out.println("Prix de la commande : " + this.totalPrice);
 	    }
 
 	    public void validateOrder() throws SQLException {
