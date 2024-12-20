@@ -21,6 +21,7 @@ public class Vetement extends Product implements ProductWithSize{
 		this.couleur = couleur;
 	}
 
+	@Override
 	public String getGenre() {
 		return genre;
 	}

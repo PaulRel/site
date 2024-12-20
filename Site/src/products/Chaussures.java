@@ -15,7 +15,8 @@ public class Chaussures extends Product implements ProductWithSize{
 		this.genre = genre;
 		this.couleur = couleur;
 	}	
-
+	
+	@Override
 	public String getGenre() {
 		return genre;
 	}

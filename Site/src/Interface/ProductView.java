@@ -1,7 +1,9 @@
 package Interface;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-
+import java.util.Set;
 import database.ProduitDAO;
 import javafx.geometry.Insets;
 import javafx.scene.control.CheckBox;
@@ -13,11 +15,19 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import products.Chaussures;
 import products.Product;
+import products.Vetement;
+import products.ProductWithSize;
 
 public class ProductView {
 	
 	private AnchorPane root;
+	private FlowPane produitsGrid;
+	private ProduitDAO produitDAO;
+	List<Product> actualProducts;
+	private Set<String> sizeSelected, sexSelected;
+	private CheckBox tailleS, tailleM, tailleL, sexeHomme, sexeFemme, enfant;
 	
 	public ProductView(MainView mainView, Class<? extends Product> typeProduit) {
 		root = new AnchorPane();
@@ -25,7 +35,7 @@ public class ProductView {
 		sectionProduits.setPadding(new Insets(10, 20, 10, 20)); // Espace  Haut, Droite>, Bas, Gauche<  de l'AnchorPane
 		sectionProduits.setSpacing(50); // Espacement entre filtre et grid
 		sectionProduits.getChildren().clear();
-        sectionProduits.getChildren().addAll(createFilterBox(), displayProducts(mainView, typeProduit));
+        sectionProduits.getChildren().addAll(createFilterBox(mainView), displayProducts(mainView, typeProduit));
         
         AnchorPane.setTopAnchor(sectionProduits, 150.0);
         AnchorPane.setLeftAnchor(sectionProduits, 10.0);
@@ -39,20 +49,23 @@ public class ProductView {
     * @return Le GridPane contenant tous les produits.
     */
    public ScrollPane displayProducts(MainView mainView, Class<? extends Product> typeProduit) {
-       FlowPane produitsGrid = new FlowPane();
+       produitsGrid = new FlowPane();
        produitsGrid.setPadding(new Insets(10));
        produitsGrid.setHgap(10);
        produitsGrid.setVgap(10);
        produitsGrid.setPrefWrapLength(mainView.getPrimaryStage().getWidth()-300);
-       ProduitDAO produitDAO = new ProduitDAO();  // Récupérer les produits depuis la base de données
+       
+       produitDAO = new ProduitDAO();  // Récupérer les produits depuis la base de données
        List<Product> products = produitDAO.getAllProduits();
+       actualProducts = new ArrayList<Product>();
        
        products.stream()
        .filter(typeProduit::isInstance) // Filtrer les produits par type
        .forEach(produit -> {
-       	// TESTS :  System.out.println(typeProduit); System.out.println("Nom de la classe : " + produit.getClass().getSimpleName());
-       	VBox produitBox = createProductBox(mainView, produit);
-       	produitsGrid.getChildren().add(produitBox);
+    	   // TESTS :  System.out.println(typeProduit); System.out.println("Nom de la classe : " + produit.getClass().getSimpleName());
+    	   actualProducts.add(produit);
+    	   VBox produitBox = createProductBox(mainView, produit);
+    	   produitsGrid.getChildren().add(produitBox);
        });
        	
        // Ecouteur pour ajuster automatiquement avec la largeur de la fenêtre
@@ -97,24 +110,67 @@ public class ProductView {
    /**
     * Crée une boîte latérale contenant des filtres de produits.
     */
-   private VBox createFilterBox() {
+   private VBox createFilterBox(MainView mainView) {
        VBox filtreBox = new VBox();
 
-       // Ajout des filtres de taille et de sexe
        Label filtreTaille = new Label("Tailles");
-       CheckBox tailleS = new CheckBox("Taille S");
-       CheckBox tailleM = new CheckBox("Taille M");
-       CheckBox tailleL = new CheckBox("Taille L");
+       tailleS = new CheckBox("Taille S");
+       tailleM = new CheckBox("Taille M");
+       tailleL = new CheckBox("Taille L");
        filtreBox.getChildren().addAll(filtreTaille, tailleS, tailleM, tailleL);
        
        Label filtreSexe = new Label("Sexe");
-       CheckBox SexeHomme = new CheckBox("Hommes");
-       CheckBox SexeFemme = new CheckBox("Femmes");
-       CheckBox Enfant = new CheckBox("Enfants");
-       filtreBox.getChildren().addAll(filtreSexe, SexeHomme, SexeFemme, Enfant);
-
+       sexeHomme = new CheckBox("Homme");
+       sexeFemme = new CheckBox("Femme");
+       enfant = new CheckBox("Enfant");
+       filtreBox.getChildren().addAll(filtreSexe, sexeHomme, sexeFemme, enfant);
+       
+       tailleS.setOnAction(event -> applyFilters(mainView));
+       tailleM.setOnAction(event -> applyFilters(mainView));
+       tailleL.setOnAction(event -> applyFilters(mainView));
+       sexeHomme.setOnAction(event -> applyFilters(mainView));
+       sexeFemme.setOnAction(event -> applyFilters(mainView));
+       enfant.setOnAction(event -> applyFilters(mainView));
+       
        return filtreBox;
    }
+   
+   private void applyFilters(MainView mainView) {
+	   	// Collecte des filtres sélectionnés
+	    sizeSelected = new HashSet<>();
+	    if (tailleS.isSelected()) sizeSelected.add("S");
+	    if (tailleM.isSelected()) sizeSelected.add("M");
+	    if (tailleL.isSelected()) sizeSelected.add("L");
+
+	    sexSelected = new HashSet<>();
+	    if (sexeHomme.isSelected()) sexSelected.add("Homme");
+	    if (sexeFemme.isSelected()) sexSelected.add("Femme");
+	    if (enfant.isSelected()) sexSelected.add("Enfant");
+	    
+	    updateProductDisplay(mainView);
+	}
+
+   private boolean filterByAttributes(Product product) {
+	    if (product instanceof Chaussures || product instanceof Vetement) {
+	        String sex =  ((ProductWithSize) product).getGenre();
+
+	        boolean matchSize = sizeSelected.isEmpty() || ((ProductWithSize) product).getTailleStock().keySet().stream().anyMatch(sizeSelected::contains);
+	        boolean matchSex = sexSelected.isEmpty() || sexSelected.contains(sex);
+
+	        return matchSize && matchSex;
+	    }
+	    return true;
+   }
+   
+   private void updateProductDisplay(MainView mainView) {
+	    produitsGrid.getChildren().clear(); // Nettoie l'affichage actuel
+	    actualProducts.stream()
+	       .filter(this::filterByAttributes)
+	       .forEach(produit -> {
+	        VBox produitBox = createProductBox(mainView, produit); // Crée une box pour chaque produit
+	        produitsGrid.getChildren().add(produitBox); // Ajoute la box au GridPane
+	    });
+	}
 
 public AnchorPane getRoot() {
 	return root;
