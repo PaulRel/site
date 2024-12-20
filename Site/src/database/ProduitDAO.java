@@ -66,10 +66,9 @@ public class ProduitDAO {
     	        String surface = resultSet.getString("surface");
     	        String genre = resultSet.getString("genre");
     	        String couleur = resultSet.getString("couleur");
-                    
                 chaussure = new Chaussures(id, nom, description, type, marque, prix, qtDispo, imagePath, surface, genre, couleur);
                 chaussure.setTailleStock(getTaillesStock(id));
-                chaussures.add(chaussure);    	        
+                chaussures.add(chaussure);
     	    }
 
     	} catch (SQLException e) {

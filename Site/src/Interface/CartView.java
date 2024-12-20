@@ -161,7 +161,7 @@ public class CartView {
 			order.setProducts(cart.getItems());
 			
 			OrderDAO orderDAO = new OrderDAO();
-            orderDAO.saveOrder(order);
+            orderDAO.insertOrder(order);
 
 			for (CartItem item : cart.getItems()) {
 				order.decrementStock(item.getProduct().getId(), item.getSize(), item.getQuantity());

@@ -64,7 +64,7 @@ public class ProductDetailsView {
         if (product instanceof ProductWithSize) {
         	ProductWithSize productWithSize = (ProductWithSize) product;
         	HashMap<String, Integer> sizesStock = productWithSize.getTailleStock();
-        	System.out.println("Map " + sizesStock);
+        	//System.out.println("Map " + sizesStock);
         	
         	 // Ajouter les éléments formatés dans la ComboBox
         	sizeChoiceBox.getItems().clear();
@@ -112,8 +112,7 @@ public class ProductDetailsView {
         addToCartButton.setOnAction(e -> {
         	 String selectedSize = sizeChoiceBox.getValue().split(" :")[0];
         	 chosenQuantity = quantityComboBox.getValue();
-        	 System.out.println("Size : "+ selectedSize);
-        	 System.out.println("Quantity : "+ chosenQuantity);
+        	 
         	 if (MainView.getCurrentCustomer() != null) {cart = MainView.getCurrentCustomer().getCart();}
         	 cart.addProduct(product, selectedSize, chosenQuantity);
         	 

@@ -14,6 +14,7 @@ public class Produit {
 	 * @param Type
 	 */
 	public Produit(int id, String nom, String description, String type, String marque, double price, int qtDispo, String imagePath) {
+		this.id = id;
 		this.nom = nom;
 		this.description = description;
 		this.type = type;

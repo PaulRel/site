@@ -23,13 +23,14 @@ import products.Produit;
 	        this.products = new ArrayList<>();
 	        this.status = "En cours";
 	        this.orderDate = LocalDate.now();
-	        this.totalPrice = calculateTotalPrice();
+	        this.totalPrice = 0.0;
 	    }
 
 	    public void addProduct(Produit product, String size, int quantity) {
 	        CartItem detail = new CartItem(product, size, quantity);
 	        products.add(detail);
 	        calculateTotalPrice();
+	        System.out.println("Prix de la commande : " + this.totalPrice);
 	    }
 
 	    public void validateOrder() throws SQLException {
@@ -43,8 +44,8 @@ import products.Produit;
 	    }
 
 	    // Calcul du prix total de la commande
-	    private double calculateTotalPrice() {
-	        return products.stream()
+	    public void calculateTotalPrice() {
+	        this.totalPrice = products.stream()
 	                .mapToDouble(product -> product.getProduct().getPrice() * product.getQuantity())
 	                .sum();
 	    }
@@ -94,7 +95,7 @@ import products.Produit;
 
 	public void setProducts(List<CartItem> products) {
 		this.products = products;
-		this.totalPrice = calculateTotalPrice();
+		calculateTotalPrice();
 	}
 
 	public String getStatus() {

@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import Interface.MainView;
 import customer.CartItem;
 import customer.Customer;
 import customer.Order;
@@ -17,32 +18,39 @@ import products.Produit;
 
 public class OrderDAO {
 	
-	public List<Order> getOrdersByCustomer(Customer customer) throws SQLException {
+	public List<Order> getOrdersByCustomer(Customer customer) {
         List<Order> orders = new ArrayList<>();
         
         String query = "SELECT * FROM Orders WHERE customer_id = ?";
         
         try (Connection connection = DatabaseConnection.getConnection();
-        		PreparedStatement statement = connection.prepareStatement(query);
-                ResultSet rs = statement.executeQuery()) {
-        		
-        	statement.setInt(1, customer.getId());
-        	while (rs.next()) {
-        		int orderId = rs.getInt("order_id");
-                LocalDate orderDate = rs.getDate("order_date").toLocalDate();
-                String status = rs.getString("status");
+        		PreparedStatement statement = connection.prepareStatement(query);){
+        	statement.setInt(1, MainView.getCurrentCustomer().getId());
+        	
+            try (ResultSet rs = statement.executeQuery()) {
+            	statement.setInt(1, customer.getId());
+            	while (rs.next()) {
+            		int orderId = rs.getInt("order_id");
+            		LocalDate orderDate = rs.getDate("order_date").toLocalDate();
+            		String status = rs.getString("status");
 
-                Order order = new Order(customer);
+            		Order order = new Order(customer);
+            		order.setOrderId(orderId);
+            		order.setOrderDate(orderDate);
+            		order.setStatus(status);
 
-                addOrderDetails(order, connection);
+            		addOrderDetails(order, connection);
                     
-                orders.add(order);
+            		orders.add(order);
+            	}
             }
+        } catch (SQLException e) {
+        	e.printStackTrace();
         }
         return orders;
     }
 	
-	private void addOrderDetails(Order order, Connection connection) throws SQLException {
+	private void addOrderDetails(Order order, Connection connection) {
         String query = "SELECT * FROM OrderDetails WHERE order_id = ?";
         try (PreparedStatement ps = connection.prepareStatement(query)) {
             ps.setInt(1, order.getOrderId());
@@ -57,10 +65,12 @@ public class OrderDAO {
                     order.addProduct(produit, size, quantity);
                 }
             }
+        } catch (SQLException e) {
+        e.printStackTrace();
         }
     }
 	
-    public void saveOrder(Order order) {
+    public void insertOrder(Order order) {
         try (Connection conn = DatabaseConnection.getConnection()) {
             String sqlOrder = "INSERT INTO Orders (customer_id, order_date, status) VALUES (?, ?, ?)";
             PreparedStatement psOrder = conn.prepareStatement(sqlOrder, Statement.RETURN_GENERATED_KEYS);
@@ -74,22 +84,22 @@ public class OrderDAO {
             if (rs.next()) {
                 int orderId = rs.getInt(1);
                 order.setOrderId(orderId);
-                saveOrderDetails(conn, orderId, order.getProducts());
+                insertOrderDetails(conn, orderId, order.getProducts());
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    private void saveOrderDetails(Connection conn, int orderId, List<CartItem> products) throws SQLException {
-        String sqlDetail = "INSERT INTO OrderDetails (order_id, product_id, quantity, price) VALUES (?, ?, ?, ?)";
+    private void insertOrderDetails(Connection conn, int orderId, List<CartItem> products) throws SQLException {
+        String sqlDetail = "INSERT INTO OrderDetails (order_id, product_id, quantity, size) VALUES (?, ?, ?, ?)";
         PreparedStatement psDetail = conn.prepareStatement(sqlDetail);
 
         for (CartItem product : products) {
             psDetail.setInt(1, orderId);
             psDetail.setInt(2, product.getProduct().getId());
             psDetail.setInt(3, product.getQuantity());
-            psDetail.setDouble(4, product.getProduct().getPrice());
+            psDetail.setString(4, product.getSize());
             psDetail.addBatch();
         }
         psDetail.executeBatch();

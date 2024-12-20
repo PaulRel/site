@@ -3,10 +3,13 @@ package Interface;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.List;
 
 import customer.CartItem;
 import customer.Order;
 import database.DatabaseConnection;
+import database.OrderDAO;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -122,7 +125,7 @@ public class AccountView {
     	HBox tableHeader = new HBox(10, recentOrdersTitle, hyperlink1);
         tableHeader.setAlignment(Pos.CENTER_LEFT);
         
-        TableView<String> tableSection = createOrdersTable();
+        TableView<Order> tableSection = createOrdersTable();
         
         Label infoTitle = new Label ("Informations du compte");
         infoTitle.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
@@ -206,38 +209,46 @@ public class AccountView {
         subtitle.setWrapText(true);
         subtitle.setStyle("-fx-font-size: 12px;");
         
-        TableView<String> tableSection = createOrdersTable();
+        TableView<Order> tableSection = createOrdersTable();
         
         mainContent.getChildren().setAll(ordersTitle, subtitle, tableSection);
     }
     
-    private TableView<String> createOrdersTable() {
-    	
-    	// Table des commandes récentes
-        TableView<String> ordersTable = new TableView<>();
+    private TableView<Order> createOrdersTable() {    	
+    	TableView<Order> ordersTable = new TableView<>();
         ordersTable.setMinHeight(200);
         ordersTable.setMaxHeight(300);
         ordersTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         ordersTable.setId("ordersTable");
 
-        TableColumn<String, String> orderNumberCol = new TableColumn<>("Commande n°");
-        TableColumn<String, String> dateCol = new TableColumn<>("Date");
-        TableColumn<String, String> shippingToCol = new TableColumn<>("Expédition à");
-        TableColumn<String, String> totalCol = new TableColumn<>("Total de la commande");
-        TableColumn<String, String> statusCol = new TableColumn<>("Statut");
-        TableColumn<String, String> actionCol = new TableColumn<>("Actions");
+        // Colonnes
+        TableColumn<Order, String> orderNumberCol = new TableColumn<>("Commande n°");
+        TableColumn<Order, String> dateCol = new TableColumn<>("Date");
+        TableColumn<Order, String> shippingToCol = new TableColumn<>("Expédition à");
+        TableColumn<Order, String> totalCol = new TableColumn<>("Total de la commande");
+        TableColumn<Order, String> statusCol = new TableColumn<>("Statut");
 
+        // Associer les colonnes aux propriétés de la classe Order
+        orderNumberCol.setCellValueFactory(order -> new SimpleStringProperty(String.valueOf(order.getValue().getOrderId())));
+        dateCol.setCellValueFactory(order -> new SimpleStringProperty(order.getValue().getOrderDate().toString()));
+        shippingToCol.setCellValueFactory(order -> new SimpleStringProperty(order.getValue().getCustomer().getAddress()));
+        totalCol.setCellValueFactory(order -> new SimpleStringProperty(String.format("%.2f €", order.getValue().getTotalPrice())));
+        statusCol.setCellValueFactory(order -> new SimpleStringProperty(order.getValue().getStatus()));
+
+        // Ajouter les colonnes à la table
         ordersTable.getColumns().add(orderNumberCol);
         ordersTable.getColumns().add(dateCol);
         ordersTable.getColumns().add(shippingToCol);
         ordersTable.getColumns().add(totalCol);
         ordersTable.getColumns().add(statusCol);
-        ordersTable.getColumns().add(actionCol);
 
-        // Placeholder pour la table
+        // Placeholder
         ordersTable.setPlaceholder(new Label("Aucune commande."));
         
-        
+        OrderDAO orderDAO = new OrderDAO();
+        List<Order> orders = orderDAO.getOrdersByCustomer(MainView.getCurrentCustomer());
+        ObservableList<Order> observableOrders = FXCollections.observableArrayList(orders);
+        ordersTable.setItems(observableOrders);
 
         return ordersTable;
     }
