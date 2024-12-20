@@ -7,6 +7,7 @@ import customer.CartItem;
 import customer.CartManager;
 import customer.Customer;
 import customer.Order;
+import database.OrderDAO;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -109,7 +110,7 @@ public class CartView {
 	        TableColumn<CartItem, Double> priceColumn = new TableColumn<>("Prix à l'unite");
 	        priceColumn.setCellValueFactory(cellData -> new SimpleDoubleProperty(cellData.getValue().getProduct().getPrice()).asObject());
 	        
-	     // Créer une colonne pour le bouton d'action
+	        // Créer une colonne pour le bouton d'action
 	        TableColumn<CartItem, Void> actionColumn = new TableColumn<>("Action");
 	        actionColumn.setCellFactory(param -> new TableCell<>() {
 	            private final Button deleteButton = new Button("Supprimer"); {
@@ -155,9 +156,12 @@ public class CartView {
 			displayLoginWarning(mainView);
 		}
 		else {
-			Customer currentCustomer = MainView.getCurrentCustomer();
 			AuthentificationView.syncUserCart();
-			Order order = new Order(currentCustomer, currentCustomer.getCart().getItems());
+			Order order = new Order(MainView.getCurrentCustomer());
+			order.setProducts(cart.getItems());
+			
+			OrderDAO orderDAO = new OrderDAO();
+            orderDAO.saveOrder(order);
 
 			for (CartItem item : cart.getItems()) {
 				order.decrementStock(item.getProduct().getId(), item.getSize(), item.getQuantity());

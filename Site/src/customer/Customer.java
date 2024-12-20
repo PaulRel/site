@@ -24,7 +24,7 @@ public class Customer {
         this.password = password;
         this.role = role;
         this.address = address;
-        this.cart = new Cart(); // Initialize with an empty cart       
+        this.cart = new Cart(); // Initialize with an empty cart    
     }
     
     public Customer(int id, String firstName, String lastName, Civility civility, String email, String phoneNumber, String password, Role role, String address) {

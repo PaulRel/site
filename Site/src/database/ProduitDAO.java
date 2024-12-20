@@ -122,4 +122,32 @@ public class ProduitDAO {
         }
         return vetement;
     }
+    
+    public Produit getProduitById(int id) {
+        String query = "SELECT id, Nom, Description, Type, Marque, Prix, Qt_Dispo, image_Path FROM produit WHERE id = ?";
+        Produit produit = null;  // Initialiser à null pour l'instant, si aucun produit n'est trouvé
+
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setInt(1, id);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    String nom = resultSet.getString("Nom");
+                    String description = resultSet.getString("Description");
+                    String type = resultSet.getString("Type");
+                    String marque = resultSet.getString("Marque");
+                    double prix = resultSet.getDouble("Prix");
+                    int qtDispo = resultSet.getInt("Qt_Dispo");
+                    String imagePath = resultSet.getString("image_Path");
+
+                    produit = new Produit(id, nom, description, type, marque, prix, qtDispo, imagePath);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return produit;
+    }
 }

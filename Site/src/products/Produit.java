@@ -2,9 +2,9 @@ package products;
 
 
 public class Produit {
-	private int id, QtDispo;
-	private String Description, Nom, Type, Marque, imagePath;
-	private double Price;
+	private int id, qtDispo;
+	private String description, nom, type, marque, imagePath;
+	private double price;
 
 	/**
 	 * Represente un produit pour l'instant
@@ -13,55 +13,55 @@ public class Produit {
 	 * @param QtDispo
 	 * @param Type
 	 */
-	public Produit(int id, String Nom, String Description, String Type, String Marque, double Price, int QtDispo, String imagePath) {
-		this.Nom=Nom;
-		this.Description = Description;
-		this.Type = Type;
-		this.setMarque(Marque);
-		this.Price = Price; 
-		this.QtDispo=QtDispo;
+	public Produit(int id, String nom, String description, String type, String marque, double price, int qtDispo, String imagePath) {
+		this.nom = nom;
+		this.description = description;
+		this.type = type;
+		this.marque = marque;
+		this.price = price; 
+		this.qtDispo = qtDispo;
 		this.imagePath = imagePath;
 	}
 
 	public Produit RechercherPdt(String c) {
-		return new Produit(QtDispo, c, c, c, c, Price, QtDispo, c);
+		return new Produit(qtDispo, c, c, c, c, price, qtDispo, c);
 	}
 	
 	@Override
 	public String toString() {
-		return (String) Nom;
+		return (String) nom;
 	}
 
 	public String getDescription() {
-		return Description;
+		return description;
 	}
 
 	public void setDescription(String description) {
-		Description = description;
+		this.description = description;
 	}
 
 	public double getPrice() {
-		return Price;
+		return price;
 	}
 
 	public void setPrice(int price) {
-		Price = price;
+		this.price = price;
 	}
 
 	public int getQtDispo() {
-		return QtDispo;
+		return qtDispo;
 	}
 
 	public void setQtDispo(int qtDispo) {
-		QtDispo = qtDispo;
+		this.qtDispo = qtDispo;
 	}
 
 	public String getType() {
-		return Type;
+		return type;
 	}
 
 	public void setType(String type) {
-		Type = type;
+		this.type = type;
 	}
 
 	public int getId() {
@@ -73,14 +73,14 @@ public class Produit {
 	}
 
 	public String getNom() {
-		return Nom;
+		return nom;
 	}
 
 	public String getMarque() {
-		return Marque;
+		return marque;
 	}
 
 	public void setMarque(String marque) {
-		Marque = marque;
+		this.marque = marque;
 	}
 }

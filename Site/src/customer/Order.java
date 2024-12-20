@@ -8,28 +8,46 @@ import java.util.ArrayList;
 import java.util.List;
 
 import database.DatabaseConnection;
+import products.Produit;
 
-public class Order {
-	private int orderId;
-    private Customer customer;
-    private List<CartItem> products;
-    private String status; // "Pending", "Validated", "Delivered" / "En cours", "Validée", "Livrée"
-    private LocalDate orderDate;
-    
-    public Order(Customer customer, List<CartItem> products) {
-        this.customer = customer;
-        this.products = new ArrayList<>(products);
-        this.status = "Pending";
-        this.orderDate = LocalDate.now();
-    }
+	public class Order {
+		private int orderId;
+	    private Customer customer;
+	    private List<CartItem> products;
+	    private String status;
+	    private LocalDate orderDate;
+	    private double totalPrice;
 
-    public void validateOrder() {
-        this.status = "Validated";
-    }
+	    public Order(Customer customer) {
+	        this.customer = customer;
+	        this.products = new ArrayList<>();
+	        this.status = "En cours";
+	        this.orderDate = LocalDate.now();
+	        this.totalPrice = calculateTotalPrice();
+	    }
 
-    public void deliverOrder() {
-        this.status = "Delivered";
-    }
+	    public void addProduct(Produit product, String size, int quantity) {
+	        CartItem detail = new CartItem(product, size, quantity);
+	        products.add(detail);
+	        calculateTotalPrice();
+	    }
+
+	    public void validateOrder() throws SQLException {
+	        this.status = "Validée";
+	        updateOrderStatusInDatabase();
+	    }
+
+	    public void deliverOrder() throws SQLException {
+	        this.status = "Délivrée";
+	        updateOrderStatusInDatabase();
+	    }
+
+	    // Calcul du prix total de la commande
+	    private double calculateTotalPrice() {
+	        return products.stream()
+	                .mapToDouble(product -> product.getProduct().getPrice() * product.getQuantity())
+	                .sum();
+	    }
     
     public void decrementStock(int productId, String size, int quantity) {
         String query = "UPDATE taillestock SET qt_dispo = qt_dispo - ? WHERE produit_id = ? AND taille = ?";
@@ -43,7 +61,17 @@ public class Order {
             e.printStackTrace();
         }
     }
-
+    
+    private void updateOrderStatusInDatabase() throws SQLException {
+        String query = "UPDATE Orders SET status = ? WHERE order_id = ?";
+        try (Connection connection = DatabaseConnection.getConnection();
+        		PreparedStatement pstmt = connection.prepareStatement(query)) {
+            pstmt.setString(1, this.status); // Mise à jour avec le statut actuel
+            pstmt.setInt(2, this.orderId); // Identifiant de la commande
+            pstmt.executeUpdate();
+        }
+    }
+    
 	public int getOrderId() {
 		return orderId;
 	}
@@ -66,6 +94,7 @@ public class Order {
 
 	public void setProducts(List<CartItem> products) {
 		this.products = products;
+		this.totalPrice = calculateTotalPrice();
 	}
 
 	public String getStatus() {
@@ -82,6 +111,14 @@ public class Order {
 
 	public void setOrderDate(LocalDate orderDate) {
 		this.orderDate = orderDate;
+	}
+
+	public double getTotalPrice() {
+		return totalPrice;
+	}
+
+	public void setTotalPrice(double totalPrice) {
+		this.totalPrice = totalPrice;
 	}
 
 

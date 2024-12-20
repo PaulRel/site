@@ -4,7 +4,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+import customer.CartItem;
+import customer.Order;
 import database.DatabaseConnection;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -197,10 +201,14 @@ public class AccountView {
     
     private void showCustomerOrders() {
     	Label ordersTitle = new Label ("Toutes mes commandes");
+    	
+    	Label subtitle = new Label("L'ensemble de vos commandes sont affichées dans le tableau ci-dessous. Vous pouvez suivre leurs états d'avancement, les visualiser, télécharger vos factures.");
+        subtitle.setWrapText(true);
+        subtitle.setStyle("-fx-font-size: 12px;");
         
         TableView<String> tableSection = createOrdersTable();
         
-        mainContent.getChildren().setAll(ordersTitle, tableSection);
+        mainContent.getChildren().setAll(ordersTitle, subtitle, tableSection);
     }
     
     private TableView<String> createOrdersTable() {
@@ -228,6 +236,8 @@ public class AccountView {
 
         // Placeholder pour la table
         ordersTable.setPlaceholder(new Label("Aucune commande."));
+        
+        
 
         return ordersTable;
     }
