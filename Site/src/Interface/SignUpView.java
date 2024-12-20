@@ -1,9 +1,5 @@
 package Interface;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Optional;
 
 import customer.Cart;
@@ -11,7 +7,7 @@ import customer.CartManager;
 import customer.Customer;
 import customer.Customer.Civility;
 import customer.Customer.Role;
-import database.DatabaseConnection;
+import database.CustomerDAO;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -24,7 +20,6 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -34,7 +29,7 @@ public class SignUpView {
 	public SignUpView(MainView mainView) {
 		Label mainLabel = new Label("Créer un compte");
 
-     // Champ civilité
+		// Champ civilité
         Label civilityLabel = new Label("Civilité");
         civilityLabel.setStyle("-fx-font-weight: normal");
         RadioButton mrRadio = new RadioButton("M");
@@ -46,7 +41,8 @@ public class SignUpView {
         HBox civilityBox = new HBox(20, civilityLabel, mrRadio, mmeRadio);
         civilityBox.setAlignment(Pos.CENTER_LEFT);
         
-     // Champ prénom
+        
+        // Champ prénom
         Label firstNameLabel = new Label("Prénom");
         firstNameLabel.setStyle("-fx-font-weight: normal");
         TextField firstNameField = new TextField();
@@ -58,6 +54,7 @@ public class SignUpView {
         TextField lastNameField = new TextField();
         lastNameField.setPromptText("Nom *");
         
+        // Champ adresse
         Label addressLabel = new Label("Adresse");
         addressLabel.setStyle("-fx-font-weight: normal");
         TextField addressField = new TextField();
@@ -97,37 +94,16 @@ public class SignUpView {
                 showPasswordButton.setText("HIDE");
             }
         });
-               
+        
+        // Champ checkBox
         CheckBox newsletterCheckBox = new CheckBox("Recevoir notre newsletter");
-
         CheckBox termsCheckBox = new CheckBox("J'accepte les conditions générales et la politique de confidentialité");
         
+        //Bouton Submit
         Button submitButton = new Button("VALIDER");       
         HBox buttonBox = new HBox(submitButton);
-        buttonBox.setAlignment(Pos.CENTER);
-        
-        
-        submitButton.setOnAction(e -> { 
-        	// Récupère les valeurs saisies par l'utilisateur
-        	Civility civility;
-            if (mrRadio.isSelected()) {
-                civility = Civility.M;
-            } else{
-                civility = Civility.Mme;
-            }
-        	String firstName = firstNameField.getText();
-        	String lastName = lastNameField.getText();
-        	String address = addressField.getText();
-        	String email = emailField.getText();
-        	String password = passwordField.getText();
-        	Role role = Role.CUSTOMER; // A modifier si possibilite creation compte admin
-        	
-        	// Crée une instance de Customer avec les informations saisies
-            Customer newCustomer = new Customer(firstName, lastName, civility, email, null, password, role, address);
-            
-        	// Appelle la méthode d'authentification
-        	handleSignUp(newCustomer, mainView);
-        });
+        buttonBox.setAlignment(Pos.CENTER);        
+        submitButton.setOnAction(e -> handleSubmitButton(mainView, mrRadio, firstNameField, lastNameField, addressField, emailField, passwordBox));
 
         // Disposition du formulaire
         GridPane gridPane = new GridPane();
@@ -165,71 +141,58 @@ public class SignUpView {
 
         AnchorPane rootPane = new AnchorPane();
         rootPane.getChildren().addAll(root);
-               
+        
         Scene createAccountScene = new Scene(rootPane, 1350, 670);
         HeaderView v = new HeaderView(mainView);
         rootPane.getChildren().addAll(v.getHeader());
-               
-        String css = this.getClass().getResource("/style.css").toExternalForm();        
-        createAccountScene.getStylesheets().add(css);
+         
+        createAccountScene.getStylesheets().add(this.getClass().getResource("/style.css").toExternalForm());
         
         mainView.getPrimaryStage().setScene(createAccountScene);
 	}
 	
-	public void handleSignUp(Customer customer, MainView mainView) {
-		String query = "INSERT INTO Customer (FirstName, LastName, Civility, Email, Passwords, Address) VALUES (?, ?, ?, ?, ?, ?)";
-
-        try (Connection conn = DatabaseConnection.getConnection();
-        	PreparedStatement statement = conn.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS)) {
-
-            // Remplace les paramètres de la requête par les valeurs de l'objet Customer
-            statement.setString(1, customer.getFirstName());
-            statement.setString(2, customer.getLastName());
-            statement.setString(3, customer.getCivility().name());
-            statement.setString(4, customer.getEmail());            
-            statement.setString(5, customer.getPassword());
-            statement.setString(6, customer.getAddress());
-
-            int rowsInserted = statement.executeUpdate();
-            if (rowsInserted > 0) {
-                System.out.println("Le client a été ajouté avec succès !");
-                
-                // Récupérer l'ID généré automatiquement
-                try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
-                    if (generatedKeys.next()) {
-                        int generatedId = generatedKeys.getInt(1); // Récupérer l'ID généré
-                        customer.setId(generatedId); // Assigner l'ID généré à l'objet Customer
-                        System.out.println("ID du nouveau client : " + generatedId);
-                    } else {
-                        throw new SQLException("Échec de récupération de l'ID généré.");
-                    }
-                }
-                
-                // Initialise la session
-                MainView.setCurrentCustomer(customer);
-        		Cart cart = CartManager.getTempCart();
-        		if (cart!=null) {
-        			AuthentificationView.syncUserCart();
-        		}
-                
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        		alert.setTitle("Création de compte réussie");
-        		alert.setHeaderText("Votre compte a bien été créée.");
-        		alert.setContentText("Vous pouvez désormais modifier vos informations dans les paramètres du compte.");
-
-        		// Ajouter un bouton pour rediriger vers la page du compte
-        		ButtonType loginButton = new ButtonType("Continuer");
-
-        		alert.getButtonTypes().setAll(loginButton);
-
-        		Optional<ButtonType> result = alert.showAndWait();
-        		if (result.isPresent() && result.get() == loginButton) {
-        			new AccountView(mainView);
-        		}
-            }
-        } catch (SQLException e) {
-        	MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);
-            e.printStackTrace();
+	private void handleSubmitButton(MainView mainView, RadioButton mrRadio, TextField firstNameField, TextField lastNameField, TextField addressField, TextField emailField, HBox passwordBox) {
+		// Récupère les valeurs saisies par l'utilisateur
+    	Civility civility;
+        if (mrRadio.isSelected()) {
+            civility = Civility.M;
+        } else{
+            civility = Civility.Mme;
         }
+    	String firstName = firstNameField.getText();
+    	String lastName = lastNameField.getText();
+    	String address = addressField.getText();
+    	String email = emailField.getText();
+    	String password = ((PasswordField) passwordBox.getChildren().get(0)).getText();
+    	Role role = Role.CUSTOMER; // A modifier si possibilite creation compte admin
+    	
+    	// Crée une instance de Customer avec les informations saisies
+        Customer newCustomer = new Customer(firstName, lastName, civility, email, null, password, role, address);
+        
+        // Ajoute dans la base de données
+        CustomerDAO customerDAO = new CustomerDAO();
+		customerDAO.signUpCustomer(newCustomer);
+ 	
+		// Initialise la session
+		MainView.setCurrentCustomer(newCustomer);
+		Cart cart = CartManager.getTempCart();
+		if (cart!=null) {
+			AuthentificationView.syncUserCart();
+		}
+     
+		// Affiche une alerte de création de compte
+		Alert alert = new Alert(Alert.AlertType.INFORMATION);
+		alert.setTitle("Création de compte réussie");
+		alert.setHeaderText("Votre compte a bien été créée.");
+		alert.setContentText("Vous pouvez désormais modifier vos informations dans les paramètres du compte.");
+
+		// Redirige vers la page du compte
+		ButtonType loginButton = new ButtonType("Continuer");
+		alert.getButtonTypes().setAll(loginButton);
+		Optional<ButtonType> result = alert.showAndWait();
+		if (result.isPresent() && result.get() == loginButton) {
+			new AccountView(mainView);
+		}
+		
 	}
 }
