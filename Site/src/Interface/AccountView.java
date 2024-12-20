@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 
-import customer.CartItem;
 import customer.Order;
 import database.DatabaseConnection;
 import database.OrderDAO;
@@ -17,6 +16,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import products.Produit;
@@ -51,7 +51,7 @@ public class AccountView {
         VBox userBox = new VBox(10);
         userBox.setAlignment(Pos.CENTER);
         userBox.setPadding(new Insets(10));
-        ImageView profileIcon = new ImageView("https://via.placeholder.com/100"); // Placeholder pour l'image de profil
+        ImageView profileIcon = new ImageView(new Image(getClass().getResource("/Image/accountIcon.png").toExternalForm()));
         profileIcon.setFitWidth(60);
         profileIcon.setFitHeight(60);
         Label userNameLabel = new Label("Bonjour,\n" + MainView.getCurrentCustomer().getFirstName() + " " + MainView.getCurrentCustomer().getLastName());

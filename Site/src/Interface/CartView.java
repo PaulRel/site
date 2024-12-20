@@ -5,7 +5,6 @@ import java.util.Optional;
 import customer.Cart;
 import customer.CartItem;
 import customer.CartManager;
-import customer.Customer;
 import customer.Order;
 import database.OrderDAO;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -168,6 +167,7 @@ public class CartView {
 			}
 			cart.clearCart();
 			MainView.showAlert("Commande", null, "Commande validée", AlertType.INFORMATION);
+			new AccountView(mainView);
 		}
 	}
 	

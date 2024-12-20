@@ -127,7 +127,7 @@ public class AuthentificationView {
     		if (cart!=null) {
     			AuthentificationView.syncUserCart();
     		}
-    		MainView.showAlert("Connexion réussie", null, "Bienvenue " + customer.getFirstName()+" !", AlertType.INFORMATION);
+    		//MainView.showAlert("Connexion réussie", null, "Bienvenue " + customer.getFirstName()+" !", AlertType.INFORMATION);
         } else {
         	MainView.showAlert("Échec de la connexion", null, "Adresse e-mail ou mot de passe incorrect.", AlertType.ERROR);
         }
