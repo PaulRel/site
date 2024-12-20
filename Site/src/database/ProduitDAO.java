@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import products.Chaussures;
-import products.Produit;
+import products.Product;
 import products.Vetement;
 import products.Vetement.TypeVetement;
 
@@ -18,8 +18,8 @@ public class ProduitDAO {
 	int id, qtDispo;
 	double prix;
 
-    public List<Produit> getAllProduits() {
-        List<Produit> produits = new ArrayList<>();
+    public List<Product> getAllProduits() {
+        List<Product> products = new ArrayList<>();
         String query = "SELECT id, Nom, Description, Type, Marque, Prix, Qt_Dispo, image_Path FROM produit";
 
         try (Connection connection = DatabaseConnection.getConnection();
@@ -37,19 +37,19 @@ public class ProduitDAO {
                 qtDispo = resultSet.getInt("Qt_Dispo");
                 imagePath = resultSet.getString("image_Path");
 
-                Produit produit = new Produit(id, nom, description, type, marque, prix, qtDispo, imagePath);
+                Product product = new Product(id, nom, description, type, marque, prix, qtDispo, imagePath);
                 if (type.equalsIgnoreCase("chaussures")) {
-                    produit = getChaussuresDetails();
+                    product = getChaussuresDetails();
                 } else if (type.equalsIgnoreCase("vetement")) {
-                    produit = getVetementsDetails();
+                    product = getVetementsDetails();
                 }
-                produits.add(produit);
+                products.add(product);
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return produits;
+        return products;
     }
     
     public Chaussures getChaussuresDetails(){
@@ -122,9 +122,9 @@ public class ProduitDAO {
         return vetement;
     }
     
-    public Produit getProduitById(int id) {
+    public Product getProduitById(int id) {
         String query = "SELECT id, Nom, Description, Type, Marque, Prix, Qt_Dispo, image_Path FROM produit WHERE id = ?";
-        Produit produit = null;  // Initialiser à null pour l'instant, si aucun produit n'est trouvé
+        Product product = null;  // Initialiser à null pour l'instant, si aucun produit n'est trouvé
 
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
@@ -141,12 +141,12 @@ public class ProduitDAO {
                     int qtDispo = resultSet.getInt("Qt_Dispo");
                     String imagePath = resultSet.getString("image_Path");
 
-                    produit = new Produit(id, nom, description, type, marque, prix, qtDispo, imagePath);
+                    product = new Product(id, nom, description, type, marque, prix, qtDispo, imagePath);
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return produit;
+        return product;
     }
 }

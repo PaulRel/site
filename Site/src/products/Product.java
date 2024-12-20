@@ -1,7 +1,7 @@
 package products;
 
 
-public class Produit {
+public class Product {
 	private int id, qtDispo;
 	private String description, nom, type, marque, imagePath;
 	private double price;
@@ -13,7 +13,7 @@ public class Produit {
 	 * @param QtDispo
 	 * @param Type
 	 */
-	public Produit(int id, String nom, String description, String type, String marque, double price, int qtDispo, String imagePath) {
+	public Product(int id, String nom, String description, String type, String marque, double price, int qtDispo, String imagePath) {
 		this.id = id;
 		this.nom = nom;
 		this.description = description;
@@ -24,8 +24,8 @@ public class Produit {
 		this.imagePath = imagePath;
 	}
 
-	public Produit RechercherPdt(String c) {
-		return new Produit(qtDispo, c, c, c, c, price, qtDispo, c);
+	public Product RechercherPdt(String c) {
+		return new Product(qtDispo, c, c, c, c, price, qtDispo, c);
 	}
 	
 	@Override

@@ -13,13 +13,13 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import products.Produit;
+import products.Product;
 
 public class ProductView {
 	
 	private AnchorPane root;
 	
-	public ProductView(MainView mainView, Class<? extends Produit> typeProduit) {
+	public ProductView(MainView mainView, Class<? extends Product> typeProduit) {
 		root = new AnchorPane();
 		HBox sectionProduits = new HBox();
 		sectionProduits.setPadding(new Insets(10, 20, 10, 20)); // Espace  Haut, Droite>, Bas, Gauche<  de l'AnchorPane
@@ -38,16 +38,16 @@ public class ProductView {
     * @param primaryStage La scène principale de l'application.
     * @return Le GridPane contenant tous les produits.
     */
-   public ScrollPane displayProducts(MainView mainView, Class<? extends Produit> typeProduit) {
+   public ScrollPane displayProducts(MainView mainView, Class<? extends Product> typeProduit) {
        FlowPane produitsGrid = new FlowPane();
        produitsGrid.setPadding(new Insets(10));
        produitsGrid.setHgap(10);
        produitsGrid.setVgap(10);
        produitsGrid.setPrefWrapLength(mainView.getPrimaryStage().getWidth()-300);
        ProduitDAO produitDAO = new ProduitDAO();  // Récupérer les produits depuis la base de données
-       List<Produit> produits = produitDAO.getAllProduits();
+       List<Product> products = produitDAO.getAllProduits();
        
-       produits.stream()
+       products.stream()
        .filter(typeProduit::isInstance) // Filtrer les produits par type
        .forEach(produit -> {
        	// TESTS :  System.out.println(typeProduit); System.out.println("Nom de la classe : " + produit.getClass().getSimpleName());
@@ -70,18 +70,18 @@ public class ProductView {
     * Crée un conteneur VBox pour afficher chaque produit avec ses informations.
     * 
     * @param primaryStage La scène principale de l'application.
-    * @param produit      Le produit à afficher.
+    * @param product      Le produit à afficher.
     * @return Un VBox contenant l'image, le nom et le prix du produit.
     */
-   private VBox createProductBox(MainView mainView, Produit produit) {
+   private VBox createProductBox(MainView mainView, Product product) {
    	// Création des composants pour chaque produit
-       ImageView imageView = new ImageView(new Image(getClass().getResource(produit.getImagePath()).toExternalForm()));
+       ImageView imageView = new ImageView(new Image(getClass().getResource(product.getImagePath()).toExternalForm()));
        imageView.setFitHeight(150);
        imageView.setFitWidth(150);
 
-       Label nomProduit = new Label(produit.getNom());
+       Label nomProduit = new Label(product.getNom());
        nomProduit.getStyleClass().add("nom-produit"); // Appliquer la classe CSS
-       Label prixProduit = new Label("Prix : " + produit.getPrice() + "€");
+       Label prixProduit = new Label("Prix : " + product.getPrice() + "€");
        prixProduit.getStyleClass().add("prix-produit"); // Appliquer la classe CSS
 
        VBox produitBox = new VBox();
@@ -89,7 +89,7 @@ public class ProductView {
        produitBox.getChildren().addAll(imageView, nomProduit, prixProduit);
        
        // Gestion du clic sur le produit pour afficher les détails
-       produitBox.setOnMouseClicked(event -> new ProductDetailsView(mainView, produit));
+       produitBox.setOnMouseClicked(event -> new ProductDetailsView(mainView, product));
        
        return produitBox;
     }

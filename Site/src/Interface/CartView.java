@@ -30,7 +30,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import products.Produit;
+import products.Product;
 
 public class CartView {
 	private TableView<CartItem> cartTable = new TableView<CartItem>();
@@ -41,7 +41,7 @@ public class CartView {
 	
 	public CartView(MainView mainView) {
 		continueButton = new Button("Continuer vos achats");
-		continueButton.setOnAction(e -> mainView.showProductView(Produit.class));
+		continueButton.setOnAction(e -> mainView.showProductView(Product.class));
 		if (MainView.getCurrentCustomer() != null) {cart = MainView.getCurrentCustomer().getCart();}
 		if (cart == null || cart.getItems().isEmpty()) {
 			Label emptyCartLabel = new Label("Votre panier est vide");

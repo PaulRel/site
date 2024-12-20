@@ -11,7 +11,7 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import products.Produit;
+import products.Product;
 
 public class MainView extends Application {
 
@@ -28,7 +28,7 @@ public class MainView extends Application {
     	
        	headerView = new HeaderView(this); //utile ?
         
-        showProductView(Produit.class);
+        showProductView(Product.class);
         //createScrollPane();
         
         setupStage(primaryStage);
@@ -51,7 +51,7 @@ public class MainView extends Application {
     /**
      * Crée et place la section de produits au centre de l'interface utilisateur.
      */
-    public void showProductView(Class<? extends Produit> typeProduit) {
+    public void showProductView(Class<? extends Product> typeProduit) {
     	ProductView productSection = new ProductView(this, typeProduit);
     	AnchorPane root = productSection.getRoot();
     	root.getChildren().add(headerView.getHeader()); // Ajouter l'en-tête

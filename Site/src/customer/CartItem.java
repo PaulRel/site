@@ -1,23 +1,23 @@
 package customer;
 
-import products.Produit;
+import products.Product;
 
 public class CartItem {
-	private Produit product;
+	private Product product;
     private String size;
     private int quantity;
 
-    public CartItem(Produit product, String size, int quantity) {
+    public CartItem(Product product, String size, int quantity) {
         this.product = product;
         this.size = size;
         this.quantity = quantity;
     }
 
-	public Produit getProduct() {
+	public Product getProduct() {
 		return product;
 	}
 
-	public void setProduct(Produit product) {
+	public void setProduct(Product product) {
 		this.product = product;
 	}
 

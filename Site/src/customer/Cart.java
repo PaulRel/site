@@ -3,7 +3,7 @@ package customer;
 import java.util.ArrayList;
 import java.util.List;
 
-import products.Produit;
+import products.Product;
 
 public class Cart {
 	private List<CartItem> items;
@@ -12,7 +12,7 @@ public class Cart {
         this.items = new ArrayList<>();
     }
 
-    public void addProduct(Produit product, String size, int quantity) {
+    public void addProduct(Product product, String size, int quantity) {
         // Vérifier si le produit-taille est déjà dans le Cart
         for (CartItem ligne : items) {
             if (ligne.getProduct().getId() == product.getId() && ligne.getSize().equals(size)) {           	

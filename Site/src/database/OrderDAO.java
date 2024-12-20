@@ -14,7 +14,7 @@ import Interface.MainView;
 import customer.CartItem;
 import customer.Customer;
 import customer.Order;
-import products.Produit;
+import products.Product;
 
 public class OrderDAO {
 	
@@ -61,8 +61,8 @@ public class OrderDAO {
                     String size = rs.getString("size");
                     int quantity = rs.getInt("quantity");
                     ProduitDAO produitDAO = new ProduitDAO();
-                    Produit produit = produitDAO.getProduitById(productId);
-                    order.addProduct(produit, size, quantity);
+                    Product product = produitDAO.getProduitById(productId);
+                    order.addProduct(product, size, quantity);
                 }
             }
         } catch (SQLException e) {

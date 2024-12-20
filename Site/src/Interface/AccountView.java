@@ -19,7 +19,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
-import products.Produit;
+import products.Product;
 
 public class AccountView {
 	private AnchorPane rootPane;
@@ -59,7 +59,7 @@ public class AccountView {
         Button logoutButton = new Button("Déconnexion");
         logoutButton.setOnAction(e -> {
         	MainView.setCurrentCustomer(null);
-        	mainView.showProductView(Produit.class);
+        	mainView.showProductView(Product.class);
         });
         
         userBox.getChildren().addAll(profileIcon, userNameLabel, logoutButton);
@@ -72,7 +72,7 @@ public class AccountView {
         dashboardButton.setOnAction(e -> showDashboard());
         accountInfoButton.setOnAction(e -> editCustomerInfo());
         ordersButton.setOnAction(e -> showCustomerOrders());
-        deleteAccountButton.setOnAction(e -> {deleteAccount(); mainView.showProductView(Produit.class);});
+        deleteAccountButton.setOnAction(e -> {deleteAccount(); mainView.showProductView(Product.class);});
         
         deleteAccountButton.setStyle("-fx-background-color: white; -fx-text-fill: red; -fx-border-color: red; -fx-border-width: 2");
         

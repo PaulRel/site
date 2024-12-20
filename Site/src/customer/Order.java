@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import database.DatabaseConnection;
-import products.Produit;
+import products.Product;
 
 	public class Order {
 		private int orderId;
@@ -26,7 +26,7 @@ import products.Produit;
 	        this.totalPrice = 0.0;
 	    }
 
-	    public void addProduct(Produit product, String size, int quantity) {
+	    public void addProduct(Product product, String size, int quantity) {
 	        CartItem detail = new CartItem(product, size, quantity);
 	        products.add(detail);
 	        calculateTotalPrice();

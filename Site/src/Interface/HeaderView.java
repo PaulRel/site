@@ -13,7 +13,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import products.Chaussures;
-import products.Produit;
+import products.Product;
 import products.Sac;
 import products.Vetement;
 
@@ -39,7 +39,7 @@ public class HeaderView{
         // Nom du magasin
         Label shopName = new Label("TennisShop");
         shopName.setStyle("-fx-text-fill: #333; -fx-font-size: 30px; -fx-font-weight: bold;");
-        shopName.setOnMouseClicked(e -> mainView.showProductView(Produit.class));
+        shopName.setOnMouseClicked(e -> mainView.showProductView(Product.class));
         
         // Bouton du compte
         ImageView accountIcon = new ImageView(new Image(getClass().getResource("/Image/accountIcon.png").toExternalForm()));

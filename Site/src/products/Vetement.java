@@ -2,7 +2,7 @@ package products;
 
 import java.util.HashMap;
 
-public class Vetement extends Produit implements ProductWithSize{
+public class Vetement extends Product implements ProductWithSize{
 	
 
 	public enum TypeVetement{

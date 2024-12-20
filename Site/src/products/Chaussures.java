@@ -2,7 +2,7 @@ package products;
 
 import java.util.HashMap;
 
-public class Chaussures extends Produit implements ProductWithSize{
+public class Chaussures extends Product implements ProductWithSize{
 
 	
 	private String genre, couleur, surface;

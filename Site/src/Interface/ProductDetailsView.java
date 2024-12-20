@@ -18,14 +18,14 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import products.ProductWithSize;
-import products.Produit;
+import products.Product;
 
 public class ProductDetailsView {
 	private int chosenQuantity;
 	Cart cart = CartManager.getTempCart();
 	
-	public ProductDetailsView(MainView mainView, Produit produit) {
-		showProductDetails(mainView, produit);
+	public ProductDetailsView(MainView mainView, Product product) {
+		showProductDetails(mainView, product);
 	}
 	/**
      * Affiche les détails d'un produit spécifique dans une nouvelle scène.
@@ -33,7 +33,7 @@ public class ProductDetailsView {
      * @param primaryStage La scène principale de l'application.
      * @param produit      Le produit dont les détails sont à afficher.
      */
-    public void showProductDetails(MainView mainView, Produit product) {
+    public void showProductDetails(MainView mainView, Product product) {
         // Création d'un nouveau conteneur pour les détails du produit
         HBox detailsBox = new HBox();
         detailsBox.setPadding(new Insets(20));
