@@ -9,6 +9,7 @@ import javafx.geometry.Insets;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -26,8 +27,9 @@ public class ProductView {
 	private FlowPane produitsGrid;
 	private ProduitDAO produitDAO;
 	List<Product> actualProducts;
-	private Set<String> sizeSelected, sexSelected;
-	private CheckBox tailleS, tailleM, tailleL, sexeHomme, sexeFemme, enfant;
+	private Set<String> sizeSelected, genderSelected, brandSelected, clothingTypeSelected;
+	private CheckBox sizeXS, sizeS, sizeM, sizeL, size36, size37, size38, size39, male, female, child, marqueAsics, marqueBabolat, marqueAdidas, tankTop, sweat, shorts, tshirt, dress;
+	private double maxPrice = 200.0;
 	
 	public ProductView(MainView mainView, Class<? extends Product> typeProduit) {
 		root = new AnchorPane();
@@ -111,61 +113,136 @@ public class ProductView {
     * Crée une boîte latérale contenant des filtres de produits.
     */
    private VBox createFilterBox(MainView mainView) {
-       VBox filtreBox = new VBox();
+       VBox filterBox = new VBox();
 
        Label filtreTaille = new Label("Tailles");
-       tailleS = new CheckBox("Taille S");
-       tailleM = new CheckBox("Taille M");
-       tailleL = new CheckBox("Taille L");
-       filtreBox.getChildren().addAll(filtreTaille, tailleS, tailleM, tailleL);
+       sizeXS = new CheckBox("Taille XS");
+       sizeS = new CheckBox("Taille S");
+       sizeM = new CheckBox("Taille M");
+       sizeL = new CheckBox("Taille L");
+       size36 = new CheckBox("36");
+       size37 = new CheckBox("37");
+       size38 = new CheckBox("38");
+       size39 = new CheckBox("39");              
+       filterBox.getChildren().addAll(filtreTaille, sizeXS, sizeS, sizeM, sizeL, size36, size37, size38, size39);
        
-       Label filtreSexe = new Label("Sexe");
-       sexeHomme = new CheckBox("Homme");
-       sexeFemme = new CheckBox("Femme");
-       enfant = new CheckBox("Enfant");
-       filtreBox.getChildren().addAll(filtreSexe, sexeHomme, sexeFemme, enfant);
+       Label genderFilterLabel = new Label("Genre");
+       male = new CheckBox("Homme");
+       female = new CheckBox("Femme");
+       child = new CheckBox("Enfant");
+       filterBox.getChildren().addAll(genderFilterLabel, male, female, child);
        
-       tailleS.setOnAction(event -> applyFilters(mainView));
-       tailleM.setOnAction(event -> applyFilters(mainView));
-       tailleL.setOnAction(event -> applyFilters(mainView));
-       sexeHomme.setOnAction(event -> applyFilters(mainView));
-       sexeFemme.setOnAction(event -> applyFilters(mainView));
-       enfant.setOnAction(event -> applyFilters(mainView));
+       Label filtreMarque = new Label("Marques");
+       marqueAsics = new CheckBox("Asics");
+       marqueAdidas = new CheckBox("Adidas");
+       marqueBabolat = new CheckBox("Babolat");
+       filterBox.getChildren().addAll(filtreMarque, marqueAsics, marqueAdidas, marqueBabolat);
        
-       return filtreBox;
+       Label clothingTypeFilterLabel = new Label("Types");
+       tankTop = new CheckBox("Debardeur");
+       sweat = new CheckBox("Sweat");
+       shorts = new CheckBox("Short");
+       tshirt = new CheckBox("Tshirt");
+       dress = new CheckBox("Robe");
+       filterBox.getChildren().addAll(clothingTypeFilterLabel, tankTop, sweat, shorts, tshirt, dress);
+       
+       Label filtrePrix = new Label("Prix maximum");
+       Slider priceSlider = new Slider();
+       priceSlider.setMin(0); // Borne minimum
+       priceSlider.setMax(200); // Borne maximum
+       priceSlider.setValue(200); // Valeur initiale
+       priceSlider.setShowTickMarks(true); // Affiche les graduations
+       priceSlider.setShowTickLabels(true); // Affiche les étiquettes
+       priceSlider.setMajorTickUnit(50); // Intervalles des graduations principales
+       priceSlider.setBlockIncrement(20); // Incréments avec le clavier ou la souris
+       Label priceLabel = new Label("Prix maximum sélectionné : " + (int) priceSlider.getValue() + " €");
+       priceLabel.setStyle("-fx-font-size: 10px; -fx-font-weight: normal");
+       filterBox.getChildren().addAll(filtrePrix, priceSlider, priceLabel);
+       
+       sizeXS.setOnAction(event -> applyFilters(mainView));
+       sizeS.setOnAction(event -> applyFilters(mainView));
+       sizeM.setOnAction(event -> applyFilters(mainView));
+       sizeL.setOnAction(event -> applyFilters(mainView));
+       size36.setOnAction(event -> applyFilters(mainView));
+       size37.setOnAction(event -> applyFilters(mainView));
+       size38.setOnAction(event -> applyFilters(mainView));
+       size39.setOnAction(event -> applyFilters(mainView));       
+       male.setOnAction(event -> applyFilters(mainView));
+       female.setOnAction(event -> applyFilters(mainView));
+       child.setOnAction(event -> applyFilters(mainView));
+       marqueAsics.setOnAction(event -> applyFilters(mainView));
+       marqueAdidas.setOnAction(event -> applyFilters(mainView));
+       marqueBabolat.setOnAction(event -> applyFilters(mainView));
+       tankTop.setOnAction(event -> applyFilters(mainView));
+       sweat.setOnAction(event -> applyFilters(mainView));
+       shorts.setOnAction(event -> applyFilters(mainView));
+       tshirt.setOnAction(event -> applyFilters(mainView));
+       dress.setOnAction(event -> applyFilters(mainView));
+       priceSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+    	   priceLabel.setText("Prix maximum sélectionné : " + newValue.intValue() + " €");
+           maxPrice = newValue.doubleValue(); // Met à jour la variable globale maxPrice
+           applyFilters(mainView); // Applique les filtres
+       });
+       
+       return filterBox;
    }
    
    private void applyFilters(MainView mainView) {
 	   	// Collecte des filtres sélectionnés
 	    sizeSelected = new HashSet<>();
-	    if (tailleS.isSelected()) sizeSelected.add("S");
-	    if (tailleM.isSelected()) sizeSelected.add("M");
-	    if (tailleL.isSelected()) sizeSelected.add("L");
+	    if (sizeXS.isSelected()) sizeSelected.add("XS");
+	    if (sizeS.isSelected()) sizeSelected.add("S");
+	    if (sizeM.isSelected()) sizeSelected.add("M");
+	    if (sizeL.isSelected()) sizeSelected.add("L");
+	    if (size36.isSelected()) sizeSelected.add("36");
+	    if (size37.isSelected()) sizeSelected.add("37");
+	    if (size38.isSelected()) sizeSelected.add("38");
+	    if (size39.isSelected()) sizeSelected.add("39");
 
-	    sexSelected = new HashSet<>();
-	    if (sexeHomme.isSelected()) sexSelected.add("Homme");
-	    if (sexeFemme.isSelected()) sexSelected.add("Femme");
-	    if (enfant.isSelected()) sexSelected.add("Enfant");
+	    genderSelected = new HashSet<>();
+	    if (male.isSelected()) genderSelected.add("Homme");
+	    if (female.isSelected()) genderSelected.add("Femme");
+	    if (child.isSelected()) genderSelected.add("Enfant");
 	    
+	    brandSelected = new HashSet<>();
+	    if (marqueAsics.isSelected()) brandSelected.add("Asics");
+	    if (marqueAdidas.isSelected()) brandSelected.add("Adidas");
+	    if (marqueBabolat.isSelected()) brandSelected.add("Babolat");
+	    
+	    clothingTypeSelected = new HashSet<>();
+	    if (tankTop.isSelected()) clothingTypeSelected.add("Debardeur");
+	    if (sweat.isSelected()) clothingTypeSelected.add("Sweat");
+	    if (shorts.isSelected()) clothingTypeSelected.add("Short");
+	    if (tshirt.isSelected()) clothingTypeSelected.add("Tshirt");
+	    if (dress.isSelected()) clothingTypeSelected.add("Robe");
 	    updateProductDisplay(mainView);
 	}
 
    private boolean filterByAttributes(Product product) {
-	    if (product instanceof Chaussures || product instanceof Vetement) {
-	        String sex =  ((ProductWithSize) product).getGenre();
-
-	        boolean matchSize = sizeSelected.isEmpty() || ((ProductWithSize) product).getTailleStock().keySet().stream().anyMatch(sizeSelected::contains);
-	        boolean matchSex = sexSelected.isEmpty() || sexSelected.contains(sex);
-
-	        return matchSize && matchSex;
+	    boolean matchSize = sizeSelected.isEmpty() || ((ProductWithSize) product).getTailleStock().keySet().stream().anyMatch(sizeSelected::contains);
+	    boolean matchGender = genderSelected.isEmpty() || genderSelected.contains(((ProductWithSize) product).getGenre());
+	    boolean matchBrand = brandSelected.isEmpty() || brandSelected.contains(product.getMarque());
+	    boolean matchClothingType = true;
+		if (product instanceof Vetement) {
+			matchClothingType = clothingTypeSelected.isEmpty() || clothingTypeSelected.stream()
+		            .anyMatch(type -> type.equalsIgnoreCase(((Vetement) product).getTypeVetement().toString()));
+		}
+		boolean isClothingSelected = !clothingTypeSelected.isEmpty();
+	    if (isClothingSelected && product instanceof Chaussures) {
+	        return false;  // Exclure les produits de type Chaussures
 	    }
-	    return true;
+	    return matchSize && matchGender && matchBrand && matchClothingType;
    }
+   
+   private boolean filterByPrice(Product product) {
+	    return product.getPrice() <= maxPrice;
+	}
    
    private void updateProductDisplay(MainView mainView) {
 	    produitsGrid.getChildren().clear(); // Nettoie l'affichage actuel
 	    actualProducts.stream()
 	       .filter(this::filterByAttributes)
+	       .filter(this::filterByPrice)
 	       .forEach(produit -> {
 	        VBox produitBox = createProductBox(mainView, produit); // Crée une box pour chaque produit
 	        produitsGrid.getChildren().add(produitBox); // Ajoute la box au GridPane
