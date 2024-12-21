@@ -20,7 +20,11 @@ public class MainView extends Application {
 	private HeaderView headerView;
 	private String css;
 	private static Customer currentCustomer;
-	
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+    
     @Override
     public void start(Stage primaryStage) throws Exception {
     	this.primaryStage=primaryStage;
@@ -30,7 +34,6 @@ public class MainView extends Application {
        	headerView = new HeaderView(this); //utile ?
         
         showProductView(Product.class);
-        //createScrollPane();
         
         setupStage(primaryStage);
         primaryStage.show();
@@ -69,6 +72,10 @@ public class MainView extends Application {
         currentCustomer = customer;
     }
     
+	public Stage getPrimaryStage() {
+		return primaryStage;
+	}
+    
     /**
      * Crée un conteneur défilant (ScrollPane) pour la mise en page principale, permettant le défilement du contenu.
      */
@@ -81,15 +88,6 @@ public class MainView extends Application {
         scrollPane.setPadding(new Insets(10));
         return scrollPane;
     }
-
-
-    public static void main(String[] args) {
-        launch(args);
-    }
-
-	public Stage getPrimaryStage() {
-		return primaryStage;
-	}
 	
 	// Méthode pour afficher une boîte d'alerte
     public static void showAlert(String title, String headerText, String message, AlertType type) {
