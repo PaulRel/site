@@ -103,7 +103,7 @@
 }
 
 .scroll-pane-style {
-    -fx-background: transparent;
+    -fx-background: white;
     -fx-border-color: #e0e0e0;
 }
 

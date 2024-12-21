@@ -37,10 +37,11 @@ public class ProductView {
 		sectionProduits.setPadding(new Insets(10, 20, 10, 20)); // Espace  Haut, Droite>, Bas, Gauche<  de l'AnchorPane
 		sectionProduits.setSpacing(50); // Espacement entre filtre et grid
 		sectionProduits.getChildren().clear();
-        sectionProduits.getChildren().addAll(createFilterBox(mainView), displayProducts(mainView, typeProduit));
+        sectionProduits.getChildren().addAll(MainView.createScrollPane(createFilterBox(mainView)), displayProducts(mainView, typeProduit));
         
         AnchorPane.setTopAnchor(sectionProduits, 150.0);
         AnchorPane.setLeftAnchor(sectionProduits, 10.0);
+        AnchorPane.setBottomAnchor(sectionProduits, 10.0);
         root.getChildren().add(sectionProduits);
 	}
 	
@@ -249,12 +250,12 @@ public class ProductView {
 	    });
 	}
 
-public AnchorPane getRoot() {
-	return root;
-}
+   public AnchorPane getRoot() {
+	   return root;
+   }
 
-public void setRoot(AnchorPane root) {
-	this.root = root;
-}
+   public void setRoot(AnchorPane root) {
+	   this.root = root;
+   }
 
 }

@@ -3,6 +3,7 @@ package Interface;
 import java.io.IOException;
 import customer.Customer;
 import javafx.application.Application;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -77,6 +78,7 @@ public class MainView extends Application {
         scrollPane.setPannable(true);   // Permet le défilement via la souris
         //scrollPane.getStyleClass().add("scroll-pane-style"); // Appliquer une classe CSS (facultatif)
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);  // Toujours afficher la barre de défilement verticale
+        scrollPane.setPadding(new Insets(10));
         return scrollPane;
     }
 
