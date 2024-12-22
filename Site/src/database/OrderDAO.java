@@ -5,6 +5,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -70,7 +71,7 @@ public class OrderDAO {
     public void insertOrder(Order order) {
         try (Connection conn = DatabaseConnection.getConnection()) {
             String sqlOrder = "INSERT INTO Orders (customer_id, order_date, status) VALUES (?, ?, ?)";
-            PreparedStatement psOrder = conn.prepareStatement(sqlOrder);
+            PreparedStatement psOrder = conn.prepareStatement(sqlOrder, Statement.RETURN_GENERATED_KEYS);
 
             psOrder.setInt(1, order.getCustomer().getId());
             psOrder.setDate(2, Date.valueOf(order.getOrderDate()));

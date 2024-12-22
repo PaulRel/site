@@ -238,9 +238,8 @@ public class AccountView {
             private final Button viewButton = new Button("Visualiser");
             {
                 viewButton.setOnAction(event -> {
-
-                	
-                	
+                	InvoiceView invoiceView = new InvoiceView();
+                	invoiceView.genererFacture(getTableRow().getItem());               	
                 });
             }
 

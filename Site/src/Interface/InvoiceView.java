@@ -1,51 +1,71 @@
 package Interface;
+
+import customer.Invoice;
+import customer.Order;
+import database.InvoiceDAO;
+import javafx.scene.control.Alert.AlertType;
+
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Paragraph;
-import com.itextpdf.layout.element.Table;
+import java.io.File;
+import java.io.IOException;
 
 public class InvoiceView {
-	public static void genererFacture(Invoice invoice) {
-        try {
-            // Initialiser le document PDF
-            PdfWriter writer = new PdfWriter(new FileOutputStream(cheminFichier));
-            PdfDocument pdf = new PdfDocument(writer);
-            Document document = new Document(pdf);
+	
+	public void genererFacture(Order order) {
+		// Récupération des informations de la facture
+		InvoiceDAO invoiceDAO = new InvoiceDAO();
+		Invoice invoice = invoiceDAO.getInvoiceByOrder(order);
 
-            // Titre de la facture
-            document.add(new Paragraph("Facture").setBold().setFontSize(20));
+	    // Si la facture est introuvable, afficher une erreur
+	    if (invoice == null) {
+	        System.out.println("Facture introuvable pour la commande : " + order.getOrderId());
+	        return;
+	    }
 
-            // Infos client
-            document.add(new Paragraph("Nom : " + nomClient));
-            document.add(new Paragraph("Adresse : " + adresseClient));
-            document.add(new Paragraph("\n"));
+	    // Chemin pour enregistrer le PDF
+	    String pdfFilePath = "facture_" + invoice.getInvoiceId() + ".pdf";
 
-            // Tableau pour les produits/services
-            Table table = new Table(new float[]{3, 1, 1});
-            table.addCell("Description");
-            table.addCell("Quantité");
-            table.addCell("Prix");
+	    try {
+	        // Création du PDF
+	        PdfWriter writer = new PdfWriter(pdfFilePath);
+	        PdfDocument pdfDoc = new PdfDocument(writer);
+	        Document document = new Document(pdfDoc);
 
-            for (String[] produit : produits) {
-                table.addCell(produit[0]); // Description
-                table.addCell(produit[1]); // Quantité
-                table.addCell(produit[2]); // Prix
-            }
+	        // Titre de la facture	        
+	        //document.add(new Paragraph("Facture").setBold().setFontSize(18));
 
-            document.add(table);
+	        // Ajout des détails de la facture
+	        document.add(new Paragraph("Numéro de facture : " + invoice.getInvoiceId()));
+	        document.add(new Paragraph("Adresse de facturation : " + invoice.getBillingAddress()));
+	        document.add(new Paragraph("Adresse de livraison : " + invoice.getShippingAddress()));
+	        document.add(new Paragraph("Mode de livraison : " + invoice.getShippingMethod()));
+	        document.add(new Paragraph("Mode de paiement : " + invoice.getPaymentMethod()));
 
-            // Total
-            document.add(new Paragraph("\nTotal : " + total + " €").setBold());
+	        // Ajout d'une ligne de séparation
+	        document.add(new Paragraph("----------------------------------------------------"));
 
-            // Fermer le document
-            document.close();
+	        // Ajout des informations de commande
+	        document.add(new Paragraph("Détails de la commande"));
+	        document.add(new Paragraph("Numéro de commande : " + order.getOrderId()));
+	        document.add(new Paragraph("Date : " + order.getOrderDate()));
+	        document.add(new Paragraph("Total : " + String.format("%.2f €", order.getTotalPrice())));
 
-            System.out.println("Facture générée : " + cheminFichier);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+	        // Fermeture du document
+	        document.close();
+
+	        // Afficher une confirmation
+	        MainView.showAlert("Succès", null, "Facture générée avec succès : " + pdfFilePath, AlertType.INFORMATION);
+
+	        // Optionnel : ouverture automatique du PDF après sa génération
+	        File pdfFile = new File(pdfFilePath);
+	        if (pdfFile.exists()) {
+	            java.awt.Desktop.getDesktop().open(pdfFile);
+	        }
+	    } catch (IOException e) {
+	        MainView.showAlert("Erreur", null, "Une erreur est survenue lors de la génération de la facture : " + e.getMessage(), AlertType.ERROR);
+	    }
     }
-}
-
 }

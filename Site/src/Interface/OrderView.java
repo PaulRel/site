@@ -67,10 +67,9 @@ public class OrderView {
 	}
 	
 	private void continueProcess(MainView mainView, Order order) {
-		Invoice invoice = createInvoice(order);
-		System.out.println(invoice.toString());
 		order.validateOrder();
 		MainView.showAlert("Commande", null, "Commande validée", AlertType.INFORMATION);
+		createInvoice(order);
 		new AccountView(mainView);
 	}
 	
@@ -166,7 +165,7 @@ public class OrderView {
         return vbox;
 	}
 	
-	private Invoice createInvoice(Order order) {
+	private void createInvoice(Order order) {
 		// Récupère les valeurs saisies par l'utilisateur
 		TextField billingField = (TextField) ((VBox) orderBox.getChildren().get(0)).getChildren().get(2);
 	    TextField deliveryField = (TextField) ((VBox) orderBox.getChildren().get(1)).getChildren().get(2);
@@ -191,7 +190,5 @@ public class OrderView {
         // Insère la facture dans la base de données
         InvoiceDAO invoiceDAO = new InvoiceDAO();
         invoiceDAO.insertInvoice(invoice);
-        
-        return invoice;
     }
 }

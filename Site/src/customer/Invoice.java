@@ -11,7 +11,6 @@ public class Invoice {
     private String paymentMethod;
 
     private LocalDate invoiceDate;
-    private String invoiceNumber;
 
     public Invoice(Order order) {
         this.order = order;
@@ -66,14 +65,6 @@ public class Invoice {
         this.invoiceDate = invoiceDate;
     }
 
-    public String getInvoiceNumber() {
-        return invoiceNumber;
-    }
-
-    public void setInvoiceNumber(String invoiceNumber) {
-        this.invoiceNumber = invoiceNumber;
-    }
-
     @Override
     public String toString() {
         return "Facture{" +
@@ -83,7 +74,6 @@ public class Invoice {
                 ", shippingMethod='" + shippingMethod + '\'' +
                 ", paymentMethod='" + paymentMethod + '\'' +
                 ", invoiceDate=" + invoiceDate +
-                ", invoiceNumber='" + invoiceNumber + '\'' +
                 '}';
     }
 

@@ -16,19 +16,21 @@ import javafx.scene.control.Alert.AlertType;
 public class InvoiceDAO {
 	public void insertInvoice(Invoice invoice) {
 		try (Connection conn = DatabaseConnection.getConnection()) {
-			String sql = "INSERT INTO invoice (order_id, billing_address, shipping_address, payment_method, invoice_date) VALUES (?, ?, ?, ?, ?)";
+			String sql = "INSERT INTO invoice (order_id, billing_address, shipping_address, shipping_method, payment_method, invoice_date) VALUES (?, ?, ?, ?, ?, ?)";
 			PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             
 			pstmt.setInt(1, invoice.getOrder().getOrderId());
             pstmt.setString(2, invoice.getBillingAddress());
             pstmt.setString(3, invoice.getShippingAddress());
-            pstmt.setString(4, invoice.getPaymentMethod());
-            pstmt.setDate(5, Date.valueOf(invoice.getInvoiceDate()));
+            pstmt.setString(4, invoice.getShippingMethod());
+            pstmt.setString(5, invoice.getPaymentMethod());
+            pstmt.setDate(6, Date.valueOf(invoice.getInvoiceDate()));
+            pstmt.executeUpdate();
 
             ResultSet rs = pstmt.getGeneratedKeys();
             if (rs.next()) {
-                int orderId = rs.getInt(1);
-                invoice.setInvoiceId(orderId);
+                int invoiceId = rs.getInt(1);
+                invoice.setInvoiceId(invoiceId);
             }
         } catch (SQLException e) {
         	MainView.showAlert("Erreur", null, "Une erreur est survenue lors de l'insertion de la facture : " + e.getMessage(), AlertType.ERROR);
@@ -36,7 +38,7 @@ public class InvoiceDAO {
         }
     }
 	
-	public Invoice getInvoiceByOrderId(Order order) {
+	public Invoice getInvoiceByOrder(Order order) {
         String query = "SELECT * FROM invoice WHERE order_id = ?";
         try (Connection connection = DatabaseConnection.getConnection();
         		PreparedStatement pstmt = connection.prepareStatement(query);){
