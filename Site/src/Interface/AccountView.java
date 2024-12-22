@@ -110,7 +110,7 @@ public class AccountView {
     
     private void showDashboard() {
     	Label dashboardTitle = new Label("Mon tableau de bord");
-        dashboardTitle.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
+        //dashboardTitle.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
         
         Label dashboardDesc = new Label("Depuis le tableau de bord 'Mon compte', vous pouvez avoir un aperçu de vos récentes activités et mettre à jour les informations de votre compte. Sélectionnez un lien ci-dessous pour voir ou modifier les informations.");
         dashboardDesc.setWrapText(true);

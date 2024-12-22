@@ -167,7 +167,7 @@ public class CartView {
 			}
 			cart.clearCart();
 			MainView.showAlert("Commande", null, "Commande validée", AlertType.INFORMATION);
-			new AccountView(mainView);
+			new OrderView(mainView);
 		}
 	}
 	

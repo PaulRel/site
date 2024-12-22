@@ -56,7 +56,7 @@ public class ProductView {
        produitsGrid.setPadding(new Insets(10));
        produitsGrid.setHgap(10);
        produitsGrid.setVgap(10);
-       produitsGrid.setPrefWrapLength(mainView.getPrimaryStage().getWidth()-300);
+       produitsGrid.setPrefWrapLength(mainView.getPrimaryStage().getWidth()-350);
        
        produitDAO = new ProduitDAO();  // Récupérer les produits depuis la base de données
        List<Product> products = produitDAO.getAllProduits();
@@ -73,7 +73,7 @@ public class ProductView {
        	
        // Ecouteur pour ajuster automatiquement avec la largeur de la fenêtre
        mainView.getPrimaryStage().widthProperty().addListener((observable, oldValue, newValue) -> {
-           produitsGrid.setPrefWrapLength(newValue.doubleValue()-300);
+           produitsGrid.setPrefWrapLength(newValue.doubleValue()-350);
        });
        
        // Encapsuler le FlowPane dans un ScrollPane
@@ -105,7 +105,8 @@ public class ProductView {
        produitBox.getChildren().addAll(imageView, nomProduit, prixProduit);
        
        // Gestion du clic sur le produit pour afficher les détails
-       produitBox.setOnMouseClicked(event -> new ProductDetailsView(mainView, product));
+       //produitBox.setOnMouseClicked(event -> new ProductDetailsView(mainView, product));
+       produitBox.setOnMouseClicked(event -> new OrderView(mainView));
        
        return produitBox;
     }

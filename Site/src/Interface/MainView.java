@@ -86,6 +86,7 @@ public class MainView extends Application {
         //scrollPane.getStyleClass().add("scroll-pane-style"); // Appliquer une classe CSS (facultatif)
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);  // Toujours afficher la barre de défilement verticale
         scrollPane.setPadding(new Insets(10));
+        scrollPane.setStyle("-fx-background-color: derive(#ececec,26.4%)");
         return scrollPane;
     }
 	
