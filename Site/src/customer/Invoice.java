@@ -3,8 +3,8 @@ package customer;
 import java.time.LocalDate;
 
 public class Invoice {
-
     private Order order;
+    private int invoiceId;
     private String billingAddress;
     private String shippingAddress;
     private String shippingMethod;
@@ -13,18 +13,9 @@ public class Invoice {
     private LocalDate invoiceDate;
     private String invoiceNumber;
 
-    public Invoice(Order order, String billingAddress, String shippingAddress, String shippingMethod, String paymentMethod) {
+    public Invoice(Order order) {
         this.order = order;
-        this.billingAddress = billingAddress;
-        this.shippingAddress = shippingAddress;
-        this.shippingMethod = shippingMethod;
-        this.paymentMethod = paymentMethod;
         this.invoiceDate = LocalDate.now();
-        this.invoiceNumber = generateInvoiceNumber();
-    }
-
-    private String generateInvoiceNumber() {
-        return "INV-" + System.currentTimeMillis();
     }
 
     public Order getOrder() {
@@ -95,5 +86,13 @@ public class Invoice {
                 ", invoiceNumber='" + invoiceNumber + '\'' +
                 '}';
     }
+
+	public int getInvoiceId() {
+		return invoiceId;
+	}
+
+	public void setInvoiceId(int invoiceId) {
+		this.invoiceId = invoiceId;
+	}
 }
 

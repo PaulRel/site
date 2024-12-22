@@ -5,12 +5,10 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import Interface.MainView;
 import customer.CartItem;
 import customer.Customer;
 import customer.Order;
@@ -25,10 +23,9 @@ public class OrderDAO {
         
         try (Connection connection = DatabaseConnection.getConnection();
         		PreparedStatement statement = connection.prepareStatement(query);){
-        	statement.setInt(1, MainView.getCurrentCustomer().getId());
+        	statement.setInt(1, customer.getId());
         	
             try (ResultSet rs = statement.executeQuery()) {
-            	statement.setInt(1, customer.getId());
             	while (rs.next()) {
             		int orderId = rs.getInt("order_id");
             		LocalDate orderDate = rs.getDate("order_date").toLocalDate();
@@ -66,14 +63,14 @@ public class OrderDAO {
                 }
             }
         } catch (SQLException e) {
-        e.printStackTrace();
+        	e.printStackTrace();
         }
     }
 	
     public void insertOrder(Order order) {
         try (Connection conn = DatabaseConnection.getConnection()) {
             String sqlOrder = "INSERT INTO Orders (customer_id, order_date, status) VALUES (?, ?, ?)";
-            PreparedStatement psOrder = conn.prepareStatement(sqlOrder, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement psOrder = conn.prepareStatement(sqlOrder);
 
             psOrder.setInt(1, order.getCustomer().getId());
             psOrder.setDate(2, Date.valueOf(order.getOrderDate()));

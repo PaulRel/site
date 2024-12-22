@@ -2,6 +2,7 @@ package Interface;
 
 import customer.Invoice;
 import customer.Order;
+import database.InvoiceDAO;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -173,13 +174,24 @@ public class OrderView {
 	    ToggleGroup paymentGroup = ((RadioButton) ((VBox) orderBox.getChildren().get(3)).getChildren().get(2)).getToggleGroup();
 	    
         String billingAddress = billingField.getText();
-        String deliveryAddress = deliveryField.getText();
-        RadioButton selectedDeliveryOption = (RadioButton) deliveryGroup.getSelectedToggle();
+        String shippingAddress = deliveryField.getText();
+        RadioButton selectedShippingOption = (RadioButton) deliveryGroup.getSelectedToggle();
         RadioButton selectedPaymentOption = (RadioButton) paymentGroup.getSelectedToggle();
 
-        String deliveryMethod = selectedDeliveryOption != null ? selectedDeliveryOption.getText() : "";
+        String shippingMethod = selectedShippingOption != null ? selectedShippingOption.getText() : "";
         String paymentMethod = selectedPaymentOption != null ? selectedPaymentOption.getText() : "";
         
-        return new Invoice(order, billingAddress, deliveryAddress, deliveryMethod, paymentMethod);
+        // Crée la facture
+        Invoice invoice = new Invoice(order);
+        invoice.setBillingAddress(billingAddress);
+        invoice.setShippingAddress(shippingAddress);
+        invoice.setShippingMethod(shippingMethod);
+        invoice.setPaymentMethod(paymentMethod);
+        
+        // Insère la facture dans la base de données
+        InvoiceDAO invoiceDAO = new InvoiceDAO();
+        invoiceDAO.insertInvoice(invoice);
+        
+        return invoice;
     }
 }
