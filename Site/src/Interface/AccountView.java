@@ -225,6 +225,7 @@ public class AccountView {
         TableColumn<Order, String> shippingToCol = new TableColumn<>("Expédition à");
         TableColumn<Order, String> totalCol = new TableColumn<>("Total de la commande");
         TableColumn<Order, String> statusCol = new TableColumn<>("Statut");
+        TableColumn<Order, Void> actionCol = new TableColumn<>("Visualiser");
 
         // Associer les colonnes aux propriétés de la classe Order
         orderNumberCol.setCellValueFactory(order -> new SimpleStringProperty(String.valueOf(order.getValue().getOrderId())));
@@ -232,6 +233,28 @@ public class AccountView {
         shippingToCol.setCellValueFactory(order -> new SimpleStringProperty(order.getValue().getCustomer().getAddress()));
         totalCol.setCellValueFactory(order -> new SimpleStringProperty(String.format("%.2f €", order.getValue().getTotalPrice())));
         statusCol.setCellValueFactory(order -> new SimpleStringProperty(order.getValue().getStatus()));
+        
+        actionCol.setCellFactory(column -> new TableCell<Order, Void>() {
+            private final Button viewButton = new Button("Visualiser");
+            {
+                viewButton.setOnAction(event -> {
+
+                	
+                	
+                });
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    setGraphic(viewButton);
+                }
+            }
+        });
+
 
         // Ajouter les colonnes à la table
         ordersTable.getColumns().add(orderNumberCol);
@@ -239,6 +262,7 @@ public class AccountView {
         ordersTable.getColumns().add(shippingToCol);
         ordersTable.getColumns().add(totalCol);
         ordersTable.getColumns().add(statusCol);
+        ordersTable.getColumns().add(actionCol);
 
         // Placeholder
         ordersTable.setPlaceholder(new Label("Aucune commande."));

@@ -105,8 +105,7 @@ public class ProductView {
        produitBox.getChildren().addAll(imageView, nomProduit, prixProduit);
        
        // Gestion du clic sur le produit pour afficher les détails
-       //produitBox.setOnMouseClicked(event -> new ProductDetailsView(mainView, product));
-       produitBox.setOnMouseClicked(event -> new OrderView(mainView));
+       produitBox.setOnMouseClicked(event -> new ProductDetailsView(mainView, product));
        
        return produitBox;
     }
