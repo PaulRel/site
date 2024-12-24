@@ -59,7 +59,7 @@ public class AccountView {
         Button logoutButton = new Button("Déconnexion");
         logoutButton.setOnAction(e -> {
         	MainView.setCurrentCustomer(null);
-        	mainView.showProductView(Product.class);
+        	mainView.showProductView(Product.class, null);
         });
         
         userBox.getChildren().addAll(profileIcon, userNameLabel, logoutButton);
@@ -72,7 +72,7 @@ public class AccountView {
         dashboardButton.setOnAction(e -> showDashboard());
         accountInfoButton.setOnAction(e -> editCustomerInfo());
         ordersButton.setOnAction(e -> showCustomerOrders());
-        deleteAccountButton.setOnAction(e -> {deleteAccount(); mainView.showProductView(Product.class);});
+        deleteAccountButton.setOnAction(e -> {deleteAccount(); mainView.showProductView(Product.class, null);});
         
         deleteAccountButton.setStyle("-fx-background-color: white; -fx-text-fill: red; -fx-border-color: red; -fx-border-width: 2");
         

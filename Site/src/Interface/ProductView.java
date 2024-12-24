@@ -31,13 +31,13 @@ public class ProductView {
 	private CheckBox sizeXS, sizeS, sizeM, sizeL, size36, size37, size38, size39, male, female, child, marqueAsics, marqueBabolat, marqueAdidas, tankTop, sweat, shorts, tshirt, dress;
 	private double maxPrice = 200.0;
 	
-	public ProductView(MainView mainView, Class<? extends Product> typeProduit) {
+	public ProductView(MainView mainView, Class<? extends Product> typeProduit, List<Product> products) {
 		root = new AnchorPane();
 		HBox sectionProduits = new HBox();
 		sectionProduits.setPadding(new Insets(10, 20, 10, 20)); // Espace  Haut, Droite>, Bas, Gauche<  de l'AnchorPane
 		sectionProduits.setSpacing(50); // Espacement entre filtre et grid
 		sectionProduits.getChildren().clear();
-        sectionProduits.getChildren().addAll(MainView.createScrollPane(createFilterBox(mainView)), displayProducts(mainView, typeProduit, null));
+        sectionProduits.getChildren().addAll(MainView.createScrollPane(createFilterBox(mainView)), displayProducts(mainView, typeProduit, products));
         
         AnchorPane.setTopAnchor(sectionProduits, 150.0);
         AnchorPane.setLeftAnchor(sectionProduits, 10.0);

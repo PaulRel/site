@@ -44,7 +44,7 @@ public class HeaderView{
         // Nom du magasin
         Label shopName = new Label("TennisShop");
         shopName.setStyle("-fx-text-fill: #333; -fx-font-size: 30px; -fx-font-weight: bold;");
-        shopName.setOnMouseClicked(e -> mainView.showProductView(Product.class));
+        shopName.setOnMouseClicked(e -> mainView.showProductView(Product.class, null));
         
         // Bouton du compte
         ImageView accountIcon = new ImageView(new Image(getClass().getResource("/Image/accountIcon.png").toExternalForm()));
@@ -86,9 +86,9 @@ public class HeaderView{
         MenuItem chaussuresItem = new MenuItem("CHAUSSURES");
 
         // Associer un événement de clic pour chaque item de menu
-        vetementsItem.setOnAction(e -> mainView.showProductView(Vetement.class));
-        sacsItem.setOnAction(e -> mainView.showProductView(Sac.class));
-        chaussuresItem.setOnAction(e -> mainView.showProductView(Chaussures.class));
+        vetementsItem.setOnAction(e -> mainView.showProductView(Vetement.class, null));
+        sacsItem.setOnAction(e -> mainView.showProductView(Sac.class, null));
+        chaussuresItem.setOnAction(e -> mainView.showProductView(Chaussures.class, null));
         
         // Ajouter les items aux menus
         menuVetements.getItems().add(vetementsItem);
@@ -111,13 +111,7 @@ public class HeaderView{
             // Rafraîchir les produits affichés avec le terme de recherche
         	SearchDAO searchDAO = new SearchDAO();
         	List<Product> products = searchDAO.search(newValue);
-        	ProductView productSection = new ProductView(mainView, Product.class);
-        	productSection.displayProducts(mainView, Product.class, products);  
-        	AnchorPane root = productSection.getRoot();
-        	root.getChildren().addAll(this.getHeader());
-        	Scene productScene = new Scene(root, 1350, 670);
-        	productScene.getStylesheets().add(this.getClass().getResource("/style.css").toExternalForm());
-        	mainView.getPrimaryStage().setScene(productScene);
+        	mainView.showProductView(Product.class, products);
         });
 
         topBar.getChildren().addAll(logo, shopName, searchField, spacer, accountButton, cartButton);

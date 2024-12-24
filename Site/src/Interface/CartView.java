@@ -40,7 +40,7 @@ public class CartView {
 	
 	public CartView(MainView mainView) {
 		continueButton = new Button("Continuer vos achats");
-		continueButton.setOnAction(e -> mainView.showProductView(Product.class));
+		continueButton.setOnAction(e -> mainView.showProductView(Product.class, null));
 		if (MainView.getCurrentCustomer() != null) {cart = MainView.getCurrentCustomer().getCart();}
 		if (cart == null || cart.getItems().isEmpty()) {
 			Label emptyCartLabel = new Label("Votre panier est vide");
