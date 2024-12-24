@@ -1,10 +1,15 @@
 package Interface;
 
+import java.util.List;
+
+import database.SearchDAO;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
@@ -67,7 +72,7 @@ public class HeaderView{
         cartButton.setGraphic(cartIcon);
         cartButton.setStyle("-fx-background-color: transparent;");
         
-        // Gestion du clic pour afficher CartPage
+        // Gestion du clic pour afficher CartView
     	cartButton.setOnMouseClicked(event -> new CartView(mainView));
                           
         // Barre de menu
@@ -99,8 +104,23 @@ public class HeaderView{
 
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
+        
+        TextField searchField = new TextField();
+        searchField.setPromptText("Rechercher un produit...");
+        searchField.textProperty().addListener((observable, oldValue, newValue) -> {
+            // Rafraîchir les produits affichés avec le terme de recherche
+        	SearchDAO searchDAO = new SearchDAO();
+        	List<Product> products = searchDAO.search(newValue);
+        	ProductView productSection = new ProductView(mainView, Product.class);
+        	productSection.displayProducts(mainView, Product.class, products);  
+        	AnchorPane root = productSection.getRoot();
+        	root.getChildren().addAll(this.getHeader());
+        	Scene productScene = new Scene(root, 1350, 670);
+        	productScene.getStylesheets().add(this.getClass().getResource("/style.css").toExternalForm());
+        	mainView.getPrimaryStage().setScene(productScene);
+        });
 
-        topBar.getChildren().addAll(logo, shopName, spacer, accountButton, cartButton);
+        topBar.getChildren().addAll(logo, shopName, searchField, spacer, accountButton, cartButton);
         header.getChildren().addAll(topBar, menuBar);
         header.setPrefWidth(mainView.getPrimaryStage().getWidth() - 20);
         

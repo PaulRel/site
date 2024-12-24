@@ -142,6 +142,11 @@ public class ProduitDAO {
                     String imagePath = resultSet.getString("image_Path");
 
                     product = new Product(id, nom, description, type, marque, prix, qtDispo, imagePath);
+                    if (type.equalsIgnoreCase("chaussures")) {
+                        product = getChaussuresDetails();
+                    } else if (type.equalsIgnoreCase("vetement")) {
+                        product = getVetementsDetails();
+                    }
                 }
             }
         } catch (SQLException e) {

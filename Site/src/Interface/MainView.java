@@ -17,7 +17,7 @@ import products.Product;
 public class MainView extends Application {
 
 	private Stage primaryStage;
-	private HeaderView headerView;
+	private AnchorPane root;
 	private String css;
 	private static Customer currentCustomer;
 
@@ -29,11 +29,11 @@ public class MainView extends Application {
     public void start(Stage primaryStage) throws Exception {
     	this.primaryStage=primaryStage;
     	css = this.getClass().getResource("/style.css").toExternalForm();
-    	//root = new AnchorPane();
-    	
-       	headerView = new HeaderView(this); //utile ?
         
         showProductView(Product.class);
+        
+       	HeaderView headerView = new HeaderView(this);
+    	root.getChildren().add(headerView.getHeader()); // Ajouter l'en-tête
         
         setupStage(primaryStage);
         primaryStage.show();
@@ -57,11 +57,10 @@ public class MainView extends Application {
      */
     public void showProductView(Class<? extends Product> typeProduit) {
     	ProductView productSection = new ProductView(this, typeProduit);
-    	AnchorPane root = productSection.getRoot();
-    	root.getChildren().add(headerView.getHeader()); // Ajouter l'en-tête
+    	root = productSection.getRoot();
     	Scene productScene = new Scene(root, 1350, 670);
     	productScene.getStylesheets().add(css);
-    	primaryStage.setScene(productScene);          
+    	primaryStage.setScene(productScene);
     }
     
     public static Customer getCurrentCustomer() {
@@ -77,7 +76,7 @@ public class MainView extends Application {
 	}
     
     /**
-     * Crée un conteneur défilant (ScrollPane) pour la mise en page principale, permettant le défilement du contenu.
+     * Crée un conteneur défilant (ScrollPane) permettant le défilement du contenu.
      */
     public static ScrollPane createScrollPane(Pane root) {
         ScrollPane scrollPane = new ScrollPane(root);

@@ -37,7 +37,7 @@ public class ProductView {
 		sectionProduits.setPadding(new Insets(10, 20, 10, 20)); // Espace  Haut, Droite>, Bas, Gauche<  de l'AnchorPane
 		sectionProduits.setSpacing(50); // Espacement entre filtre et grid
 		sectionProduits.getChildren().clear();
-        sectionProduits.getChildren().addAll(MainView.createScrollPane(createFilterBox(mainView)), displayProducts(mainView, typeProduit));
+        sectionProduits.getChildren().addAll(MainView.createScrollPane(createFilterBox(mainView)), displayProducts(mainView, typeProduit, null));
         
         AnchorPane.setTopAnchor(sectionProduits, 150.0);
         AnchorPane.setLeftAnchor(sectionProduits, 10.0);
@@ -51,7 +51,7 @@ public class ProductView {
     * @param primaryStage La scène principale de l'application.
     * @return Le GridPane contenant tous les produits.
     */
-   public ScrollPane displayProducts(MainView mainView, Class<? extends Product> typeProduit) {
+   public ScrollPane displayProducts(MainView mainView, Class<? extends Product> typeProduit, List<Product> products) {
        produitsGrid = new FlowPane();
        produitsGrid.setPadding(new Insets(10));
        produitsGrid.setHgap(10);
@@ -59,7 +59,9 @@ public class ProductView {
        produitsGrid.setPrefWrapLength(mainView.getPrimaryStage().getWidth()-350);
        
        produitDAO = new ProduitDAO();  // Récupérer les produits depuis la base de données
-       List<Product> products = produitDAO.getAllProduits();
+       if (products == null) {
+    	   products = produitDAO.getAllProduits();
+       }
        actualProducts = new ArrayList<Product>();
        
        products.stream()
