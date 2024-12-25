@@ -89,6 +89,8 @@ public class MainView extends Application {
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);  // Barre de défilement verticale au besoin
         scrollPane.setPadding(new Insets(10));
         scrollPane.setStyle("-fx-background-color: derive(#ececec,26.4%)");
+        AnchorPane.setTopAnchor(scrollPane, 116.0);
+        scrollPane.setPrefViewportHeight(520);
         return scrollPane;
     }
 	
