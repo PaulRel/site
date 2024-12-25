@@ -6,9 +6,11 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 public class SearchAdvancedView {
@@ -32,9 +34,6 @@ public class SearchAdvancedView {
 	private void createAdvancedSearchSection() {
 		
 		Label mainLabel = new Label("Recherche Avancée");
-		
-		// Conteneur principal
-
 
         // Conteneur des critères
         criteriaContainer = new VBox(10);
@@ -57,12 +56,18 @@ public class SearchAdvancedView {
         main.setMaxSize(700, 400);
         main.setAlignment(Pos.CENTER);
         main.setStyle("-fx-background-color: white");
+             
+        StackPane centeredPane = new StackPane(main); // Création StackPane pour centrer main dans le ScrollPane
+        centeredPane.setAlignment(Pos.CENTER);
+        centeredPane.setStyle("-fx-background-color: derive(#ececec,26.4%)");
         
-        VBox root = new VBox(20, main);
+        ScrollPane scrollPane = MainView.createScrollPane(centeredPane);
+        
+        VBox root = new VBox(20, scrollPane);
         AnchorPane.setTopAnchor(root, 116.0);
         root.setPrefSize(1350, 550);
-        root.setStyle("-fx-background-color: #EEEEEE");
-        root.setAlignment(Pos.CENTER);
+        root.setStyle("-fx-background-color: derive(#ececec,26.4%)");
+        root.setAlignment(Pos.CENTER); //Centrer verticalement
         rootPane.getChildren().addAll(root);
     }
 
