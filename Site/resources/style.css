@@ -116,9 +116,7 @@
     -fx-padding: 10 20 10 20;
     -fx-cursor: hand;
     -fx-border-radius: 5;
-    -fx-background-radius: 5;
-    -fx-cursor: hand;
-    
+    -fx-background-radius: 5;    
 }
 
 .button:hover {
@@ -126,8 +124,15 @@
 }
 
 .text-field {
+	-fx-font-size: 14px;
 	-fx-max-width: 300px;
     -fx-pref-height: 50px;
+}
+
+/*Selection des tailles dans ProductViewDetails et des critères de recherche dans SearchAdvancedView */
+.combo-box {
+	-fx-font-size: 14px;
+	-fx-pref-height: 40px;
 }
 
 .table-cell {

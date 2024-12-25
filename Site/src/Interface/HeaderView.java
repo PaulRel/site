@@ -3,7 +3,9 @@ package Interface;
 import java.util.List;
 
 import database.SearchDAO;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -31,6 +33,7 @@ public class HeaderView{
     private void createHeader(MainView mainView) {   	
     	HBox topBar = new HBox();
         topBar.setPrefHeight(50);
+        topBar.setAlignment(Pos.CENTER);
 
         header = new VBox();
         header.setPrefHeight(100);
@@ -113,8 +116,11 @@ public class HeaderView{
         	List<Product> products = searchDAO.search(searchTerm);
         	mainView.showProductView(Product.class, products);
         });
+        
+        Hyperlink hyperlink = new Hyperlink("Recherche avancée");
+        hyperlink.setOnAction(event -> new SearchAdvancedView(mainView));
 
-        topBar.getChildren().addAll(logo, shopName, searchField, spacer, accountButton, cartButton);
+        topBar.getChildren().addAll(logo, shopName, searchField, hyperlink, spacer, accountButton, cartButton);
         header.getChildren().addAll(topBar, menuBar);
         header.setPrefWidth(mainView.getPrimaryStage().getWidth() - 20);
         
