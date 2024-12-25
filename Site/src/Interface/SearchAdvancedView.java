@@ -1,5 +1,14 @@
 package Interface;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import database.DatabaseConnection;
+import database.ProduitDAO;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -12,6 +21,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import products.Product;
 
 public class SearchAdvancedView {
 	
@@ -22,7 +32,7 @@ public class SearchAdvancedView {
 		rootPane = new AnchorPane();
         
         Scene accountScene = new Scene(rootPane, 1350, 670);
-        createAdvancedSearchSection();
+        createAdvancedSearchSection(mainView);
         
         HeaderView v = new HeaderView(mainView);      
         rootPane.getChildren().addAll(v.getHeader());
@@ -31,7 +41,7 @@ public class SearchAdvancedView {
         mainView.getPrimaryStage().setScene(accountScene);	
 	}
 	
-	private void createAdvancedSearchSection() {
+	private void createAdvancedSearchSection(MainView mainView) {
 		
 		Label mainLabel = new Label("Recherche Avancée");
 
@@ -48,7 +58,10 @@ public class SearchAdvancedView {
         addCriterionButton.setOnAction(e -> addSearchCriterion());
         
         Button searchButton = new Button("Rechercher");
-        searchButton.setOnAction(e -> addSearchCriterion());
+        searchButton.setOnAction(e -> {
+        	List<Product> products = executeSearch();
+        	mainView.showProductView(Product.class, products);
+        });
 
         // Mise en page
         VBox main = new VBox(10, mainLabel, criteriaContainer, addCriterionButton, searchButton);
@@ -74,7 +87,7 @@ public class SearchAdvancedView {
     private void addSearchCriterion() {
         // ComboBox pour les critères
         ComboBox<String> criteriaBox = new ComboBox<>();
-        criteriaBox.getItems().addAll("Tous critères", "Nom", "Description", "Type", "Marque", "Couleur", "Genre");
+        criteriaBox.getItems().addAll("Tous critères", "Nom", "Description", "Type", "Marque", "Couleur", "Genre", "Surface");
         criteriaBox.setValue("Tous critères");
 
         // TextField pour la recherche
@@ -84,8 +97,8 @@ public class SearchAdvancedView {
 
         // ComboBox pour les connecteurs logiques (ET/OU)
         ComboBox<String> logicalConnector = new ComboBox<>();
-        logicalConnector.getItems().addAll("ET", "OU");
-        logicalConnector.setValue("ET");
+        logicalConnector.getItems().addAll("AND", "OR");
+        logicalConnector.setValue("AND");
 
         // Bouton pour supprimer un critère
         Button removeButton = new Button("X");
@@ -105,4 +118,63 @@ public class SearchAdvancedView {
             logicalConnector.setDisable(true);
         }
 	}
+    
+    @SuppressWarnings("unchecked")
+	private List<Product> executeSearch() {
+        StringBuilder query = new StringBuilder("SELECT Produit_id FROM vueproduits WHERE ");
+        List<String> parameters = new ArrayList<>();
+        List<Product> results = new ArrayList<>();
+
+        for (int i = 0; i < criteriaContainer.getChildren().size(); i++) {
+            HBox criterionRow = (HBox) criteriaContainer.getChildren().get(i);
+
+            ComboBox<String> logicalConnector = (ComboBox<String>) criterionRow.getChildren().get(0);
+            ComboBox<String> criteriaBox = (ComboBox<String>) criterionRow.getChildren().get(1);
+            TextField searchField = (TextField) criterionRow.getChildren().get(2);
+
+            String selectedCriteria = criteriaBox.getValue();
+            String searchValue = searchField.getText();
+
+            if (searchValue != null && !searchValue.isEmpty()) {
+                if (i > 0) {
+                    query.append(" ").append(logicalConnector.getValue()).append(" ");
+                }
+
+                if ("Tous critères".equals(selectedCriteria)) {
+                    query.append("(LOWER(Nom) LIKE ? OR LOWER(Description) LIKE ? OR LOWER(Type) LIKE ? OR LOWER(Marque) LIKE ? "
+                    		+ "OR LOWER(Couleur) LIKE ? OR LOWER(Surface) LIKE ? OR LOWER(Genre) LIKE ? OR LOWER(TypeVetements) LIKE ?)");
+                    
+                    for (int j = 0; j < 8; j++) {
+                        parameters.add("%" + searchValue.toLowerCase() + "%");
+                    }
+                } else {
+                    query.append(selectedCriteria).append(" LIKE ?");
+                    parameters.add("%" + searchValue.toLowerCase() + "%");
+                }
+            }
+        }
+
+        System.out.println("Requête SQL générée : " + query);
+        System.out.println("Paramètres : " + parameters);
+
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query.toString())) {
+
+            for (int i = 0; i < parameters.size(); i++) {
+                preparedStatement.setString(i + 1, parameters.get(i));
+            }
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                System.out.println("Produit trouvé : " + resultSet.getInt("Produit_id"));
+                ProduitDAO produitDAO = new ProduitDAO();
+                Product produit = produitDAO.getProduitById(resultSet.getInt("Produit_id"));
+                results.add(produit);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return results;
+    }
 }
