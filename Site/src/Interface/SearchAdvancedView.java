@@ -75,6 +75,7 @@ public class SearchAdvancedView {
         centeredPane.setStyle("-fx-background-color: derive(#ececec,26.4%)");
         
         ScrollPane scrollPane = MainView.createScrollPane(centeredPane);
+        scrollPane.setPrefViewportHeight(0);
         
         VBox root = new VBox(20, scrollPane);
         AnchorPane.setTopAnchor(root, 116.0);

@@ -14,7 +14,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import products.Chaussures;
 import products.Product;
@@ -33,17 +32,6 @@ public class ProductView {
 	
 	public ProductView(MainView mainView, Class<? extends Product> typeProduit, List<Product> products) {
 		root = new AnchorPane();
-		//HBox sectionProduits = new HBox();
-		//sectionProduits.setPadding(new Insets(10, 0, 0, 20)); // Espace  Haut, Droite>, Bas, Gauche<  de l'AnchorPane
-		//sectionProduits.setSpacing(50); // Espacement entre filtre et grid
-		//sectionProduits.getChildren().clear();
-		//sectionProduits.setStyle("-fx-background-color: RED; -fx-pref-width: 1350px;");
-        //sectionProduits.getChildren().addAll(MainView.createScrollPane(createFilterBox(mainView)), displayProducts(mainView, typeProduit, products));
-        
-        //AnchorPane.setTopAnchor(sectionProduits, 150.0);
-        //AnchorPane.setLeftAnchor(sectionProduits, 10.0);
-        //AnchorPane.setBottomAnchor(sectionProduits, 0.0);
-        //root.getChildren().add(sectionProduits);
         root.getChildren().addAll(MainView.createScrollPane(createFilterBox(mainView)), displayProducts(mainView, typeProduit, products));
 	}
 	
@@ -59,7 +47,6 @@ public class ProductView {
        produitsGrid.setHgap(10); //espace horizontal entre les produits
        produitsGrid.setVgap(10);
        produitsGrid.setPrefSize(900, 800);
-       //produitsGrid.setPrefWrapLength(mainView.getPrimaryStage().getWidth()-310);
        
        produitDAO = new ProduitDAO();  // Récupérer les produits depuis la base de données
        if (products == null) {
@@ -70,22 +57,16 @@ public class ProductView {
        products.stream()
        .filter(typeProduit::isInstance) // Filtrer les produits par type
        .forEach(produit -> {
-    	   // TESTS :  System.out.println(typeProduit); System.out.println("Nom de la classe : " + produit.getClass().getSimpleName());
     	   actualProducts.add(produit);
     	   VBox produitBox = createProductBox(mainView, produit);
     	   produitsGrid.getChildren().add(produitBox);
        });
-       	
-       // Ecouteur pour ajuster automatiquement avec la largeur de la fenêtre
-       //mainView.getPrimaryStage().widthProperty().addListener((observable, oldValue, newValue) -> {
-           //produitsGrid.setPrefWrapLength(newValue.doubleValue()-350);
-       //});
-       
+  
        // Encapsuler le FlowPane dans un ScrollPane
        ScrollPane scrollPane = MainView.createScrollPane(produitsGrid);
        AnchorPane.setLeftAnchor(scrollPane, 220.0);
        AnchorPane.setRightAnchor(scrollPane, 0.0); // S'assurer qu'il occupe tout l'espace horizontal
-       AnchorPane.setBottomAnchor(scrollPane, 0.0); // S'assurer qu'il occupe tout l'espace vertical
+       //AnchorPane.setTopAnchor(scrollPane, 116.0);
        return scrollPane;
    }   
    
@@ -124,6 +105,7 @@ public class ProductView {
        VBox filterBox = new VBox();
        filterBox.setPrefWidth(200);
        filterBox.setPadding(new Insets(20, 20, 0, 40)); // Haut, Droite, Bas, Gauche
+       //AnchorPane.setTopAnchor(filterBox, 116.0);
 
        Label filtreTaille = new Label("Tailles");
        sizeXS = new CheckBox("Taille XS");
@@ -254,8 +236,8 @@ public class ProductView {
 	       .filter(this::filterByAttributes)
 	       .filter(this::filterByPrice)
 	       .forEach(produit -> {
-	        VBox produitBox = createProductBox(mainView, produit); // Crée une box pour chaque produit
-	        produitsGrid.getChildren().add(produitBox); // Ajoute la box au GridPane
+	    	   VBox produitBox = createProductBox(mainView, produit); // Crée une box pour chaque produit
+	    	   produitsGrid.getChildren().add(produitBox); // Ajoute la box au GridPane
 	    });
 	}
 
