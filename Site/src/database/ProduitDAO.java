@@ -15,7 +15,7 @@ import products.Vetement.TypeVetement;
 
 public class ProduitDAO {
 	private String type, nom, description, marque, imagePath;
-	int id, qtDispo;
+	int qtDispo;
 	double prix;
 
     public List<Product> getAllProduits() {
@@ -28,7 +28,7 @@ public class ProduitDAO {
 
             // Parcourir les résultats et créer des objets Produit
             while (resultSet.next()) {
-            	id = resultSet.getInt("id");
+            	int id = resultSet.getInt("id");
                 nom = resultSet.getString("Nom");
                 description = resultSet.getString("Description");
                 type = resultSet.getString("Type");
@@ -39,9 +39,9 @@ public class ProduitDAO {
 
                 Product product = new Product(id, nom, description, type, marque, prix, qtDispo, imagePath);
                 if (type.equalsIgnoreCase("chaussures")) {
-                    product = getChaussuresDetails();
+                    product = getChaussuresDetails(id);
                 } else if (type.equalsIgnoreCase("vetement")) {
-                    product = getVetementsDetails();
+                    product = getVetementsDetails(id);
                 }
                 products.add(product);
             }
@@ -52,9 +52,8 @@ public class ProduitDAO {
         return products;
     }
     
-    public Chaussures getChaussuresDetails(){
+    public Chaussures getChaussuresDetails(int id){
     	Chaussures chaussure = null;
-    	List<Chaussures> chaussures = new ArrayList<>();
     	String query = "SELECT * FROM Chaussures WHERE produit_id = ?";
 
     	try (Connection connection = DatabaseConnection.getConnection();
@@ -68,7 +67,6 @@ public class ProduitDAO {
     	        String couleur = resultSet.getString("couleur");
                 chaussure = new Chaussures(id, nom, description, type, marque, prix, qtDispo, imagePath, surface, genre, couleur);
                 chaussure.setTailleStock(getTaillesStock(id));
-                chaussures.add(chaussure);
     	    }
 
     	} catch (SQLException e) {
@@ -80,7 +78,7 @@ public class ProduitDAO {
     
     private HashMap<String, Integer> getTaillesStock(int produitId) throws SQLException {
         HashMap<String, Integer> taillesStock = new HashMap<>();
-        String queryTailleStock = "SELECT * FROM Taillestock WHERE Produit_ID = ?";
+        String queryTailleStock = "SELECT * FROM Taillestock WHERE produit_id = ?";
 
         try (Connection connection = DatabaseConnection.getConnection();
         	PreparedStatement ps = connection.prepareStatement(queryTailleStock)) {
@@ -95,10 +93,9 @@ public class ProduitDAO {
         return taillesStock;
     }
     
-    public Vetement getVetementsDetails(){
+    public Vetement getVetementsDetails(int id){
     	Vetement vetement = null;
-    	List<Vetement> vetements = new ArrayList<>();
-    	String query = "SELECT * FROM Vetement WHERE Produit_ID = ?";
+    	String query = "SELECT * FROM Vetement WHERE produit_id = ?";
 
     	try (Connection connection = DatabaseConnection.getConnection();
         	    PreparedStatement statement = connection.prepareStatement(query)) {
@@ -113,7 +110,6 @@ public class ProduitDAO {
                      
                      vetement = new Vetement(id, nom, description, type, marque, prix, qtDispo, imagePath, typeVetement, genre, couleur);
                      vetement.setTailleStock(getTaillesStock(id));
-                     vetements.add(vetement);
                  }
 
         } catch (SQLException e) {
@@ -133,19 +129,19 @@ public class ProduitDAO {
 
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    String nom = resultSet.getString("Nom");
-                    String description = resultSet.getString("Description");
-                    String type = resultSet.getString("Type");
-                    String marque = resultSet.getString("Marque");
-                    double prix = resultSet.getDouble("Prix");
-                    int qtDispo = resultSet.getInt("Qt_Dispo");
-                    String imagePath = resultSet.getString("image_Path");
+                    nom = resultSet.getString("Nom");
+                    description = resultSet.getString("Description");
+                    type = resultSet.getString("Type");
+                    marque = resultSet.getString("Marque");
+                    prix = resultSet.getDouble("Prix");
+                    qtDispo = resultSet.getInt("Qt_Dispo");
+                    imagePath = resultSet.getString("image_Path");
 
                     product = new Product(id, nom, description, type, marque, prix, qtDispo, imagePath);
                     if (type.equalsIgnoreCase("chaussures")) {
-                        product = getChaussuresDetails();
+                        product = getChaussuresDetails(id);
                     } else if (type.equalsIgnoreCase("vetement")) {
-                        product = getVetementsDetails();
+                        product = getVetementsDetails(id);
                     }
                 }
             }

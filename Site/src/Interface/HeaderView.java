@@ -3,7 +3,6 @@ package Interface;
 import java.util.List;
 
 import database.SearchDAO;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
@@ -107,10 +106,11 @@ public class HeaderView{
         
         TextField searchField = new TextField();
         searchField.setPromptText("Rechercher un produit...");
-        searchField.textProperty().addListener((observable, oldValue, newValue) -> {
+        searchField.setOnAction(event -> {
             // Rafraîchir les produits affichés avec le terme de recherche
+        	String searchTerm = searchField.getText();
         	SearchDAO searchDAO = new SearchDAO();
-        	List<Product> products = searchDAO.search(newValue);
+        	List<Product> products = searchDAO.search(searchTerm);
         	mainView.showProductView(Product.class, products);
         });
 

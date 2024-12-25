@@ -15,13 +15,13 @@ public class SearchDAO {
 	    StringBuilder query = new StringBuilder(
 	        "SELECT p.id FROM produit p " +
 	        "LEFT JOIN vetement v ON p.ID = v.Produit_ID " +
-	        "LEFT JOIN chaussures c ON p.ID = c.Produit_ID WHERE ("
+	        "LEFT JOIN chaussures c ON p.ID = c.Produit_ID WHERE "
 	    );
 
 	    // Ajouter des conditions LIKE pour chaque mot-clé
 	    for (int i = 0; i < keywords.length; i++) {
 	        if (i > 0) query.append(" AND "); // Ajouter AND entre chaque groupe de conditions
-	        query.append("LOWER(p.Nom) LIKE ? OR LOWER(p.Description) LIKE ? OR LOWER(p.Type) OR LOWER(p.Marque) LIKE ? ");
+	        query.append("(LOWER(p.Nom) LIKE ? OR LOWER(p.Description) LIKE ? OR LOWER(p.Type) OR LOWER(p.Marque) LIKE ? ");
 	        query.append("OR LOWER(v.Couleur) LIKE ? OR LOWER(c.Surface) LIKE ? OR LOWER(c.Couleur) LIKE ?)");
 	    }
 	    return query.toString();
@@ -39,7 +39,7 @@ public class SearchDAO {
 	        int index = 1;
 	        for (String word : words) {
 	            String searchTerm = "%" + word.toLowerCase() + "%";
-	            for (int i = 0; i < 6; i++) { // 8 colonnes concernées par mot-clé
+	            for (int i = 0; i < 6; i++) { // 6 colonnes concernées par mot-clé
 	                stmt.setString(index++, searchTerm);
 	            }
 	        }
