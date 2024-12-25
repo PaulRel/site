@@ -104,11 +104,15 @@ public class HeaderView{
             header.setPrefWidth(newValue.doubleValue()-20);
         });
 
-        Region spacer = new Region();
-        HBox.setHgrow(spacer, Priority.ALWAYS);
+        Region leftSpacer = new Region();
+        Region rightSpacer = new Region();
+        HBox.setHgrow(leftSpacer, Priority.ALWAYS);
+        HBox.setHgrow(rightSpacer, Priority.ALWAYS);
         
         TextField searchField = new TextField();
         searchField.setPromptText("Rechercher un produit...");
+        searchField.setPrefSize(300, 40);
+        
         searchField.setOnAction(event -> {
             // Rafraîchir les produits affichés avec le terme de recherche
         	String searchTerm = searchField.getText();
@@ -120,7 +124,7 @@ public class HeaderView{
         Hyperlink hyperlink = new Hyperlink("Recherche avancée");
         hyperlink.setOnAction(event -> new SearchAdvancedView(mainView));
 
-        topBar.getChildren().addAll(logo, shopName, searchField, hyperlink, spacer, accountButton, cartButton);
+        topBar.getChildren().addAll(logo, shopName, leftSpacer, searchField, hyperlink, rightSpacer, accountButton, cartButton);
         header.getChildren().addAll(topBar, menuBar);
         header.setPrefWidth(mainView.getPrimaryStage().getWidth() - 20);
         
