@@ -39,7 +39,7 @@ public class Cart {
     public String toString() {
     	String s = "";
     	for (CartItem ligne : items) {
-    		s +=ligne.getProduct().getNom();
+    		s +=ligne.getProduct().getName();
     	}
     	return s;
     }

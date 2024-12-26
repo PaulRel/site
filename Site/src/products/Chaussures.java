@@ -5,24 +5,24 @@ import java.util.HashMap;
 public class Chaussures extends Product implements ProductWithSize{
 
 	
-	private String genre, couleur, surface;
+	private String gender, couleur, surface;
 	private HashMap<String, Integer> tailleStock;
 
-	public Chaussures(int id, String Nom, String Description, String Type, String Marque, double Price, int QtDispo,  String imagePath, String surface, String genre, String couleur) {
-		super(id, Nom, Description, Type, Marque, Price, QtDispo, imagePath);
+	public Chaussures(int id, String Nom, String Description, String Type, String Brand, double Price, int QtDispo,  String imagePath, String surface, String gender, String couleur) {
+		super(id, Nom, Description, Type, Brand, Price, QtDispo, imagePath);
 		this.surface = surface;
 		this.tailleStock = new HashMap<>();
-		this.genre = genre;
+		this.gender = gender;
 		this.couleur = couleur;
 	}	
 	
 	@Override
-	public String getGenre() {
-		return genre;
+	public String getGender() {
+		return gender;
 	}
 
-	public void setGenre(String genre) {
-		this.genre = genre;
+	public void setGender(String gender) {
+		this.gender = gender;
 	}
 
 	public String getCouleur() {

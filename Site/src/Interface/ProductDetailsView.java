@@ -42,7 +42,7 @@ public class ProductDetailsView {
         AnchorPane.setTopAnchor(detailsBox, 116.0);
         
         // Affichage des informations du produit
-        Label nameLabel = new Label(product.getNom());
+        Label nameLabel = new Label(product.getName());
         Label priceLabel = new Label("Prix : " + product.getPrice() + "€");
         Label descriptionLabel = new Label(product.getDescription() + "\nChoisir la taille :");
         Label selectedQuantityLabel = new Label("Quantité souhaitée :  ");

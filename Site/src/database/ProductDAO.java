@@ -13,7 +13,7 @@ import products.Product;
 import products.Vetement;
 import products.Vetement.TypeVetement;
 
-public class ProduitDAO {
+public class ProductDAO {
 	private String type, nom, description, marque, imagePath;
 	int qtDispo;
 	double prix;

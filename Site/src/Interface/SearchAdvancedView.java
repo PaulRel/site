@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import database.DatabaseConnection;
-import database.ProduitDAO;
+import database.ProductDAO;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -168,8 +168,8 @@ public class SearchAdvancedView {
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 System.out.println("Produit trouvé : " + resultSet.getInt("Produit_id"));
-                ProduitDAO produitDAO = new ProduitDAO();
-                Product produit = produitDAO.getProduitById(resultSet.getInt("Produit_id"));
+                ProductDAO productDAO = new ProductDAO();
+                Product produit = productDAO.getProduitById(resultSet.getInt("Produit_id"));
                 results.add(produit);
             }
 

@@ -45,8 +45,8 @@ public class SearchDAO {
 	        }
 	        try (ResultSet rs = stmt.executeQuery()) {
 	            while (rs.next()) {
-	            	ProduitDAO produitDAO = new ProduitDAO();
-	                Product produit = produitDAO.getProduitById(rs.getInt("id"));
+	            	ProductDAO productDAO = new ProductDAO();
+	                Product produit = productDAO.getProduitById(rs.getInt("id"));
 	                results.add(produit);
 	            }
 	        }

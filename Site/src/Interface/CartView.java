@@ -97,7 +97,7 @@ public class CartView {
 	        });
 	        
 	        TableColumn<CartItem, String> productColumn = new TableColumn<>("Produit");
-	        productColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getProduct().getNom()));
+	        productColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getProduct().getName()));
 
 	        TableColumn<CartItem, String> sizeColumn = new TableColumn<>("Taille");
 	        sizeColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getSize()));

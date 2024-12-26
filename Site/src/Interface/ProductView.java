@@ -5,7 +5,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import database.ProduitDAO;
+import database.ProductDAO;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.scene.control.CheckBox;
@@ -27,16 +27,16 @@ public class ProductView {
 	
 	private AnchorPane root;
 	private FlowPane produitsGrid;
-	private ProduitDAO produitDAO;
+	private ProductDAO productDAO;
 	List<Product> actualProducts;
 	private ComboBox<String> sortComboBox;
 	private Set<String> sizeSelected, genderSelected, brandSelected, clothingTypeSelected;
 	private CheckBox sizeXS, sizeS, sizeM, sizeL, size36, size37, size38, size39, male, female, child, asicsBrand, babolatBrand, adidasBrand, tankTop, sweat, shorts, tshirt, dress;
 	private double maxPrice = 200.0;
 	
-	public ProductView(MainView mainView, Class<? extends Product> typeProduit, List<Product> products) {
+	public ProductView(MainView mainView, Class<? extends Product> productType, List<Product> products) {
 		root = new AnchorPane();
-        root.getChildren().addAll(MainView.createScrollPane(createFilterBox(mainView)), displayProducts(mainView, typeProduit, products));
+        root.getChildren().addAll(MainView.createScrollPane(createFilterBox(mainView)), displayProducts(mainView, productType, products));
 	}
 	
 	/**
@@ -52,9 +52,9 @@ public class ProductView {
        produitsGrid.setVgap(10);
        produitsGrid.setPrefSize(900, 800);
        
-       produitDAO = new ProduitDAO();  // Récupérer les produits depuis la base de données
+       productDAO = new ProductDAO();  // Récupérer les produits depuis la base de données
        if (products == null) {
-    	   products = produitDAO.getAllProduits();
+    	   products = productDAO.getAllProduits();
        }
        actualProducts = new ArrayList<Product>();
        
@@ -87,7 +87,7 @@ public class ProductView {
        imageView.setFitHeight(150);
        imageView.setFitWidth(150);
 
-       Label nomProduit = new Label(product.getNom());
+       Label nomProduit = new Label(product.getName());
        nomProduit.getStyleClass().add("nom-produit"); // Appliquer la classe CSS
        Label prixProduit = new Label("Prix : " + product.getPrice() + "€");
        prixProduit.getStyleClass().add("prix-produit"); // Appliquer la classe CSS
@@ -241,8 +241,8 @@ public class ProductView {
 
    private boolean filterByAttributes(Product product) {
 	    boolean matchSize = sizeSelected.isEmpty() || ((ProductWithSize) product).getTailleStock().keySet().stream().anyMatch(sizeSelected::contains);
-	    boolean matchGender = genderSelected.isEmpty() || genderSelected.contains(((ProductWithSize) product).getGenre());
-	    boolean matchBrand = brandSelected.isEmpty() || brandSelected.contains(product.getMarque());
+	    boolean matchGender = genderSelected.isEmpty() || genderSelected.contains(((ProductWithSize) product).getGender());
+	    boolean matchBrand = brandSelected.isEmpty() || brandSelected.contains(product.getBrand());
 	    boolean matchClothingType = true;
 		if (product instanceof Vetement) {
 			matchClothingType = clothingTypeSelected.isEmpty() || clothingTypeSelected.stream()

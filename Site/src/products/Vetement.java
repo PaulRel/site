@@ -9,25 +9,25 @@ public class Vetement extends Product implements ProductWithSize{
 		SHORT, SWEAT, DEBARDEUR, TSHIRT, ROBE, VESTE
 	}
 	
-	private String genre, couleur;
+	private String gender, couleur;
 	private HashMap<String, Integer> tailleStock;
 	private TypeVetement typeVetement;
 
-	public Vetement(int id, String Nom, String Description, String Type, String Marque, double Price, int QtDispo,  String imagePath, TypeVetement typeVetement, String genre, String couleur) {
+	public Vetement(int id, String Nom, String Description, String Type, String Marque, double Price, int QtDispo,  String imagePath, TypeVetement typeVetement, String gender, String couleur) {
 		super(id, Nom, Description, Type, Marque, Price, QtDispo, imagePath);
 		this.typeVetement = typeVetement;
 		this.tailleStock = new HashMap<>();
-		this.genre = genre;
+		this.gender = gender;
 		this.couleur = couleur;
 	}
 
 	@Override
-	public String getGenre() {
-		return genre;
+	public String getGender() {
+		return gender;
 	}
 
-	public void setGenre(String genre) {
-		this.genre = genre;
+	public void setGender(String gender) {
+		this.gender = gender;
 	}
 
 	public String getCouleur() {

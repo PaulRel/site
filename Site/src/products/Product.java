@@ -3,7 +3,7 @@ package products;
 
 public class Product {
 	private int id, qtDispo;
-	private String description, nom, type, marque, imagePath;
+	private String description, name, type, brand, imagePath;
 	private double price;
 
 	/**
@@ -13,12 +13,12 @@ public class Product {
 	 * @param QtDispo
 	 * @param Type
 	 */
-	public Product(int id, String nom, String description, String type, String marque, double price, int qtDispo, String imagePath) {
+	public Product(int id, String name, String description, String type, String brand, double price, int qtDispo, String imagePath) {
 		this.id = id;
-		this.nom = nom;
+		this.name = name;
 		this.description = description;
 		this.type = type;
-		this.marque = marque;
+		this.brand = brand;
 		this.price = price; 
 		this.qtDispo = qtDispo;
 		this.imagePath = imagePath;
@@ -30,7 +30,7 @@ public class Product {
 	
 	@Override
 	public String toString() {
-		return (String) nom;
+		return name;
 	}
 
 	public String getDescription() {
@@ -73,15 +73,15 @@ public class Product {
 		return imagePath;
 	}
 
-	public String getNom() {
-		return nom;
+	public String getName() {
+		return name;
 	}
 
-	public String getMarque() {
-		return marque;
+	public String getBrand() {
+		return brand;
 	}
 
-	public void setMarque(String marque) {
-		this.marque = marque;
+	public void setBrand(String brand) {
+		this.brand = brand;
 	}
 }
