@@ -144,7 +144,7 @@ public class AuthentificationView {
                        
         	// Check if a user exists with this email
             while (rs.next()) {
-            	String storedPassword = rs.getString("Passwords");
+            	String storedPassword = rs.getString("Password");
                 if (password.equals(storedPassword))  {
                 	 // Create and return a Customer object
                 	int id = rs.getInt("CustomerID");
