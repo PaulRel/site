@@ -9,6 +9,7 @@ import customer.Cart;
 import customer.CartItem;
 import customer.CartManager;
 import customer.Customer;
+import customer.Customer.Role;
 import database.DatabaseConnection;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -64,7 +65,9 @@ public class AuthentificationView {
         	// Appelle la méthode d'authentification
         	handleLogin(email, password);
         	if (MainView.getCurrentCustomer() != null) {
-        		new AccountView(mainView);
+        		if (MainView.getCurrentCustomer().getRole()==Role.CUSTOMER)
+        			new AccountView(mainView);
+        		else new AdminView(mainView);       		
         	}
         });
         
