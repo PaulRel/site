@@ -83,9 +83,9 @@
     -fx-padding: 10;
 }
 
-/* Filtres */
+/* Filtres INNEFICACE*/
 .vbox > .check-box {
-    -fx-padding: 5 0 5 0;
+    -fx-padding: 5px 0 5 0;
     -fx-font-size: 14px;
     -fx-text-fill: #444;
 }
@@ -94,13 +94,13 @@
     -fx-text-fill: #000;
 }
 
-/* Filtres de catégories (Homme, Femme, Enfant) */
+/* Filtres de catégories (Homme, Femme, Enfant) 
 .vbox .label:nth-child(1) {
     -fx-font-size: 16px;
     -fx-font-weight: bold;
     -fx-padding-bottom: 10;
     -fx-text-fill: #333;
-}
+}*/
 
 .scroll-pane-style {
     -fx-background: white;

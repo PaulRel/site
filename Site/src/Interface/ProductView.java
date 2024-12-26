@@ -109,6 +109,7 @@ public class ProductView {
        VBox filterBox = new VBox();
        filterBox.setPrefWidth(230);
        filterBox.setPadding(new Insets(20, 20, 0, 40)); // Haut, Droite, Bas, Gauche
+       filterBox.setSpacing(3);
        //AnchorPane.setTopAnchor(filterBox, 116.0);
        
        Label sortByPrice = new Label("Tri");
