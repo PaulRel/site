@@ -5,7 +5,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.PieChart;
+import javafx.scene.chart.XYChart;
+import javafx.scene.control.Tooltip;
 
 public class AdminStatsDAO {
 	
@@ -206,10 +212,25 @@ public class AdminStatsDAO {
     }
     
     // 12. Évolution des ventes par mois
-    public String getSellingByPeriod() {
+    public LineChart<String, Number> getSalesByPeriodLineChart() {
+    	// Créer les axes du graphique
+        NumberAxis yAxis = new NumberAxis();
+        yAxis.setLabel("Ventes (€)");
+
+        javafx.scene.chart.CategoryAxis xAxis = new javafx.scene.chart.CategoryAxis();
+        xAxis.setLabel("Mois");
+
+        // Créer le LineChart
+        LineChart<String, Number> lineChart = new LineChart<>(xAxis, yAxis);
+        lineChart.setTitle("Ventes mensuelles en euros");
+
+        // Ajouter une série de données
+        XYChart.Series<String, Number> series = new XYChart.Series<>();
+        series.setName("Ventes");
+
     	String query = """
                 SELECT DATE_FORMAT(o.order_date, '%Y-%m') AS mois, 
-    			SUM(od.quantity * p.Prix) AS ventes_mensuelles
+    			SUM(od.quantity * p.Prix) AS ventes
     			FROM Orderdetails od
     			JOIN Orders o ON od.order_id = o.order_id
     			JOIN Produit p ON od.product_id = p.ID
@@ -218,13 +239,69 @@ public class AdminStatsDAO {
             try (PreparedStatement stmt = connection.prepareStatement(query);
             		ResultSet rs = stmt.executeQuery()) {
                     while (rs.next()) {
-                        return("Date: " + rs.getString("mois") + 
-                                           ", Ventes: " + rs.getDouble("ventes_mensuelles"));
+                    	String mois = rs.getString("mois"); // Mois au format 'YYYY-MM'
+                        double ventes = rs.getDouble("ventes"); // Total des ventes pour ce mois
+                        series.getData().add(new XYChart.Data<>(mois, ventes));
                     }
             } catch (SQLException e) {
     			e.printStackTrace();
     		}
-            return null;
+            //for (XYChart.Data<String, Number> data : series.getData()) {
+                //Tooltip tooltip = new Tooltip(data.getXValue() + ": " + data.getYValue() + "€");
+                //Tooltip.install(data.getNode(), tooltip);
+            //}
+            lineChart.getData().add(series);
+            lineChart.setLegendVisible(false);
+            return lineChart;
         }
+    
+    public BarChart<String, Number> getSalesByBrandBarChart() {
+    	CategoryAxis xAxis = new CategoryAxis();
+        xAxis.setLabel("Marque");
+
+        NumberAxis yAxis = new NumberAxis();
+        yAxis.setLabel("Valeurs");
+
+        // Création du BarChart
+        BarChart<String, Number> barChart = new BarChart<>(xAxis, yAxis);
+        barChart.setTitle("Ventes par marque");
+
+        // Série pour les ventes en euros
+        XYChart.Series<String, Number> seriesVentes = new XYChart.Series<>();
+        seriesVentes.setName("Ventes en euros");
+        
+        // Série pour le nombre de produits vendus
+        XYChart.Series<String, Number> seriesProduits = new XYChart.Series<>();
+        seriesProduits.setName("Produits vendus");
+
+        // Charger les données depuis la base de données
+        String query = """
+            SELECT 
+                p.Marque, 
+                SUM(od.quantity * p.Prix) AS ventes_euros,
+                SUM(od.quantity) AS produits_vendus
+            FROM Orderdetails od
+            JOIN Produit p ON od.product_id = p.ID
+            GROUP BY p.Marque
+            ORDER BY ventes_euros DESC
+        """;
+        
+        try (PreparedStatement stmt = connection.prepareStatement(query);
+        		ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                	String marque = rs.getString("Marque"); // Nom de la marque
+                    double ventes = rs.getDouble("ventes_euros") / 10;  // Ventes en euros
+                    int produitsVendus = rs.getInt("produits_vendus"); // Nombre de produits vendus
+                    seriesVentes.getData().add(new XYChart.Data<>(marque, ventes));
+                    seriesProduits.getData().add(new XYChart.Data<>(marque, produitsVendus));
+                }
+        } catch (SQLException e) {
+			e.printStackTrace();
+		}
+        barChart.getData().add(seriesVentes);
+        barChart.getData().add(seriesProduits);
+        barChart.setLegendVisible(true);
+        return barChart;
+    }
 }
 

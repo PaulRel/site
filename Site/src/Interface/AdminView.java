@@ -3,6 +3,8 @@ package Interface;
 import database.AdminStatsDAO;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.LineChart;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -72,21 +74,25 @@ public class AdminView {
 		Label totalOrdersLabel = new Label("Nombre total de commandes " + adminStatsDAO.getTotalOrders());
 		Label pendingOrders = new Label("Nombre de commandes en cours " + adminStatsDAO.getPendingOrders());
 		Label deliveredOrders = new Label("Nombre de commandes livrées " + adminStatsDAO.getDeliveredOrders());
-		Label totalRevenue = new Label("Chiffre d'affaires " + adminStatsDAO.getTotalRevenue() );
 		Label averageOrderValue = new Label("Panier moyen " + adminStatsDAO.getAverageOrderValue());
-		Label sellingByPeriod = new Label("Évolution des ventes par mois " + adminStatsDAO.getSellingByPeriod());
+		
 		
 		mainContent.getChildren().addAll(totalOrdersLabel, pendingOrders,
-				deliveredOrders, totalRevenue, averageOrderValue, sellingByPeriod);
+				deliveredOrders, averageOrderValue);
 		return scrollPane;
 	}
 	
 	private void showStats() {
 		Label totalProductsLabel = new Label("Nombre total de produits " + adminStatsDAO.getTotalProducts());
-		Label topSellingProductsLabel = new Label("Produits les plus vendus " + adminStatsDAO.getTopSellingProducts(5));			
-		Label bestTypeProducts = new Label("Meilleures catégories de produits ");
+		Label totalRevenue = new Label("Chiffre d'affaires " + adminStatsDAO.getTotalRevenue());
+		Label topSellingProductsLabel = new Label("Produits les plus vendus " + adminStatsDAO.getTopSellingProducts(5));
+		
+		Label salesByPeriod = new Label("Évolution des ventes par mois " );
+		LineChart<String, Number> salesLineChart= adminStatsDAO.getSalesByPeriodLineChart();
+		
 		PieChart pieChart = adminStatsDAO.getTypeProductsPieChart();
-		mainContent.getChildren().setAll(totalProductsLabel, topSellingProductsLabel, bestTypeProducts, pieChart);
+		BarChart<String, Number> barChart = adminStatsDAO.getSalesByBrandBarChart();
+		mainContent.getChildren().setAll(totalProductsLabel, totalRevenue, topSellingProductsLabel, salesByPeriod, salesLineChart, pieChart, barChart);
 	}
 	
 	private void showClients() {

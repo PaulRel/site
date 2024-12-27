@@ -143,5 +143,8 @@
     -fx-padding: 2px; /* Espace interne des en-têtes */
     -fx-font-size: 12px;
 }
+/*BarChart ventes par marques */
+.default-color0.chart-bar { -fx-bar-fill: #3498db; } /* Couleur pour les ventes */
+.default-color1.chart-bar { -fx-bar-fill: #2ecc71; } /* Couleur pour les produits vendus */
 
 
