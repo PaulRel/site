@@ -2,6 +2,7 @@ package Interface;
 
 import java.util.List;
 
+import customer.Customer.Role;
 import database.SearchDAO;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -62,7 +63,9 @@ public class HeaderView{
     			new AuthentificationView(mainView);
     		}
     		else {
-    			new AccountView(mainView);
+    			if (MainView.getCurrentCustomer().getRole()==Role.CUSTOMER)
+        			new AccountView(mainView);
+        		else new AdminView(mainView);
     		}
     	});
     	

@@ -18,15 +18,15 @@ public class AdminView {
         AnchorPane rootPane = new AnchorPane();     
         HeaderView v = new HeaderView(mainView);
         
-        rootPane.getChildren().addAll(v.getHeader(), createLeftMenu(), createMainSection());
+        rootPane.getChildren().addAll(v.getHeader(), createLeftMenu(mainView), createMainSection());
         
         Scene adminScene = new Scene(rootPane, 1350, 670);
         adminScene.getStylesheets().add(this.getClass().getResource("/style.css").toExternalForm());
         mainView.getPrimaryStage().setScene(adminScene);
     }
 	
-	public VBox createLeftMenu() {
-		VBox menuBox = new VBox();
+	public VBox createLeftMenu(MainView mainView) {
+		VBox menuBox = new VBox(20);
 		AnchorPane.setTopAnchor(menuBox, 116.0);
 		menuBox.setPadding(new Insets(20));
 	    //menuBox.setStyle("-fx-background-color: #F8F8F8;");
@@ -35,14 +35,19 @@ public class AdminView {
 		Button customersButton = new Button("Clients");
 		Button stockManagementButton = new Button("Gestion des stocks");
 		Button editInvoiceButton = new Button("Modifier les factures");
-		 
+		Button logoutButton = new Button("Déconnexion");
+        
 		statsButton.setOnAction(e -> showStats());
 		customersButton.setOnAction(e -> showClients());
 		stockManagementButton.setOnAction(e -> manageStocks());
 		editInvoiceButton.setOnAction(e -> editInvoice());
-		menuBox.getChildren().addAll(statsButton, customersButton, stockManagementButton, editInvoiceButton);
-		return menuBox;
+		logoutButton.setOnAction(e -> {
+        	MainView.setCurrentCustomer(null);
+        	mainView.showProductView(Product.class, null);
+        });
 		
+		menuBox.getChildren().addAll(statsButton, customersButton, stockManagementButton, editInvoiceButton, logoutButton);
+		return menuBox;
 	}
 	
 	public VBox createMainSection() {
