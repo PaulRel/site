@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import javafx.scene.chart.PieChart;
+
 public class AdminStatsDAO {
 	
 	private Connection connection;
@@ -99,7 +101,7 @@ public class AdminStatsDAO {
     
     // 6. Nombre de commandes livrées
     public int getDeliveredOrders() {
-        String query = "SELECT COUNT(*) AS commandes_livrées FROM Orders WHERE status = 'Délivrée'";
+        String query = "SELECT COUNT(*) AS commandes_livrées FROM Orders WHERE status = 'Délivrée	'";
         try (PreparedStatement stmt = connection.prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {
             if (rs.next()) {
@@ -158,23 +160,27 @@ public class AdminStatsDAO {
     }
     
     // 10. Meilleures catégories de produits
-    public String getBestTypeProducts(int limit) {
+    public PieChart getTypeProductsPieChart() {
+    	PieChart pieChart = new PieChart();
+        pieChart.setTitle("Répartition des produits vendus par catégories");
     	String query = """
                 SELECT p.Type, SUM(od.quantity) AS total_vendus 
     			FROM Orderdetails od
     			JOIN Produit p ON od.product_id = p.ID
     			GROUP BY p.Type
-    			ORDER BY total_vendus DESC;""";
+    			""";
     	try (PreparedStatement stmt = connection.prepareStatement(query);
-                ResultSet rs = stmt.executeQuery()) {
-                    while (rs.next()) {
-                        return ("Type : " + rs.getString("Type") + 
-                                           ", Ventes: " + rs.getInt("total_vendus"));
-                    }
+             ResultSet rs = stmt.executeQuery()) {
+             while (rs.next()) {
+            	 String type = rs.getString("Type");
+                 int totalVendus = rs.getInt("total_vendus");
+                 pieChart.getData().add(new PieChart.Data(type, totalVendus));
+                 pieChart.setLegendVisible(false);
+             }
         } catch (SQLException e) {
     			e.printStackTrace();
     	}
-    	return null;
+    	return pieChart;
     }
 
     // 11. Panier moyen
@@ -213,7 +219,7 @@ public class AdminStatsDAO {
             		ResultSet rs = stmt.executeQuery()) {
                     while (rs.next()) {
                         return("Date: " + rs.getString("mois") + 
-                                           ", Ventes: " + rs.getInt("ventes_mensuelles"));
+                                           ", Ventes: " + rs.getDouble("ventes_mensuelles"));
                     }
             } catch (SQLException e) {
     			e.printStackTrace();
