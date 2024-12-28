@@ -289,7 +289,7 @@ public class AccountView {
                 MainView.showAlert("Succès", null, "Votre compte a été supprimé avec succès.", AlertType.INFORMATION);
                 MainView.setCurrentCustomer(null); // On réinitialise l'instance après suppression
             }
-            }
+        }
         catch (SQLException e) {
             MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);
             e.printStackTrace();

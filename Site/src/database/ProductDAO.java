@@ -150,4 +150,37 @@ public class ProductDAO {
         }
         return product;
     }
+    
+    public void insertProduct(Product product) {
+    	String query = "INSERT INTO Produit (Nom, Description, Type, Marque, Prix, Qt_dispo) VALUES (?, ?, ?, ?, ?, ?)";
+    	try (Connection conn = DatabaseConnection.getConnection();
+               PreparedStatement statement = conn.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS)) {
+
+               // Remplace les paramètres de la requête par les valeurs de l'objet Customer
+               statement.setString(1, product.getName());
+               statement.setString(2, product.getDescription());
+               statement.setString(3, product.getType());
+               statement.setString(4, product.getBrand());            
+               statement.setDouble(5, product.getPrice());
+               statement.setInt(6, product.getQtDispo());
+
+               int rowsInserted = statement.executeUpdate();
+               if (rowsInserted > 0) {
+                   System.out.println("Le produit a été ajouté avec succès !");
+
+                   // Récupérer l'ID généré automatiquement
+                   try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
+                       if (generatedKeys.next()) {
+                           int generatedId = generatedKeys.getInt(1); // Récupérer l'ID généré
+                           product.setId(generatedId); // Assigner l'ID généré à l'objet Product
+                           System.out.println("ID du nouveau produit : " + generatedId);
+                       } else {
+                           throw new SQLException("Échec de récupération de l'ID généré.");
+                       }
+                   }
+               }
+           } catch (SQLException e) {
+           	e.printStackTrace();
+           }
+    }
 }

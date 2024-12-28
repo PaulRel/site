@@ -1,11 +1,21 @@
 package Interface;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.List;
 import java.util.Map;
 
+import customer.CartItem;
 import customer.Order;
 import database.AdminStatsDAO;
+import database.DatabaseConnection;
+import database.ProductDAO;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.chart.BarChart;
@@ -18,10 +28,14 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 import products.Product;
 
 public class AdminView {
@@ -251,5 +265,214 @@ public class AdminView {
         
         return tableView;
 	}
+	
+	
+	private void editProducts() {
+		
+	}
+	
+	private TextField idField, nameField, descriptionField, brandField, priceField, qtyDispoField;
+	
+    public void addMedicinesAdd(){
+    	idField = new TextField();
+    	nameField = new TextField();
+    	brandField = new TextField();
+    	priceField = new TextField();
+    	qtyDispoField = new TextField();
+        if(nameField.getText().isEmpty()
+                    || descriptionField.getText().isEmpty()
+                    || brandField.getSelectionModel().getSelectedItem() == null
+                    || priceField.getText().isEmpty()
+                    || qtyDispoField.getText().isEmpty()
+                    || getData.path == null || getData.path == ""){
+        	MainView.showAlert("Erreur", null, "Merci de remplir tous les champs " + e.getMessage(), AlertType.ERROR);
+        }else{
+        	String name = nameField.getText();
+        	String description = descriptionField.getText();
+        	String brand = brandField.getText();
+        	//convertir en double
+        	String price = priceField.getText();
+        	//convertir en int
+        	String qtyDispo = qtyDispoField.getText();
+
+                    String uri = getData.path;
+                    uri = uri.replace("\\", "\\\\");
+
+                    prepare.setString(7, uri);
+                    
+                    MainView.showAlert("Information Message", null, "Ajouter avec succès", AlertType.INFORMATION);
+                    
+                    addMedicineShowListData();
+                    addMedicineReset();
+                    
+                }
+    }
+    
+    public void addMedicineUpdate(){
+    	String id = idField.getText();
+    	String name = nameField.getText();
+    	String description = descriptionField.getText();
+    	String brand = brandField.getText();
+    	//convertir en double
+    	String price = priceField.getText();
+    	//convertir en int
+    	String qtyDispo = qtyDispoField.getText();
+        
+        String uri = getData.path;
+        uri = uri.replace("\\", "\\\\");
+        
+        String sql = "UPDATE Product SET Nom = '"
+                +name+"', Description = '"
+                +description+"', Marque = '"
+                +brand+"', Prix = '"
+                +price+"', Qt_dispo = '"
+                +qtyDispo+"', image = '"+uri+"' WHERE id = '"
+                +id+"'";
+        
+        Connection conn = DatabaseConnection.getConnection();
+        
+        try{
+        	if(nameField.getText().isEmpty()
+                    || descriptionField.getText().isEmpty()
+                    || brandField.getSelectionModel().getSelectedItem() == null
+                    || priceField.getText().isEmpty()
+                    || qtyDispoField.getText().isEmpty()
+                    || getData.path == null || getData.path == ""){
+        	MainView.showAlert("Erreur", null, "Merci de remplir tous les champs ", AlertType.ERROR);
+            }else{
+            	PreparedStatement updateStmt = conn.prepareStatement(sql);
+            	updateStmt.executeUpdate(sql);
+            	MainView.showAlert("Information Message", null, "Modifier avec succès", AlertType.INFORMATION);
+                    
+                    addMedicineShowListData();
+                    addMedicineReset();
+                }  
+        }catch(Exception e){e.printStackTrace();}
+    }
+    
+    public void addMedicineDelete(){
+        
+        String sql = "DELETE FROM Produit WHERE id = '"+ idField.getText()+"'";
+            
+        if(nameField.getText().isEmpty()
+                || descriptionField.getText().isEmpty()
+                || brandField.getSelectionModel().getSelectedItem() == null
+                || priceField.getText().isEmpty()
+                || qtyDispoField.getText().isEmpty()
+                || getData.path == null || getData.path == ""){
+        	MainView.showAlert("Erreur", null, "Merci de remplir tous les champs ", AlertType.ERROR);
+            }else{
+            	try (Connection conn = DatabaseConnection.getConnection();
+                    	PreparedStatement statement = conn.prepareStatement(sql)) {
+
+                        int rowsAffected = statement.executeUpdate();
+
+                        if (rowsAffected > 0) {
+                            MainView.showAlert("Succès", null, "Votre produit a été supprimé avec succès.", AlertType.INFORMATION);
+
+                        }
+                    
+                    addMedicineShowListData();
+                    addMedicineReset();
+                }
+            	 catch (SQLException e) {
+                     MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);
+            }
+        }
+    }
+    
+    public void addMedicineReset(){
+        idField.setText("");
+        nameField.setText("");
+        descriptionField.setText("");
+        brandField.setText("");
+        priceField.getSelectionModel().clearSelection();
+        qtyDispoField.getSelectionModel().clearSelection();
+        
+        addMedicines_imageView.setImage(null);
+        
+        getData.path = "";
+        
+    }
+    
+    private String[] addMedicineListT = {"Hydrocodone", "Antibiotics", "Metformin", "Losartan", "Albuterol"};
+    public void addMedicineListType(){
+        List<String> listT = new ArrayList<>();
+        
+        for(String data: addMedicineListT){
+            listT.add(data);
+        }
+        
+        ObservableList listData = FXCollections.observableArrayList(listT);
+        addMedicines_type.setItems(listData);
+        
+    }
+    
+    
+    
+    private String[] addMedicineStatus = {"Available", "Not Available"};
+    public void addMedicineListStatus(){
+        List<String> listS = new ArrayList<>();
+        
+        for(String data: addMedicineStatus){
+            listS.add(data);
+        }
+        
+        ObservableList listData = FXCollections.observableArrayList(listS);
+        addMedicines_status.setItems(listData);
+    }
+    
+    public void addMedicineImportImage(){
+        
+        FileChooser open = new FileChooser();
+        open.setTitle("Import Image File");
+        open.getExtensionFilters().add(new ExtensionFilter("Image File", "*jpg", "*png"));
+        
+        File file = open.showOpenDialog(main_form.getScene().getWindow());
+        
+        if(file != null){
+            image = new Image(file.toURI().toString(), 118, 147, false, true);
+            
+            addMedicines_imageView.setImage(image);
+            
+            getData.path = file.getAbsolutePath();
+        }
+        
+    }
+    
+    
+    //A modifier
+    public ObservableList<Product> addMedicinesListData(){
+        
+        ProductDAO productDAO = new ProductDAO();
+        List<Product> products = productDAO.getAllProduits();
+        
+        ObservableList<Product> listData = FXCollections.observableArrayList();
+        
+        return listData;
+    }
+    
+    private ObservableList<Product> addProductList;
+    public void addMedicineShowListData(){
+        addProductList = addMedicinesListData();
+        
+        TableColumn<CartItem, String> productColumn = new TableColumn<>("Produit");
+        productColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getProduct().getName()));
+
+        TableColumn<CartItem, String> sizeColumn = new TableColumn<>("Taille");
+        sizeColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getSize()));
+
+        TableColumn<CartItem, Integer> quantityColumn = new TableColumn<>("Quantité");
+        quantityColumn.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getQuantity()).asObject());
+        
+        TableColumn<CartItem, Double> priceColumn = new TableColumn<>("Prix à l'unite");
+        priceColumn.setCellValueFactory(cellData -> new SimpleDoubleProperty(cellData.getValue().getProduct().getPrice()).asObject());
+        
+        // Créer une colonne pour le bouton d'action
+        TableColumn<CartItem, Void> actionColumn = new TableColumn<>("Action");
+        
+        addMedicines_tableView.setItems(addMedicineList);
+        
+    }
 
 }
