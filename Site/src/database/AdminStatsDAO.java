@@ -97,7 +97,7 @@ public class AdminStatsDAO {
         return 0;
     }
 
-    // 5. Nombre de commandes en cours
+    // 5. Nombre de commandes en cours NON UTILISE
     public int getPendingOrders() {
         String query = "SELECT COUNT(*) AS commandes_en_cours FROM Orders WHERE status = 'En cours'";
         try (PreparedStatement stmt = connection.prepareStatement(query);
@@ -111,7 +111,7 @@ public class AdminStatsDAO {
         return 0;
     }
     
-    // 6. Nombre de commandes livrées
+    // 6. Nombre de commandes livrées NON UTILISE
     public int getDeliveredOrders() {
         String query = "SELECT COUNT(*) AS commandes_livrées FROM Orders WHERE status = 'Délivrée	'";
         try (PreparedStatement stmt = connection.prepareStatement(query);
@@ -217,7 +217,7 @@ public class AdminStatsDAO {
         return 0.0;
     }
     
-    // 12. Évolution des ventes par mois
+    // 12. Évolution des ventes par mois (en euros)
     public LineChart<String, Number> getSalesByPeriodLineChart() {
     	// Créer les axes du graphique
         NumberAxis yAxis = new NumberAxis();
@@ -261,6 +261,51 @@ public class AdminStatsDAO {
             return lineChart;
         }
     
+    // 12 bis. Evolution des ventes par mois (en quantité)
+    public LineChart<String, Number> getSalesQtyLineChart() {
+    	// Créer les axes du graphique
+        NumberAxis yAxis = new NumberAxis();
+        yAxis.setLabel("Quantité");
+
+        javafx.scene.chart.CategoryAxis xAxis = new javafx.scene.chart.CategoryAxis();
+        xAxis.setLabel("Mois");
+
+        // Créer le LineChart
+        LineChart<String, Number> lineChart = new LineChart<>(xAxis, yAxis);
+        //lineChart.setTitle("Ventes mensuelles en euros");
+
+        // Ajouter une série de données
+        XYChart.Series<String, Number> series = new XYChart.Series<>();
+        series.setName("Ventes");
+
+    	String query = """
+                SELECT DATE_FORMAT(o.order_date, '%Y-%m') AS mois, 
+    			SUM(od.quantity) AS ventes
+    			FROM Orderdetails od
+    			JOIN Orders o ON od.order_id = o.order_id
+    			JOIN Produit p ON od.product_id = p.ID
+    			GROUP BY DATE_FORMAT(o.order_date, '%Y-%m')
+    			ORDER BY mois;""";
+            try (PreparedStatement stmt = connection.prepareStatement(query);
+            		ResultSet rs = stmt.executeQuery()) {
+                    while (rs.next()) {
+                    	String mois = rs.getString("mois"); // Mois au format 'YYYY-MM'
+                        double ventes = rs.getDouble("ventes"); // Total des ventes pour ce mois
+                        series.getData().add(new XYChart.Data<>(mois, ventes));
+                    }
+            } catch (SQLException e) {
+    			e.printStackTrace();
+    		}
+            //for (XYChart.Data<String, Number> data : series.getData()) {
+                //Tooltip tooltip = new Tooltip(data.getXValue() + ": " + data.getYValue() + "€");
+                //Tooltip.install(data.getNode(), tooltip);
+            //}
+            lineChart.getData().add(series);
+            lineChart.setLegendVisible(false);
+            return lineChart;
+        }
+    
+    // 13. Meilleurs marques
     public BarChart<String, Number> getSalesByBrandBarChart() {
     	CategoryAxis xAxis = new CategoryAxis();
         xAxis.setLabel("Marques");
