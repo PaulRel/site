@@ -1,6 +1,11 @@
 package Interface;
 
+import java.util.Map;
+
+import customer.Order;
 import database.AdminStatsDAO;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.chart.BarChart;
@@ -9,7 +14,10 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -86,10 +94,8 @@ public class AdminView {
 		
 		Label pendingOrders = new Label("Nombre de commandes en cours " + adminStatsDAO.getPendingOrders());
 		Label deliveredOrders = new Label("Nombre de commandes livrées " + adminStatsDAO.getDeliveredOrders());
-		Label averageOrderValue = new Label("Panier moyen " + adminStatsDAO.getAverageOrderValue());
-		Label topSellingProductsLabel = new Label("Produits les plus vendus " + adminStatsDAO.getTopSellingProducts());
 		
-		mainContent.getChildren().addAll(topSellingProductsLabel, pendingOrders, deliveredOrders, averageOrderValue);
+		mainContent.getChildren().addAll(pendingOrders, deliveredOrders);
 		return scrollPane;
 	}
 	
@@ -98,6 +104,7 @@ public class AdminView {
 		topVBox.setStyle("-fx-padding: 10; -fx-background-color: #FFFFFF; -fx-background-radius:10;");
 		Label topVBoxTitle = new Label("CHIFFRES CLES");
 		topVBoxTitle.setStyle("-fx-font-size: 16px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 5)");
+		
 		
 		HBox topHBox = new HBox();
 		topHBox.setStyle("-fx-alignment: center; -fx-spacing:20; -fx-background-color: #FFFFFF");
@@ -108,23 +115,22 @@ public class AdminView {
 		a.setStyle("-fx-alignment: center;");
 		a.setPrefSize(250, 100);
 		a.getChildren().addAll(totalProducts, totalProductsLabel);
-		
+				
 		Pane pane1 = new Pane();
 		pane1.setPrefSize(1, 50);
 		pane1.setStyle("-fx-background-color: #ececec");
-		
-		
+				
 		Label totalRevenueLabel = new Label("Chiffre d'affaires");
 		Label totalRevenue = new Label(""+adminStatsDAO.getTotalRevenue());
 		VBox b = new VBox();
 		b.setStyle("-fx-alignment: center;");
 		b.setPrefSize(250, 100);
 		b.getChildren().addAll(totalRevenue, totalRevenueLabel);
-		
+				
 		Pane pane2 = new Pane();
 		pane2.setPrefSize(1, 50);
 		pane2.setStyle("-fx-background-color: #ececec");
-		
+				
 		Label totalOrdersLabel = new Label("Nombre total de commandes ");
 		Label totalOrders = new Label(""+adminStatsDAO.getTotalOrders());
 		VBox c = new VBox();
@@ -133,6 +139,8 @@ public class AdminView {
 		c.getChildren().addAll(totalOrders, totalOrdersLabel);
 		
 		topHBox.getChildren().addAll(a, pane1, b, pane2, c);
+		
+		
 		topVBox.getChildren().addAll(topVBoxTitle, topHBox);
 		
 		
@@ -148,19 +156,37 @@ public class AdminView {
 		midHBox.getChildren().addAll(d, e);
 		
 		BarChart<String, Number> barChart = adminStatsDAO.getSalesByBrandBarChart();
-		VBox v = createVBox(new Label("Ventes par marques"), barChart);
+		VBox f = createVBox(new Label("Ventes par marques"), barChart);
 		
-		for (Label data : new Label[]{totalProducts, totalRevenue, totalOrders}) {
+		Label bestProductsLabel = new Label("Produits les plus vendus");
+		TableView<Map.Entry<String, Integer>> tableView = createBestProductsTable();
+		VBox g = new VBox(bestProductsLabel, tableView);
+		g.setPrefSize(500, 300);
+		g.setStyle("-fx-padding: 10;-fx-spacing:10;-fx-background-color: #FFFFFF; -fx-background-radius:10;");
+		
+		HBox midHBox2 = new HBox(10);
+		midHBox2.setSpacing(30);
+		midHBox2.getChildren().addAll(f, g);
+		
+		Label averageOrder = new Label(""+adminStatsDAO.getAverageOrderValue());
+		Label averageOrderLabel = new Label("Nombre total de produits ");
+		VBox h = new VBox();
+		h.setStyle("-fx-alignment: center;-fx-padding: 10;-fx-spacing:10;-fx-background-color: #FFFFFF; -fx-background-radius:10;");
+		//h.setPrefSize(250, 100);
+		h.getChildren().addAll(averageOrder, averageOrderLabel);
+		
+		for (Label data : new Label[]{totalProducts, totalRevenue, totalOrders, averageOrder}) {
             data.setStyle("-fx-font-size: 32px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 5);");
             //-fx-alignment: CENTER_LEFT;
       	  //label.setPrefWidth(220.0);
 		}
 		
-		for (Label dataLabel : new Label[]{totalProductsLabel, totalRevenueLabel, totalOrdersLabel}) {
+		for (Label dataLabel : new Label[]{totalProductsLabel, totalRevenueLabel, totalOrdersLabel, averageOrderLabel}) {
             dataLabel.setStyle("-fx-font-size: 16px;-fx-font-weight: normal;-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 5);");
 		}
 		
-		mainContent.getChildren().setAll(topVBox, midHBox, v);
+		
+		mainContent.getChildren().setAll(topVBox, midHBox, midHBox2, h);
 	}
 	
 	private void showClients() {
@@ -183,6 +209,27 @@ public class AdminView {
 		vBox.getChildren().addAll(label, chart);
 		vBox.setStyle("-fx-padding: 10;-fx-spacing:10;-fx-background-color: #FFFFFF; -fx-background-radius:10;");
 		return vBox;
+	}
+	
+	private TableView<Map.Entry<String, Integer>> createBestProductsTable() {
+		TableView<Map.Entry<String, Integer>> tableView = new TableView<>();
+        // Configurer les colonnes
+        TableColumn<Map.Entry<String, Integer>, String> productNameColumn = new TableColumn<>("Produit");
+        productNameColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getKey()));
+        productNameColumn.setMinWidth(365);
+
+        TableColumn<Map.Entry<String, Integer>, Integer> totalSoldColumn = new TableColumn<>("Ventes");
+        totalSoldColumn.setCellValueFactory(data -> new SimpleIntegerProperty(data.getValue().getValue()).asObject());
+        totalSoldColumn.setMinWidth(100);
+
+        // Ajouter les colonnes à la TableView
+        tableView.getColumns().add(productNameColumn);
+        tableView.getColumns().add(totalSoldColumn);
+
+        // Charger les données dans la TableView
+        tableView.setItems(adminStatsDAO.getTopSellingProducts());
+        
+        return tableView;
 	}
 
 }

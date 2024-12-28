@@ -4,7 +4,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
@@ -40,7 +46,8 @@ public class AdminStatsDAO {
     }
 
     // 2. Produits les plus vendus
-    public String getTopSellingProducts() {
+    public ObservableList<Map.Entry<String, Integer>> getTopSellingProducts() {
+    	ObservableList<Map.Entry<String, Integer>> topProducts = FXCollections.observableArrayList();
         String query = """
             SELECT p.Nom, SUM(od.quantity) AS total_vendus
             FROM Orderdetails od
@@ -51,14 +58,15 @@ public class AdminStatsDAO {
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    return ("Produit: " + rs.getString("Nom") + 
-                                       ", Ventes: " + rs.getInt("total_vendus"));
+                	String productName = rs.getString("Nom");
+                    int totalSold = rs.getInt("total_vendus");
+                    topProducts.add(new AbstractMap.SimpleEntry<>(productName, totalSold));
                 }
             }
         } catch (SQLException e) {
 			e.printStackTrace();
 		}
-        return null;
+        return topProducts;
     }
 
     // 3. Produits en rupture de stock
@@ -84,7 +92,6 @@ public class AdminStatsDAO {
                 return rs.getInt("total_commandes");
             }
         } catch (SQLException e) {
-
 			e.printStackTrace();
 		}
         return 0;
@@ -188,7 +195,7 @@ public class AdminStatsDAO {
     	return pieChart;
     }
 
-    // 11. Panier moyen
+    // 11. Montant moyen d'une commande
     public double getAverageOrderValue() {
         String query = """
             SELECT AVG(total_panier) AS panier_moyen
