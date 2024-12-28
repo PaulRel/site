@@ -31,10 +31,6 @@
     -fx-border-color: #ff4500;
 }
 
-.grid-pane .vbox:hover {
-    -fx-effect: dropshadow(three-pass-box, rgba(255,69,0,0.6), 10, 0, 0, 5);
-}
-
 /* Style pour chaque produit dans la grille */
 .produit-box { 				/* Vbox */
     -fx-pref-width: 160px;  /* Largeur fixe de la cellule */
@@ -48,7 +44,7 @@
 
 /* Ombre lors du survol de la cellule */
 .produit-box:hover {
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 5, 0.5, 0, 5); /* Ombre grise légère */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 5, 0.5, 0, 0); /* Ombre grise légère */
     -fx-background-color: #f9f9f9; /* Optionnel : légère couleur de fond pour l'effet de survol */
 }
 

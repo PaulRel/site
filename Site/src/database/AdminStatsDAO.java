@@ -40,16 +40,15 @@ public class AdminStatsDAO {
     }
 
     // 2. Produits les plus vendus
-    public String getTopSellingProducts(int limit) {
+    public String getTopSellingProducts() {
         String query = """
             SELECT p.Nom, SUM(od.quantity) AS total_vendus
             FROM Orderdetails od
             JOIN Produit p ON od.product_id = p.ID
             GROUP BY p.ID, p.Nom
             ORDER BY total_vendus DESC
-            LIMIT ?""";
+            """;
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
-            stmt.setInt(1, limit);
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     return ("Produit: " + rs.getString("Nom") + 
@@ -168,7 +167,7 @@ public class AdminStatsDAO {
     // 10. Meilleures catégories de produits
     public PieChart getTypeProductsPieChart() {
     	PieChart pieChart = new PieChart();
-        pieChart.setTitle("Répartition des produits vendus par catégories");
+        //pieChart.setTitle("Répartition des produits vendus par catégories");
     	String query = """
                 SELECT p.Type, SUM(od.quantity) AS total_vendus 
     			FROM Orderdetails od
@@ -222,7 +221,7 @@ public class AdminStatsDAO {
 
         // Créer le LineChart
         LineChart<String, Number> lineChart = new LineChart<>(xAxis, yAxis);
-        lineChart.setTitle("Ventes mensuelles en euros");
+        //lineChart.setTitle("Ventes mensuelles en euros");
 
         // Ajouter une série de données
         XYChart.Series<String, Number> series = new XYChart.Series<>();
@@ -257,18 +256,18 @@ public class AdminStatsDAO {
     
     public BarChart<String, Number> getSalesByBrandBarChart() {
     	CategoryAxis xAxis = new CategoryAxis();
-        xAxis.setLabel("Marque");
+        xAxis.setLabel("Marques");
 
         NumberAxis yAxis = new NumberAxis();
         yAxis.setLabel("Valeurs");
 
         // Création du BarChart
         BarChart<String, Number> barChart = new BarChart<>(xAxis, yAxis);
-        barChart.setTitle("Ventes par marque");
+        //barChart.setTitle("Ventes par marque");
 
         // Série pour les ventes en euros
         XYChart.Series<String, Number> seriesVentes = new XYChart.Series<>();
-        seriesVentes.setName("Ventes en euros");
+        seriesVentes.setName("Ventes en euros  / 10");
         
         // Série pour le nombre de produits vendus
         XYChart.Series<String, Number> seriesProduits = new XYChart.Series<>();
