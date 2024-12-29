@@ -1,6 +1,9 @@
 package Interface;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -285,16 +288,20 @@ public class AdminView {
 	private String name, description, type, brand, imagePath;
 	private Button addButton, deleteButton, clearButton,updateButton, importButton;
 	private double price;
+	private Label idLabel, typeLabel;
 	private int qtDispo;
     private ImageView imageView;
     private VBox a;
 	private ComboBox<String> typeComboBox;
 	private TableView<Product> tableView;
 	private ProductDAO productDAO = new ProductDAO();
+	private GridPane gridPane;
 	
 	private VBox editProducts(MainView mainView) {
 		VBox productDetails = new VBox();
 		productDetails.setStyle("-fx-padding: 10;-fx-spacing:10;-fx-background-color: #FFFFFF; -fx-background-radius:10;");
+		
+		// TextField
 		idField = new TextField();
     	nameField = new TextField();
     	descriptionField = new TextField();
@@ -303,12 +310,17 @@ public class AdminView {
     	priceField = new TextField();
     	qtDispoField = new TextField();
     	
+    	// ImageView
     	imageView = new ImageView();
-        //imageView.setImage(new Image(getClass().getResource(productDAO.getProduitById(1).getImagePath()).toExternalForm()));
+    	
+    	//VBox qui permet de réserver un espace pour l'imageView
         a = new VBox();
         a.setPrefSize(50, 50);
         a.setStyle("-fx-background-color:transparent;-fx-border-color: lightgray; -fx-border-width: 1; -fx-border-radius: 5;");
-        addButton = new Button("Ajouter");
+        
+        // Ajout des boutons
+        addButton = new Button("Ajouter un produit");
+        addButton.setStyle("-fx-background-color : #007bff; -fx-text-fill: white;");
         deleteButton = new Button("Supprimer");
         updateButton = new Button("Mettre à jour");
         clearButton = new Button("Effacer");
@@ -323,24 +335,28 @@ public class AdminView {
         addButton.setOnAction(event -> addProduct());
         deleteButton.setOnAction(event -> deleteProduct());
         updateButton.setOnAction(event -> updateProduct());
-        clearButton.setOnAction(event -> productReset());
+        clearButton.setOnAction(event -> clearField());
+        
+        // Ajout de gridPane et table des produits
 		productDetails.getChildren().addAll(createGridPane(), tableView);
 		return productDetails;
 	}
 	
 	private GridPane createGridPane() {
-		GridPane gridPane = new GridPane();
+		gridPane = new GridPane();
         gridPane.setPadding(new Insets(15));
         gridPane.setHgap(10);
         gridPane.setVgap(10);
         gridPane.setStyle("-fx-border-color: lightgray; -fx-border-width: 1; -fx-border-radius: 5;");
-        Label idLabel = new Label("ID");
+        
+        idLabel = new Label("ID");
         Label nameLabel = new Label("Nom");
         Label descriptionLabel = new Label("Description");
-        Label typeLabel = new Label("Type");
+        typeLabel = new Label("Type");
         Label brandLabel = new Label("Marque");
         Label priceLabel = new Label("Prix");
         Label qtDispoLabel = new Label("Quantité");
+        
         gridPane.addRow(0, idLabel, idField, priceLabel, priceField);
         gridPane.addRow(1, nameLabel, nameField, qtDispoLabel, qtDispoField);
         gridPane.addRow(2, descriptionLabel);
@@ -351,68 +367,91 @@ public class AdminView {
         gridPane.add(imageView, 4, 0, 1, 2);
         GridPane.setHalignment(imageView, HPos.CENTER); // Alignement horizontal
         GridPane.setValignment(imageView, VPos.CENTER);
+        
         gridPane.add(importButton, 4, 2, 1, 1);
-        gridPane.add(addButton, 5, 1, 1, 1);
-        gridPane.add(updateButton, 6, 1, 1, 1);
-        gridPane.add(clearButton, 5, 2, 1, 1);
-        gridPane.add(deleteButton, 6, 2, 1, 1);
+        gridPane.add(addButton, 5, 0, 2, 1);
+        gridPane.add(updateButton, 6, 3, 1, 1);
+        gridPane.add(clearButton, 5, 4, 1, 1);
+        gridPane.add(deleteButton, 6, 4, 1, 1);
         return gridPane;
 	}
+	  
+    public ComboBox<String> getProductTypeComboBox(){
+        ComboBox<String> typeComboBox = new ComboBox<String>();
+        typeComboBox.getItems().addAll("chaussures", "vetements", "sacs");
+        return typeComboBox;        
+    }  
+    
 	
-    private void addProduct(){
-        if(!checkIfEmpty()) {
-        	getTextFieldValues();	
-        	Product product = new Product(0, name, description, type, brand, price, qtDispo, null);
-        	productDAO.insertProduct(product);
-
-                    //String uri = getData.path;
-                    //uri = uri.replace("\\", "\\\\");
-
-                    //prepare.setString(7, uri);
-                    
-            MainView.showAlert("Information Message", null, "Ajouter avec succès", AlertType.INFORMATION);
+    private void addProduct() {
+    	gridPane.getChildren().removeAll(idLabel, idField, typeLabel, typeComboBox, addButton);
+    	addButton.setText("Ajouter");
+        	
+        gridPane.add(typeLabel, 0, 0); // Nouvelle position pour typeLabel
+        gridPane.add(typeComboBox, 1, 0);
             
-            getProductTableView();
-            productReset();
+        Button addProduct = new Button("Ajouter");
+        gridPane.add(addProduct, 5, 4);
+            
+        deleteButton.setVisible(false);
+        updateButton.setVisible(false);
+        tableView.setVisible(false);
+            
+        if(!checkIfEmpty()) {
+        	addProduct.setOnAction(event ->{
+        		getTextFieldValues();
+        		Product product = new Product(0, name, description, type, brand, price, qtDispo, imagePath);
+        		productDAO.insertProduct(product);
+                        
+        		MainView.showAlert("Information Message", null, "Ajouter avec succès", AlertType.INFORMATION);
+                
+        		gridPane.getChildren().removeAll(addProduct);
+        		deleteButton.setVisible(true);
+        		updateButton.setVisible(true);
+        		tableView.setVisible(true);
+        		clearField();
+        	});         
         }
     }
     
     public void updateProduct(){
     	int id = Integer.parseInt(idField.getText());
-    	getTextFieldValues();        
+    	getTextFieldValues();
         //String uri = getData.path;
         //uri = uri.replace("\\", "\\\\");
         
-        String sql = "UPDATE Product SET Nom = '"
-                +name+"', Description = '"
-                +description+"', Type = '"
-                +type+"', Marque = '"
-                +brand+"', Prix = '"
-                +price+"', Qt_dispo = '"
-                +qtDispo+/*  "', image = '"+uri+"' */"WHERE id = '"
-                +id+"'";
+        String sql = "UPDATE Produit SET Nom = ?, Description = ?, Type = ?, Marque = ?, Prix = ?, Qt_Dispo = ?, image_path = ? WHERE id = ?";
         
         if(!checkIfEmpty()) {
-            try(Connection conn = DatabaseConnection.getConnection()){
-            	PreparedStatement updateStmt = conn.prepareStatement(sql);
-            	updateStmt.executeUpdate(sql);
-            	MainView.showAlert("Information Message", null, "Modifier avec succès", AlertType.INFORMATION);
-                    
-                getProductTableView();
-                productReset();
-            }catch(Exception e){e.printStackTrace();}
+            try(Connection conn = DatabaseConnection.getConnection();
+            	PreparedStatement updateStmt = conn.prepareStatement(sql)){
+            		updateStmt.setString(1, name);
+                    updateStmt.setString(2, description);
+                    updateStmt.setString(3, type);
+                    updateStmt.setString(4, brand);
+                    updateStmt.setDouble(5, price);
+                    updateStmt.setInt(6, qtDispo);
+                    updateStmt.setString(7, imagePath);
+                    updateStmt.setInt(8, id);
+                    int rowsAffected = updateStmt.executeUpdate();
+                    if (rowsAffected > 0) {
+                    	MainView.showAlert("Information Message", null, "Modifier avec succès", AlertType.INFORMATION);                    
+                    	clearField();
+                    	//getProductTableView();
+                    }
+              	}catch(Exception e){e.printStackTrace();}
         }
     }
     
     public void deleteProduct(){ 
     	if(!checkIfEmpty()) {
         	productDAO.deleteProduct(Integer.parseInt(idField.getText()));
-        	getProductTableView();
-        	productReset();      
+        	//getProductTableView();
+        	clearField();      
         }
     }
     
-    public void productReset(){
+    public void clearField(){
         idField.setText("");
         nameField.setText("");
         descriptionField.setText("");
@@ -421,17 +460,8 @@ public class AdminView {
         priceField.setText("");
         qtDispoField.setText("");
         imageView.setImage(null);
-        
-        //getData.path = "";
-        
+        imagePath = "";
     }
-    
-    public ComboBox<String> getProductTypeComboBox(){
-        ComboBox<String> typeComboBox = new ComboBox<String>();
-        typeComboBox.getItems().addAll("chaussures", "vetements", "sacs");
-        return typeComboBox;        
-    }  
-    
     
     public Button getImportImageButton(MainView mainView){       
         FileChooser fileChooser = new FileChooser();
@@ -445,13 +475,29 @@ public class AdminView {
             // Ouvrir le FileChooser et récupérer le fichier sélectionné
             File selectedFile = fileChooser.showOpenDialog(mainView.getPrimaryStage());
 
-            if (selectedFile != null) {
-                // Charger l'image et l'afficher dans l'ImageView
-                Image image = new Image(selectedFile.toURI().toString());
+            try {
+                // 1. Renommer le fichier (ajout d'un timestamp)
+                String newFileName = "image_" + System.currentTimeMillis() + ".png";
+                String resourcePath = "/Image/";
+                imagePath = resourcePath + newFileName;
+                File destFile = new File(imagePath);
+                
+
+                // 2. Copier le fichier dans le dossier de ressources
+                Files.copy(selectedFile.toPath(), destFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+                // 3. Charger l'image et l'afficher dans l'ImageView
+                Image image = new Image(destFile.toURI().toString());
                 imageView.setImage(image);
+
+                // 4. Mettre à jour le chemin de l'image si nécessaire
+                System.out.println("Image importée et enregistrée à : " + destFile.getAbsolutePath());
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                MainView.showAlert("Erreur", "Impossible d'importer l'image", e.getMessage(), AlertType.ERROR);
             }
-        });
-        
+    });       
         return button;        
     }
     
@@ -499,9 +545,6 @@ public class AdminView {
     
     private void productSelect(){
         Product product = tableView.getSelectionModel().getSelectedItem();
-        int num = tableView.getSelectionModel().getSelectedIndex();
-
-        if((num - 1) < - 1){return;}
         
         idField.setText(String.valueOf(product.getId()));
         nameField.setText(product.getName());
@@ -511,14 +554,12 @@ public class AdminView {
         priceField.setText(String.valueOf(product.getPrice()));
         qtDispoField.setText(String.valueOf(product.getQtDispo()));
         
-        String uri = product.getImagePath();
-        System.out.println(uri);
+        imagePath = product.getImagePath();
         
-        imageView.setImage(new Image(getClass().getResource(uri).toExternalForm()));
+        imageView.setImage(new Image(getClass().getResource(imagePath).toExternalForm()));
     	imageView.setFitWidth(100);  // Largeur fixe
         imageView.setFitHeight(100); // Hauteur fixe
-        imageView.setPreserveRatio(true);
-        //getData.path = medData.getImage();        
+        imageView.setPreserveRatio(true);       
     }
     
     private void getTextFieldValues() {
@@ -527,7 +568,7 @@ public class AdminView {
     	type = typeComboBox.getValue();
     	brand = brandField.getText();
     	price = Double.parseDouble(priceField.getText());
-    	qtDispo = Integer.parseInt(qtDispoField.getText());  	
+    	qtDispo = Integer.parseInt(qtDispoField.getText()); 	
     }
     
     private boolean checkIfEmpty() {
@@ -536,12 +577,13 @@ public class AdminView {
                  || typeComboBox.getSelectionModel().getSelectedItem() == null
                  || brandField.getText().isEmpty()
                  || priceField.getText().isEmpty()
-                 || qtDispoField.getText().isEmpty()){
-                 //|| getData.path == null || getData.path == "")
+                 || qtDispoField.getText().isEmpty()
+                 || imagePath == null || imagePath == ""){
+    		System.out.println("ImagePath : "+ imagePath);
          	MainView.showAlert("Erreur", null, "Merci de remplir tous les champs ", AlertType.ERROR);
     	 	return true;
     	 }
-    	 return false;    	
+    	 return false;	
     }
 
 }
