@@ -1,8 +1,10 @@
 package Interface;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -16,23 +18,33 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.Chart;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
@@ -81,7 +93,7 @@ public class AdminView {
         
 		statsButton.setOnAction(e -> showStats());
 		customersButton.setOnAction(e -> showClients());
-		stockManagementButton.setOnAction(e -> manageStocks());
+		stockManagementButton.setOnAction(e -> manageStocks(mainView));
 		editInvoiceButton.setOnAction(e -> editInvoice());
 		logoutButton.setOnAction(e -> {
         	MainView.setCurrentCustomer(null);
@@ -200,9 +212,9 @@ public class AdminView {
 		//h.setPrefSize(250, 100);
 		h.getChildren().addAll(averageOrder, averageOrderLabel);
 		
-		Label salesQtyByPeriod = new Label("Évolution des ventes par mois " );
-		LineChart<String, Number> salesQtyLineChart= adminStatsDAO.getSalesQtyLineChart();
-		VBox i = createVBox(salesQtyByPeriod, salesQtyLineChart);
+		Label salesqtByPeriod = new Label("Évolution des ventes par mois " );
+		LineChart<String, Number> salesqtLineChart= adminStatsDAO.getSalesQtyLineChart();
+		VBox i = createVBox(salesqtByPeriod, salesqtLineChart);
 		
 		HBox bottomHBox = new HBox(10);
 		bottomHBox.setSpacing(30);
@@ -229,9 +241,10 @@ public class AdminView {
 		mainContent.getChildren().setAll(totalUsers, activeUsers);
 	}
 	
-	private void manageStocks() {
+	private void manageStocks(MainView mainView) {
 		Label OutOfStockProductsLabel = new Label("Produits en rupture de stock " + adminStatsDAO.getOutOfStockProducts());
-		mainContent.getChildren().setAll(OutOfStockProductsLabel);
+		VBox editProductsBox = editProducts(mainView);
+		mainContent.getChildren().setAll(OutOfStockProductsLabel, editProductsBox);
 	}
 	
 	private void editInvoice() {
@@ -267,212 +280,283 @@ public class AdminView {
 	}
 	
 	
-	private void editProducts() {
-		
-	}
 	
-	private TextField idField, nameField, descriptionField, brandField, priceField, qtyDispoField;
+	private TextField idField, nameField, descriptionField, brandField, priceField, qtDispoField;
+	private String name, description, type, brand, imagePath;
+	private Button addButton, deleteButton, clearButton,updateButton, importButton;
+	private double price;
+	private int qtDispo;
+    private ImageView imageView;
+    private VBox a;
+	private ComboBox<String> typeComboBox;
+	private TableView<Product> tableView;
+	private ProductDAO productDAO = new ProductDAO();
 	
-    public void addMedicinesAdd(){
-    	idField = new TextField();
+	private VBox editProducts(MainView mainView) {
+		VBox productDetails = new VBox();
+		productDetails.setStyle("-fx-padding: 10;-fx-spacing:10;-fx-background-color: #FFFFFF; -fx-background-radius:10;");
+		idField = new TextField();
     	nameField = new TextField();
+    	descriptionField = new TextField();
+    	typeComboBox =  getProductTypeComboBox();
     	brandField = new TextField();
     	priceField = new TextField();
-    	qtyDispoField = new TextField();
-        if(nameField.getText().isEmpty()
-                    || descriptionField.getText().isEmpty()
-                    || brandField.getSelectionModel().getSelectedItem() == null
-                    || priceField.getText().isEmpty()
-                    || qtyDispoField.getText().isEmpty()
-                    || getData.path == null || getData.path == ""){
-        	MainView.showAlert("Erreur", null, "Merci de remplir tous les champs " + e.getMessage(), AlertType.ERROR);
-        }else{
-        	String name = nameField.getText();
-        	String description = descriptionField.getText();
-        	String brand = brandField.getText();
-        	//convertir en double
-        	String price = priceField.getText();
-        	//convertir en int
-        	String qtyDispo = qtyDispoField.getText();
+    	qtDispoField = new TextField();
+    	
+    	imageView = new ImageView();
+        //imageView.setImage(new Image(getClass().getResource(productDAO.getProduitById(1).getImagePath()).toExternalForm()));
+        a = new VBox();
+        a.setPrefSize(50, 50);
+        a.setStyle("-fx-background-color:transparent;-fx-border-color: lightgray; -fx-border-width: 1; -fx-border-radius: 5;");
+        addButton = new Button("Ajouter");
+        deleteButton = new Button("Supprimer");
+        updateButton = new Button("Mettre à jour");
+        clearButton = new Button("Effacer");
+        importButton = getImportImageButton(mainView);
+        tableView = getProductTableView();
+        tableView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) { // Vérifie qu'une ligne est sélectionnée
+                productSelect();
+            }
+        });
 
-                    String uri = getData.path;
-                    uri = uri.replace("\\", "\\\\");
+        addButton.setOnAction(event -> addProduct());
+        deleteButton.setOnAction(event -> deleteProduct());
+        updateButton.setOnAction(event -> updateProduct());
+        clearButton.setOnAction(event -> productReset());
+		productDetails.getChildren().addAll(createGridPane(), tableView);
+		return productDetails;
+	}
+	
+	private GridPane createGridPane() {
+		GridPane gridPane = new GridPane();
+        gridPane.setPadding(new Insets(15));
+        gridPane.setHgap(10);
+        gridPane.setVgap(10);
+        gridPane.setStyle("-fx-border-color: lightgray; -fx-border-width: 1; -fx-border-radius: 5;");
+        Label idLabel = new Label("ID");
+        Label nameLabel = new Label("Nom");
+        Label descriptionLabel = new Label("Description");
+        Label typeLabel = new Label("Type");
+        Label brandLabel = new Label("Marque");
+        Label priceLabel = new Label("Prix");
+        Label qtDispoLabel = new Label("Quantité");
+        gridPane.addRow(0, idLabel, idField, priceLabel, priceField);
+        gridPane.addRow(1, nameLabel, nameField, qtDispoLabel, qtDispoField);
+        gridPane.addRow(2, descriptionLabel);
+        gridPane.add(descriptionField, 1, 2, 2, 1); //colonne, ligne, nb col occupe
+        gridPane.addRow(3, typeLabel, typeComboBox);
+        gridPane.addRow(4, brandLabel, brandField);
+        gridPane.add(a, 4, 0, 1, 2);
+        gridPane.add(imageView, 4, 0, 1, 2);
+        GridPane.setHalignment(imageView, HPos.CENTER); // Alignement horizontal
+        GridPane.setValignment(imageView, VPos.CENTER);
+        gridPane.add(importButton, 4, 2, 1, 1);
+        gridPane.add(addButton, 5, 1, 1, 1);
+        gridPane.add(updateButton, 6, 1, 1, 1);
+        gridPane.add(clearButton, 5, 2, 1, 1);
+        gridPane.add(deleteButton, 6, 2, 1, 1);
+        return gridPane;
+	}
+	
+    private void addProduct(){
+        if(!checkIfEmpty()) {
+        	getTextFieldValues();	
+        	Product product = new Product(0, name, description, type, brand, price, qtDispo, null);
+        	productDAO.insertProduct(product);
 
-                    prepare.setString(7, uri);
+                    //String uri = getData.path;
+                    //uri = uri.replace("\\", "\\\\");
+
+                    //prepare.setString(7, uri);
                     
-                    MainView.showAlert("Information Message", null, "Ajouter avec succès", AlertType.INFORMATION);
-                    
-                    addMedicineShowListData();
-                    addMedicineReset();
-                    
-                }
+            MainView.showAlert("Information Message", null, "Ajouter avec succès", AlertType.INFORMATION);
+            
+            getProductTableView();
+            productReset();
+        }
     }
     
-    public void addMedicineUpdate(){
-    	String id = idField.getText();
-    	String name = nameField.getText();
-    	String description = descriptionField.getText();
-    	String brand = brandField.getText();
-    	//convertir en double
-    	String price = priceField.getText();
-    	//convertir en int
-    	String qtyDispo = qtyDispoField.getText();
-        
-        String uri = getData.path;
-        uri = uri.replace("\\", "\\\\");
+    public void updateProduct(){
+    	int id = Integer.parseInt(idField.getText());
+    	getTextFieldValues();        
+        //String uri = getData.path;
+        //uri = uri.replace("\\", "\\\\");
         
         String sql = "UPDATE Product SET Nom = '"
                 +name+"', Description = '"
-                +description+"', Marque = '"
+                +description+"', Type = '"
+                +type+"', Marque = '"
                 +brand+"', Prix = '"
                 +price+"', Qt_dispo = '"
-                +qtyDispo+"', image = '"+uri+"' WHERE id = '"
+                +qtDispo+/*  "', image = '"+uri+"' */"WHERE id = '"
                 +id+"'";
         
-        Connection conn = DatabaseConnection.getConnection();
-        
-        try{
-        	if(nameField.getText().isEmpty()
-                    || descriptionField.getText().isEmpty()
-                    || brandField.getSelectionModel().getSelectedItem() == null
-                    || priceField.getText().isEmpty()
-                    || qtyDispoField.getText().isEmpty()
-                    || getData.path == null || getData.path == ""){
-        	MainView.showAlert("Erreur", null, "Merci de remplir tous les champs ", AlertType.ERROR);
-            }else{
+        if(!checkIfEmpty()) {
+            try(Connection conn = DatabaseConnection.getConnection()){
             	PreparedStatement updateStmt = conn.prepareStatement(sql);
             	updateStmt.executeUpdate(sql);
             	MainView.showAlert("Information Message", null, "Modifier avec succès", AlertType.INFORMATION);
                     
-                    addMedicineShowListData();
-                    addMedicineReset();
-                }  
-        }catch(Exception e){e.printStackTrace();}
-    }
-    
-    public void addMedicineDelete(){
-        
-        String sql = "DELETE FROM Produit WHERE id = '"+ idField.getText()+"'";
-            
-        if(nameField.getText().isEmpty()
-                || descriptionField.getText().isEmpty()
-                || brandField.getSelectionModel().getSelectedItem() == null
-                || priceField.getText().isEmpty()
-                || qtyDispoField.getText().isEmpty()
-                || getData.path == null || getData.path == ""){
-        	MainView.showAlert("Erreur", null, "Merci de remplir tous les champs ", AlertType.ERROR);
-            }else{
-            	try (Connection conn = DatabaseConnection.getConnection();
-                    	PreparedStatement statement = conn.prepareStatement(sql)) {
-
-                        int rowsAffected = statement.executeUpdate();
-
-                        if (rowsAffected > 0) {
-                            MainView.showAlert("Succès", null, "Votre produit a été supprimé avec succès.", AlertType.INFORMATION);
-
-                        }
-                    
-                    addMedicineShowListData();
-                    addMedicineReset();
-                }
-            	 catch (SQLException e) {
-                     MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);
-            }
+                getProductTableView();
+                productReset();
+            }catch(Exception e){e.printStackTrace();}
         }
     }
     
-    public void addMedicineReset(){
+    public void deleteProduct(){ 
+    	if(!checkIfEmpty()) {
+        	productDAO.deleteProduct(Integer.parseInt(idField.getText()));
+        	getProductTableView();
+        	productReset();      
+        }
+    }
+    
+    public void productReset(){
         idField.setText("");
         nameField.setText("");
         descriptionField.setText("");
+        typeComboBox.getSelectionModel().clearSelection();
         brandField.setText("");
-        priceField.getSelectionModel().clearSelection();
-        qtyDispoField.getSelectionModel().clearSelection();
+        priceField.setText("");
+        qtDispoField.setText("");
+        imageView.setImage(null);
         
-        addMedicines_imageView.setImage(null);
-        
-        getData.path = "";
-        
-    }
-    
-    private String[] addMedicineListT = {"Hydrocodone", "Antibiotics", "Metformin", "Losartan", "Albuterol"};
-    public void addMedicineListType(){
-        List<String> listT = new ArrayList<>();
-        
-        for(String data: addMedicineListT){
-            listT.add(data);
-        }
-        
-        ObservableList listData = FXCollections.observableArrayList(listT);
-        addMedicines_type.setItems(listData);
+        //getData.path = "";
         
     }
     
+    public ComboBox<String> getProductTypeComboBox(){
+        List<String> listT = new ArrayList<String>();
+        listT.add("chaussures");
+        listT.add( "vetements");
+        ComboBox<String> typeComboBox = new ComboBox<String>();
+        
+        ObservableList<String> listData = FXCollections.observableArrayList(listT);
+        typeComboBox.setItems(listData);
+        return typeComboBox;        
+    }  
     
     
-    private String[] addMedicineStatus = {"Available", "Not Available"};
-    public void addMedicineListStatus(){
-        List<String> listS = new ArrayList<>();
+    public Button getImportImageButton(MainView mainView){       
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Import Image File");
+        fileChooser.getExtensionFilters().add(new ExtensionFilter("Image File", "*jpg", "*png"));
         
-        for(String data: addMedicineStatus){
-            listS.add(data);
-        }
+        Button button = new Button("Importer");
+        imageView = new ImageView();
         
-        ObservableList listData = FXCollections.observableArrayList(listS);
-        addMedicines_status.setItems(listData);
-    }
-    
-    public void addMedicineImportImage(){
+        button.setOnAction(event -> {
+            // Ouvrir le FileChooser et récupérer le fichier sélectionné
+            File selectedFile = fileChooser.showOpenDialog(mainView.getPrimaryStage());
+
+            if (selectedFile != null) {
+                // Charger l'image et l'afficher dans l'ImageView
+                Image image = new Image(selectedFile.toURI().toString());
+                imageView.setImage(image);
+
+                // Redimensionner l'ImageView si nécessaire
+                imageView.setFitWidth(100); // Largeur fixe
+                imageView.setPreserveRatio(true); // Maintenir les proportions
+            }
+        });
         
-        FileChooser open = new FileChooser();
-        open.setTitle("Import Image File");
-        open.getExtensionFilters().add(new ExtensionFilter("Image File", "*jpg", "*png"));
-        
-        File file = open.showOpenDialog(main_form.getScene().getWindow());
-        
-        if(file != null){
-            image = new Image(file.toURI().toString(), 118, 147, false, true);
-            
-            addMedicines_imageView.setImage(image);
-            
-            getData.path = file.getAbsolutePath();
-        }
-        
+        return button;        
     }
     
     
     //A modifier
-    public ObservableList<Product> addMedicinesListData(){
-        
-        ProductDAO productDAO = new ProductDAO();
-        List<Product> products = productDAO.getAllProduits();
-        
-        ObservableList<Product> listData = FXCollections.observableArrayList();
-        
-        return listData;
+    public ObservableList<Product> getProductsList(){ 
+        ObservableList<Product> productsList = FXCollections.observableArrayList(productDAO.getAllProduits());      
+        return productsList;
     }
     
-    private ObservableList<Product> addProductList;
-    public void addMedicineShowListData(){
-        addProductList = addMedicinesListData();
+    public TableView<Product> getProductTableView(){
+    	ObservableList<Product> productsList = getProductsList();
+        tableView = new TableView<>();
         
-        TableColumn<CartItem, String> productColumn = new TableColumn<>("Produit");
-        productColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getProduct().getName()));
+        TableColumn<Product, Integer> colId = new TableColumn<>("ID");
+        colId.setCellValueFactory(new PropertyValueFactory<>("id"));
 
-        TableColumn<CartItem, String> sizeColumn = new TableColumn<>("Taille");
-        sizeColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getSize()));
+        TableColumn<Product, String> colName = new TableColumn<>("Name");
+        colName.setCellValueFactory(new PropertyValueFactory<>("name"));
 
-        TableColumn<CartItem, Integer> quantityColumn = new TableColumn<>("Quantité");
-        quantityColumn.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getQuantity()).asObject());
-        
-        TableColumn<CartItem, Double> priceColumn = new TableColumn<>("Prix à l'unite");
-        priceColumn.setCellValueFactory(cellData -> new SimpleDoubleProperty(cellData.getValue().getProduct().getPrice()).asObject());
+        TableColumn<Product, String> colDescription = new TableColumn<>("Description");
+        colDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
+
+        TableColumn<Product, String> colType = new TableColumn<>("Type");
+        colType.setCellValueFactory(new PropertyValueFactory<>("type"));
+
+        TableColumn<Product, String> colBrand = new TableColumn<>("Brand");
+        colBrand.setCellValueFactory(new PropertyValueFactory<>("brand"));
+
+        TableColumn<Product, Double> colPrice = new TableColumn<>("Price");
+        colPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
+
+        TableColumn<Product, Integer> colQtDispo = new TableColumn<>("Quantity Available");
+        colQtDispo.setCellValueFactory(new PropertyValueFactory<>("qtDispo"));
         
         // Créer une colonne pour le bouton d'action
-        TableColumn<CartItem, Void> actionColumn = new TableColumn<>("Action");
+        TableColumn<Product, Void> actionColumn = new TableColumn<>("Action");
         
-        addMedicines_tableView.setItems(addMedicineList);
+        tableView.getColumns().add(colId);
+        tableView.getColumns().add(colName);
+        tableView.getColumns().add(colDescription);
+        tableView.getColumns().add(colType);
+        tableView.getColumns().add(colBrand);
+        tableView.getColumns().add(colPrice);
+        tableView.getColumns().add(colQtDispo);
+        tableView.getColumns().add(actionColumn);
+        tableView.setItems(productsList);
         
+        return tableView;
+    }
+    
+    private void productSelect(){
+        Product product = tableView.getSelectionModel().getSelectedItem();
+        int num = tableView.getSelectionModel().getSelectedIndex();
+
+        if((num - 1) < - 1){return;}
+        
+        idField.setText(String.valueOf(product.getId()));
+        nameField.setText(product.getName());
+        descriptionField.setText(product.getDescription());
+        typeComboBox.setValue(product.getType());
+        brandField.setText(product.getBrand());
+        priceField.setText(String.valueOf(product.getPrice()));
+        qtDispoField.setText(String.valueOf(product.getQtDispo()));
+        
+        String uri = product.getImagePath();
+        System.out.println(uri);
+        
+        imageView.setImage(new Image(getClass().getResource(uri).toExternalForm()));
+    	imageView.setFitWidth(100);  // Largeur fixe
+        imageView.setFitHeight(100); // Hauteur fixe
+        imageView.setPreserveRatio(true);
+        //getData.path = medData.getImage();        
+    }
+    
+    private void getTextFieldValues() {
+    	name = nameField.getText();
+    	description = descriptionField.getText();
+    	type = typeComboBox.getValue();
+    	brand = brandField.getText();
+    	price = Double.parseDouble(priceField.getText());
+    	qtDispo = Integer.parseInt(qtDispoField.getText());  	
+    }
+    
+    private boolean checkIfEmpty() {
+    	 if(nameField.getText().isEmpty()
+                 || descriptionField.getText().isEmpty()
+                 || typeComboBox.getSelectionModel().getSelectedItem() == null
+                 || brandField.getText().isEmpty()
+                 || priceField.getText().isEmpty()
+                 || qtDispoField.getText().isEmpty()){
+                 //|| getData.path == null || getData.path == "")
+         	MainView.showAlert("Erreur", null, "Merci de remplir tous les champs ", AlertType.ERROR);
+    	 	return true;
+    	 }
+    	 return false;    	
     }
 
 }

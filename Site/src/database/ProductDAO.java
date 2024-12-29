@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import Interface.MainView;
+import javafx.scene.control.Alert.AlertType;
 import products.Chaussures;
 import products.Product;
 import products.Vetement;
@@ -182,5 +184,16 @@ public class ProductDAO {
            } catch (SQLException e) {
            	e.printStackTrace();
            }
+    }
+    
+    public void deleteProduct(int id) {
+    	String sql = "DELETE FROM Produit WHERE id = '"+ id+"'";
+    	try (Connection conn = DatabaseConnection.getConnection();
+    			PreparedStatement statement = conn.prepareStatement(sql)) {
+                int rowsAffected = statement.executeUpdate();
+                if (rowsAffected > 0) {MainView.showAlert("Succès", null, "Votre produit a été supprimé avec succès.", AlertType.INFORMATION);}
+    	}catch (SQLException e) {
+             MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);
+    	}
     }
 }
