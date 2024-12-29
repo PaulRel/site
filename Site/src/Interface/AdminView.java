@@ -427,13 +427,8 @@ public class AdminView {
     }
     
     public ComboBox<String> getProductTypeComboBox(){
-        List<String> listT = new ArrayList<String>();
-        listT.add("chaussures");
-        listT.add( "vetements");
         ComboBox<String> typeComboBox = new ComboBox<String>();
-        
-        ObservableList<String> listData = FXCollections.observableArrayList(listT);
-        typeComboBox.setItems(listData);
+        typeComboBox.getItems().addAll("chaussures", "vetements", "sacs");
         return typeComboBox;        
     }  
     
@@ -454,10 +449,6 @@ public class AdminView {
                 // Charger l'image et l'afficher dans l'ImageView
                 Image image = new Image(selectedFile.toURI().toString());
                 imageView.setImage(image);
-
-                // Redimensionner l'ImageView si nécessaire
-                imageView.setFitWidth(100); // Largeur fixe
-                imageView.setPreserveRatio(true); // Maintenir les proportions
             }
         });
         
@@ -465,14 +456,8 @@ public class AdminView {
     }
     
     
-    //A modifier
-    public ObservableList<Product> getProductsList(){ 
-        ObservableList<Product> productsList = FXCollections.observableArrayList(productDAO.getAllProduits());      
-        return productsList;
-    }
-    
     public TableView<Product> getProductTableView(){
-    	ObservableList<Product> productsList = getProductsList();
+    	ObservableList<Product> productsList = FXCollections.observableArrayList(productDAO.getAllProduits());
         tableView = new TableView<>();
         
         TableColumn<Product, Integer> colId = new TableColumn<>("ID");
