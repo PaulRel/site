@@ -20,6 +20,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -97,13 +98,13 @@ public class SignUpView {
         
         // Champ checkBox
         CheckBox newsletterCheckBox = new CheckBox("Recevoir notre newsletter");
-        CheckBox termsCheckBox = new CheckBox("J'accepte les conditions générales et la politique de confidentialité");
+        CheckBox termsCheckBox = new CheckBox("J'accepte les conditions générales et la politique de confidentialité *");
         
         //Bouton Submit
         Button submitButton = new Button("VALIDER");       
         HBox buttonBox = new HBox(submitButton);
         buttonBox.setAlignment(Pos.CENTER);        
-        submitButton.setOnAction(e -> handleSubmitButton(mainView, mrRadio, firstNameField, lastNameField, addressField, emailField, passwordBox));
+        submitButton.setOnAction(e -> handleSubmitButton(mainView, mrRadio, firstNameField, lastNameField, addressField, emailField, passwordBox, newsletterCheckBox));
 
         // Disposition du formulaire
         GridPane gridPane = new GridPane();
@@ -153,7 +154,7 @@ public class SignUpView {
         mainView.getPrimaryStage().setScene(createAccountScene);
 	}
 	
-	private void handleSubmitButton(MainView mainView, RadioButton mrRadio, TextField firstNameField, TextField lastNameField, TextField addressField, TextField emailField, HBox passwordBox) {
+	private void handleSubmitButton(MainView mainView, RadioButton mrRadio, TextField firstNameField, TextField lastNameField, TextField addressField, TextField emailField, HBox passwordBox, CheckBox newsletterCheckBox) {
 		// Récupère les valeurs saisies par l'utilisateur
     	Civility civility;
         if (mrRadio.isSelected()) {
@@ -161,6 +162,17 @@ public class SignUpView {
         } else{
             civility = Civility.Mme;
         }
+        
+        // Vérifier que les champs sont bien remplis
+        if(firstNameField.getText().isEmpty()
+                || lastNameField.getText().isEmpty()
+                || addressField.getText().isEmpty()
+                || emailField.getText().isEmpty()
+                || ((PasswordField) passwordBox.getChildren().get(0)).getText().isEmpty()
+                || !newsletterCheckBox.isSelected()){
+        	MainView.showAlert("Erreur", null, "Merci de remplir tous les champs ", AlertType.ERROR);
+        }
+        else {
     	String firstName = firstNameField.getText();
     	String lastName = lastNameField.getText();
     	String address = addressField.getText();
@@ -195,6 +207,6 @@ public class SignUpView {
 		if (result.isPresent() && result.get() == loginButton) {
 			new AccountView(mainView);
 		}
-		
+        }
 	}
 }
