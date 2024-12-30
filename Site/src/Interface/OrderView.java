@@ -117,7 +117,7 @@ public class OrderView {
         upsOption.setToggleGroup(deliveryGroup);
         upsOption.setStyle("-fx-font-size: 12px;");
 
-        RadioButton colissimoOption = new RadioButton("Colissimo mon domicile	0,00 €");
+        RadioButton colissimoOption = new RadioButton("Colissimo mon domicile	4,00 €");
         colissimoOption.setToggleGroup(deliveryGroup);
         colissimoOption.setStyle("-fx-font-size: 12px;");
 
