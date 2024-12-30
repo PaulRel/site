@@ -5,15 +5,15 @@ import java.util.HashMap;
 public class Chaussures extends Product implements ProductWithSize{
 
 	
-	private String gender, couleur, surface;
+	private String gender, color, surface;
 	private HashMap<String, Integer> tailleStock;
 
-	public Chaussures(int id, String Nom, String Description, String Type, String Brand, double Price, int QtDispo,  String imagePath, String surface, String gender, String couleur) {
+	public Chaussures(int id, String Nom, String Description, String Type, String Brand, double Price, int QtDispo,  String imagePath, String surface, String gender, String color) {
 		super(id, Nom, Description, Type, Brand, Price, QtDispo, imagePath);
 		this.surface = surface;
 		this.tailleStock = new HashMap<>();
 		this.gender = gender;
-		this.couleur = couleur;
+		this.color = color;
 	}	
 	
 	@Override
@@ -25,12 +25,12 @@ public class Chaussures extends Product implements ProductWithSize{
 		this.gender = gender;
 	}
 
-	public String getCouleur() {
-		return couleur;
+	public String getColor() {
+		return color;
 	}
 
-	public void setCouleur(String couleur) {
-		this.couleur = couleur;
+	public void setColor(String couleur) {
+		this.color = couleur;
 	}
 	
 	@Override
