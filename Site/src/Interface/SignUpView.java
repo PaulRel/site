@@ -38,7 +38,7 @@ public class SignUpView {
         mrRadio.setToggleGroup(civilityGroup);
         mmeRadio.setToggleGroup(civilityGroup);
 
-        HBox civilityBox = new HBox(20, civilityLabel, mrRadio, mmeRadio);
+        HBox civilityBox = new HBox(20, mrRadio, mmeRadio);
         civilityBox.setAlignment(Pos.CENTER_LEFT);
         
         
@@ -110,8 +110,9 @@ public class SignUpView {
         gridPane.setPadding(new Insets(15));
         gridPane.setHgap(10);
         gridPane.setVgap(10);
-        gridPane.setAlignment(Pos.CENTER);        
-        gridPane.add(civilityBox, 0, 0);
+        gridPane.setAlignment(Pos.CENTER); 
+        gridPane.addRow(0, civilityLabel);
+        gridPane.add(civilityBox, 1, 0);
         gridPane.addRow(1, firstNameLabel, firstNameField);
         gridPane.addRow(2, lastNameLabel, lastNameField);
         gridPane.addRow(3, addressLabel, addressField);
