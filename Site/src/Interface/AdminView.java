@@ -307,9 +307,9 @@ public class AdminView {
     private ImageView imageView;
     private VBox a;
 	private ComboBox<String> typeComboBox, sizeComboBox, surfaceComboBox, typeVComboBox;
-	private TableView<Product> tableView;
+	private TableView<Product> productTableView;
 	private ProductDAO productDAO = new ProductDAO();
-	private GridPane gridPane;
+	private GridPane productGridPane;
 	HashMap<String, Integer> sizesStock;
 	
 	private VBox editProducts(MainView mainView) {
@@ -352,7 +352,6 @@ public class AdminView {
         updateButton = new Button("Mettre à jour");
         clearButton = new Button("Effacer");
         importButton = getImportImageButton(mainView);
-        tableView = getProductTableView();
 
         addButton.setOnAction(event -> addProduct());
         deleteButton.setOnAction(event -> deleteProduct());
@@ -360,12 +359,14 @@ public class AdminView {
         clearButton.setOnAction(event -> clearField());
         
         // Ajout de gridPane et table des produits
-        editProductsBox.getChildren().addAll(createProductGridPane(), tableView);
+        productGridPane = createProductGridPane();
+        productTableView = getProductTableView();
+        editProductsBox.getChildren().addAll(productGridPane, productTableView);
 		return editProductsBox;
 	}
 	
 	private GridPane createProductGridPane() {
-		gridPane = new GridPane();
+		GridPane gridPane = new GridPane();
         gridPane.setPadding(new Insets(15));
         gridPane.setHgap(10);
         gridPane.setVgap(10);
@@ -401,7 +402,6 @@ public class AdminView {
         gridPane.add(addButton, 3, 5, 2, 1);
         
         
-        
         // Specifique à un type de produit
         surfaceLabel = new Label("Surface");
         genderLabel = new Label("Genre");
@@ -419,8 +419,7 @@ public class AdminView {
         gridPane.add(genderField, 6, 1);
         gridPane.add(colorField, 6, 2);
         
-        
-        
+                
         return gridPane;
 	}
 	
@@ -438,9 +437,9 @@ public class AdminView {
             sizeLabel.setVisible(true);
             sizeComboBox.getItems().clear();
             sizeComboBox.setVisible(true);
-            gridPane.getChildren().removeAll(qtDispoLabel, qtDispoField);
-            gridPane.add(qtDispoLabel, 2, 4); // Nouvelle position pour quantité
-            gridPane.add(qtDispoField, 3, 4);
+            productGridPane.getChildren().removeAll(qtDispoLabel, qtDispoField);
+            productGridPane.add(qtDispoLabel, 2, 4); // Nouvelle position pour quantité
+            productGridPane.add(qtDispoField, 3, 4);
 
             if ("chaussures".equals(selectedCategory)) {
                 sizeComboBox.getItems().addAll("36", "37", "38", "39");
@@ -469,18 +468,18 @@ public class AdminView {
     	clearField();
     	
     	// Cacher des éléments et tableView
-    	gridPane.getChildren().removeAll(idLabel, idField, typeLabel, typeComboBox, addButton);
+    	productGridPane.getChildren().removeAll(idLabel, idField, typeLabel, typeComboBox, addButton);
     	deleteButton.setVisible(false);
     	updateButton.setVisible(false);
-    	tableView.setVisible(false);
+    	productTableView.setVisible(false);
     	
     	// Nouvelle position pour le champ type (à la position du champ id)
-        gridPane.add(typeLabel, 0, 0);
-        gridPane.add(typeComboBox, 1, 0);
+    	productGridPane.add(typeLabel, 0, 0);
+    	productGridPane.add(typeComboBox, 1, 0);
         
         // Ajouter un bouton permettant d'ajouter le produit dans la bdd    
         Button addProductButton = new Button("Ajouter");
-        gridPane.add(addProductButton, 5, 4, 2, 1);
+        productGridPane.add(addProductButton, 5, 4, 2, 1);
 
         addProductButton.setOnAction(event ->{
         	// Ajouter le produit à la bdd
@@ -496,14 +495,14 @@ public class AdminView {
         		}
                 
         		// Afficher l'affichage par défaut pour manageProduct
-        		gridPane.getChildren().removeAll(addProductButton);
+        		productGridPane.getChildren().removeAll(addProductButton);
         		deleteButton.setVisible(true);
         		updateButton.setVisible(true);
-        		tableView.setVisible(true);
+        		productTableView.setVisible(true);
         		clearField();
         		
         		// Mettre à jour la table
-        		tableView.setItems(FXCollections.observableArrayList(productDAO.getAllProduits()));
+        		productTableView.setItems(FXCollections.observableArrayList(productDAO.getAllProduits()));
         	}
         });
     }
@@ -516,7 +515,7 @@ public class AdminView {
     		Product product = new Product(id, name, description, type, brand, price, qtDispo, imagePath);
     		productDAO.updateProduct(product);
             clearField();
-            tableView.setItems(FXCollections.observableArrayList(productDAO.getAllProduits()));
+            productTableView.setItems(FXCollections.observableArrayList(productDAO.getAllProduits()));
         }
     	else {MainView.showAlert("Erreur", null, "Merci d'ajouter l'identifiant du produit à supprimer", AlertType.ERROR);}
     }
@@ -525,7 +524,7 @@ public class AdminView {
     public void deleteProduct(){ 
     	if(!checkIfEmpty()) {
         	productDAO.deleteProduct(Integer.parseInt(idField.getText()));
-        	tableView.setItems(FXCollections.observableArrayList(productDAO.getAllProduits()));
+        	productTableView.setItems(FXCollections.observableArrayList(productDAO.getAllProduits()));
         	clearField();      
         }
     }
@@ -571,7 +570,7 @@ public class AdminView {
     
     public TableView<Product> getProductTableView(){
     	ObservableList<Product> productsList = FXCollections.observableArrayList(productDAO.getAllProduits());
-        tableView = new TableView<>();
+    	TableView<Product> tableView = new TableView<>();
         
         TableColumn<Product, Integer> colId = new TableColumn<>("ID");
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -618,7 +617,7 @@ public class AdminView {
        
     
     private void productSelect(){
-        Product product = tableView.getSelectionModel().getSelectedItem();
+        Product product = productTableView.getSelectionModel().getSelectedItem();
         
         idField.setText(String.valueOf(product.getId()));
         nameField.setText(product.getName());
@@ -676,9 +675,9 @@ public class AdminView {
         sizeLabel.setVisible(false);
         sizeComboBox.getItems().clear();
         sizeComboBox.setVisible(false);
-        gridPane.getChildren().removeAll(qtDispoLabel, qtDispoField);
-        gridPane.add(qtDispoLabel, 2, 1); // Nouvelle position pour quantité
-        gridPane.add(qtDispoField, 3, 1);
+        productGridPane.getChildren().removeAll(qtDispoLabel, qtDispoField);
+        productGridPane.add(qtDispoLabel, 2, 1); // Nouvelle position pour quantité
+        productGridPane.add(qtDispoField, 3, 1);
     }
     
     
@@ -753,17 +752,22 @@ public class AdminView {
     }
     
     
+    
     // EDIT INVOICE
     
+    Label invoiceIdLabel;
     TextField billingAddressField, shippingAddressField, shippingMethodField, paymentMethodField;
     Button updateInvoiceButton;
     TableView<Invoice> invoicesTable;
     InvoiceDAO invoiceDAO;
     int invoiceId, orderId;
     String billingAddress, shippingAddress, shippingMethod, paymentMethod;
+    GridPane invoiceGridPane;
     
     private VBox editInvoiceBox() {
-    	VBox editInvoiceBox = new VBox(createInvoiceGridPane(), getInvoiceTableView());
+    	invoiceGridPane = createInvoiceGridPane();
+    	invoicesTable = getInvoiceTableView();
+    	VBox editInvoiceBox = new VBox(invoicesTable, invoiceGridPane);
     	editInvoiceBox.setStyle("-fx-padding: 10;-fx-spacing:10;-fx-background-color: #FFFFFF; -fx-background-radius:10;");
     	return editInvoiceBox;
     }
@@ -775,7 +779,7 @@ public class AdminView {
         gridPane.setVgap(10);
         gridPane.setStyle("-fx-border-color: lightgray; -fx-border-width: 1; -fx-border-radius: 5;");
         
-    	Label invoiceIdLabel = new Label("Identifiant");
+    	invoiceIdLabel = new Label("Identifiant");
     	Label billingAddressLabel = new Label("Adresse de facturation");
     	Label shippingAddressLabel = new Label("Adresse de livraison");
     	Label shippingMethodLabel = new Label("Méthode de livraison");
@@ -800,6 +804,7 @@ public class AdminView {
     	gridPane.addRow(4, paymentMethodLabel, paymentMethodField);
     	gridPane.add(updateInvoiceButton, 1, 5, 1, 1);
     	
+    	gridPane.setVisible(false);
     	return gridPane;
     }
 
@@ -807,7 +812,7 @@ public class AdminView {
     private TableView<Invoice> getInvoiceTableView(){
     	invoiceDAO = new InvoiceDAO();
     	ObservableList<Invoice> invoicesList = FXCollections.observableArrayList(invoiceDAO.getAllInvoices());
-        invoicesTable = new TableView<>();
+    	TableView<Invoice> invoicesTable = new TableView<>();
         
         TableColumn<Invoice, Integer> colId = new TableColumn<>("ID");
         colId.setCellValueFactory(new PropertyValueFactory<>("invoiceId"));
@@ -846,7 +851,7 @@ public class AdminView {
                 if (empty) {
                     setGraphic(null); // Pas de bouton pour les lignes vides
                 } else {
-                    setGraphic(deleteButton); // Afficher le bouton pour les lignes valides
+                    setGraphic(deleteInvoiceButton); // Afficher le bouton pour les lignes valides
                 }
             }
         });
@@ -873,12 +878,9 @@ public class AdminView {
         Invoice invoice = invoicesTable.getSelectionModel().getSelectedItem();
         invoiceId = invoice.getInvoiceId();
         orderId = invoice.getOrder().getOrderId();
-        
-        billingAddressField = new TextField();
-    	shippingAddressField = new TextField();
-    	shippingMethodField = new TextField();
-    	paymentMethodField = new TextField();
+        invoiceIdLabel.setText("Identifiant : "+ invoiceId);
     	
+        invoiceGridPane.setVisible(true);
     	billingAddressField.setText(invoice.getBillingAddress());
     	shippingAddressField.setText(invoice.getShippingAddress());
     	shippingMethodField.setText(invoice.getShippingMethod());
