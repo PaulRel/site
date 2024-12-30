@@ -466,7 +466,7 @@ public class AdminView {
         fileChooser.getExtensionFilters().add(new ExtensionFilter("Image File", "*jpg", "*png"));
         
         Button button = new Button("Importer");
-        imageView = new ImageView();
+        //imageView = new ImageView();
         
         button.setOnAction(event -> {
             // Ouvrir le FileChooser et récupérer le fichier sélectionné
