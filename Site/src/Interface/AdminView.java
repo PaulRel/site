@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -52,6 +53,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import products.Product;
+import products.ProductWithSize;
 
 public class AdminView {
 	
@@ -127,6 +129,7 @@ public class AdminView {
 		mainContent.getChildren().addAll(pendingOrders, deliveredOrders);
 		return scrollPane;
 	}
+	
 	
 	private void showStats() {
 		VBox topVBox = new VBox();
@@ -249,7 +252,7 @@ public class AdminView {
 	private void manageStocks(MainView mainView) {
 		Label OutOfStockProductsLabel = new Label("Produits en rupture de stock " + adminStatsDAO.getOutOfStockProducts());
 		VBox editProductsBox = editProducts(mainView);
-		mainContent.getChildren().setAll(OutOfStockProductsLabel, editProductsBox);
+		mainContent.getChildren().setAll(editProductsBox, OutOfStockProductsLabel);
 	}
 	
 	private void editInvoice() {
@@ -298,6 +301,7 @@ public class AdminView {
 	private TableView<Product> tableView;
 	private ProductDAO productDAO = new ProductDAO();
 	private GridPane gridPane;
+	HashMap<String, Integer> sizesStock;
 	
 	private VBox editProducts(MainView mainView) {
 		VBox productDetails = new VBox();
@@ -311,6 +315,10 @@ public class AdminView {
     	brandField = new TextField();
     	priceField = new TextField();
     	qtDispoField = new TextField();
+    	
+    	for (TextField txt : new TextField[]{idField, nameField, descriptionField, brandField, priceField, qtDispoField}) {
+            txt.setStyle("-fx-pref-height: 30px;");
+		}
     	
     	// ImageView
     	imageView = new ImageView();
@@ -400,8 +408,16 @@ public class AdminView {
             }
         });
         
-        sizeComboBox.setOnAction(event ->{
-        	
+        sizeComboBox.setOnAction(event -> {
+        	String selectedSize = sizeComboBox.getValue();
+        	if (sizesStock != null) {
+        	for (Map.Entry<String, Integer> entry : sizesStock.entrySet()) {
+        		if (entry.getKey().equals(selectedSize)) {
+                    qtDispoField.setText(String.valueOf(entry.getValue()));
+        		}
+        	}
+                
+        	}	
         });
         return typeComboBox;        
     }
@@ -414,15 +430,15 @@ public class AdminView {
         gridPane.add(typeLabel, 0, 0); // Nouvelle position pour typeLabel
         gridPane.add(typeComboBox, 1, 0);
             
-        Button addProduct = new Button("Ajouter");
-        gridPane.add(addProduct, 5, 4);
+        Button addProductButton = new Button("Ajouter");
+        gridPane.add(addProductButton, 5, 4);
             
         deleteButton.setVisible(false);
         updateButton.setVisible(false);
         tableView.setVisible(false);
             
 
-        addProduct.setOnAction(event ->{
+        addProductButton.setOnAction(event ->{
         	if(!checkIfEmpty()) {
         		getTextFieldValues();
         		Product product = new Product(0, name, description, type, brand, price, qtDispo, imagePath);
@@ -430,7 +446,7 @@ public class AdminView {
                         
         		MainView.showAlert("Information Message", null, "Ajouter avec succès", AlertType.INFORMATION);
                 
-        		gridPane.getChildren().removeAll(addProduct);
+        		gridPane.getChildren().removeAll(addProductButton);
         		deleteButton.setVisible(true);
         		updateButton.setVisible(true);
         		tableView.setVisible(true);
@@ -486,6 +502,7 @@ public class AdminView {
         qtDispoField.setText("");
         imageView.setImage(null);
         imagePath = "";
+        sizesStock = null;
         
         sizeLabel.setVisible(false);
         sizeComboBox.getItems().clear();
@@ -541,7 +558,7 @@ public class AdminView {
         TableColumn<Product, Integer> colId = new TableColumn<>("ID");
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
 
-        TableColumn<Product, String> colName = new TableColumn<>("Name");
+        TableColumn<Product, String> colName = new TableColumn<>("Nom");
         colName.setCellValueFactory(new PropertyValueFactory<>("name"));
 
         TableColumn<Product, String> colDescription = new TableColumn<>("Description");
@@ -550,13 +567,13 @@ public class AdminView {
         TableColumn<Product, String> colType = new TableColumn<>("Type");
         colType.setCellValueFactory(new PropertyValueFactory<>("type"));
 
-        TableColumn<Product, String> colBrand = new TableColumn<>("Brand");
+        TableColumn<Product, String> colBrand = new TableColumn<>("Marque");
         colBrand.setCellValueFactory(new PropertyValueFactory<>("brand"));
 
-        TableColumn<Product, Double> colPrice = new TableColumn<>("Price");
+        TableColumn<Product, Double> colPrice = new TableColumn<>("Prix");
         colPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
 
-        TableColumn<Product, Integer> colQtDispo = new TableColumn<>("Quantity Available");
+        TableColumn<Product, Integer> colQtDispo = new TableColumn<>("Quantité");
         colQtDispo.setCellValueFactory(new PropertyValueFactory<>("qtDispo"));
         
         // Créer une colonne pour le bouton d'action
@@ -590,13 +607,19 @@ public class AdminView {
         typeComboBox.setValue(product.getType());
         brandField.setText(product.getBrand());
         priceField.setText(String.valueOf(product.getPrice()));
-        qtDispoField.setText(String.valueOf(product.getQtDispo()));
+        qtDispoField.setText("");
+        sizeComboBox.getSelectionModel().clearSelection();
+        
+        if (product instanceof ProductWithSize) {
+        	ProductWithSize productWithSize = (ProductWithSize) product;
+        	sizesStock = productWithSize.getTailleStock();
+        }        
         
         imagePath = product.getImagePath();
         
         imageView.setImage(new Image(getClass().getResource(imagePath).toExternalForm()));
-    	imageView.setFitWidth(100);  // Largeur fixe
-        imageView.setFitHeight(100); // Hauteur fixe
+    	imageView.setFitWidth(90);  // Largeur fixe
+        imageView.setFitHeight(90); // Hauteur fixe
         imageView.setPreserveRatio(true);       
     }
     
