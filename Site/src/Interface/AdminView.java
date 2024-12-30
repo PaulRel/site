@@ -466,41 +466,42 @@ public class AdminView {
 	
     private void addProduct() {
     	clearField();
+    	
+    	// Cacher des éléments et tableView
     	gridPane.getChildren().removeAll(idLabel, idField, typeLabel, typeComboBox, addButton);
-        	
-        gridPane.add(typeLabel, 0, 0); // Nouvelle position pour typeLabel
+    	deleteButton.setVisible(false);
+    	updateButton.setVisible(false);
+    	tableView.setVisible(false);
+    	
+    	// Nouvelle position pour le champ type (à la position du champ id)
+        gridPane.add(typeLabel, 0, 0);
         gridPane.add(typeComboBox, 1, 0);
         
-            
+        // Ajouter un bouton permettant d'ajouter le produit dans la bdd    
         Button addProductButton = new Button("Ajouter");
         gridPane.add(addProductButton, 5, 4, 2, 1);
-            
-        deleteButton.setVisible(false);
-        updateButton.setVisible(false);
-        tableView.setVisible(false);
-            
 
         addProductButton.setOnAction(event ->{
+        	// Ajouter le produit à la bdd
         	if(!checkIfEmpty()) {
         		getTextFieldValues();
-        		
         		Product product = new Product(0, name, description, type, brand, price, qtDispo, imagePath);
         		int id = productDAO.insertProduct(product);
-        		
         		if (type == "chaussures") {
         			productDAO.insertChaussures(id, surfaceComboBox.getValue(), genderField.getText(), colorField.getText(), sizeComboBox.getValue(), qtDispo);
         		}
         		if (type == "vetement"){
         			productDAO.insertVetement(id, typeVComboBox.getValue(), genderField.getText(), colorField.getText(), sizeComboBox.getValue(), qtDispo);
         		}
-                        
-        		MainView.showAlert("Information Message", null, "Ajouter avec succès", AlertType.INFORMATION);
                 
+        		// Afficher l'affichage par défaut pour manageProduct
         		gridPane.getChildren().removeAll(addProductButton);
         		deleteButton.setVisible(true);
         		updateButton.setVisible(true);
         		tableView.setVisible(true);
         		clearField();
+        		
+        		// Mettre à jour la table
         		tableView.setItems(FXCollections.observableArrayList(productDAO.getAllProduits()));
         	}
         });
@@ -613,9 +614,7 @@ public class AdminView {
         
         return tableView;
     }
-    
-    
-    
+       
     
     private void productSelect(){
         Product product = tableView.getSelectionModel().getSelectedItem();
@@ -649,7 +648,6 @@ public class AdminView {
             genderField.setText(((Vetement)product).getGender());
             colorField.setText(((Vetement)product).getCouleur());
         }
-        
         
         imagePath = product.getImagePath();
         System.out.println(imagePath);

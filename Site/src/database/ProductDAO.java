@@ -209,7 +209,7 @@ public class ProductDAO {
             
             insertSizeStock(id, size, qt);
             
-            System.out.println("Chaussure insérée avec succès !");
+            MainView.showAlert("Information Message", null, "Chaussures ajoutées avec succès", AlertType.INFORMATION);
         } catch (SQLException e) {
             e.printStackTrace();
     	}
@@ -230,7 +230,7 @@ public class ProductDAO {
             
             insertSizeStock(id, size, qt);
             
-            System.out.println("Vetement insérée avec succès !");
+            MainView.showAlert("Information Message", null, "Vetement ajouté avec succès", AlertType.INFORMATION);
         } catch (SQLException e) {
             e.printStackTrace();
     	}
