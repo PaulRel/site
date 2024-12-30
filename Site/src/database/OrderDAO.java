@@ -117,9 +117,10 @@ public class OrderDAO {
             		int customerId = rs.getInt("customer_id");
             		LocalDate orderDate = rs.getDate("order_date").toLocalDate();
             		String status = rs.getString("status");
-
+            		
             		CustomerDAO customerDAO = new CustomerDAO();
             		order = new Order(customerDAO.getCustomerById(customerId));
+            		order.setOrderId(id);
             		order.setOrderDate(orderDate);
             		order.setStatus(status);
 

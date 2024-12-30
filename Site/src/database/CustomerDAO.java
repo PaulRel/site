@@ -68,8 +68,7 @@ public class CustomerDAO {
                 	Role role = Role.valueOf(resultSet.getString("Role").toUpperCase());
                 	String address = resultSet.getString("Address");
 
-                    customer = new Customer(id, firstName, lastName, civility, email, phoneNumber, password, role, address);
-                    
+                    customer = new Customer(id, firstName, lastName, civility, email, phoneNumber, password, role, address);       
                 }
             }
         } catch (SQLException e) {
