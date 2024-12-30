@@ -209,7 +209,7 @@ public class AdminView {
 		
 		
 		Label averageOrder = new Label(""+adminStatsDAO.getAverageOrderValue());
-		Label averageOrderLabel = new Label("Nombre total de produits ");
+		Label averageOrderLabel = new Label("Montant moyen d'une commande");
 		VBox h = new VBox();
 		h.setStyle("-fx-alignment: center;-fx-padding: 10;-fx-spacing:10;-fx-background-color: #FFFFFF; -fx-background-radius:10;");
 		//h.setPrefSize(250, 100);
@@ -238,11 +238,13 @@ public class AdminView {
 		mainContent.getChildren().setAll(topVBox, midHBox, midHBox2, bottomHBox);
 	}
 	
+	
 	private void showClients() {
 		Label totalUsers = new Label("Nombre total d'utilisateurs " + adminStatsDAO.getTotalUsers());
 		Label activeUsers = new Label("Utilisateurs actifs ayant commandé dans les 30 derniers jours " + adminStatsDAO.getTotalActiveUsers());
 		mainContent.getChildren().setAll(totalUsers, activeUsers);
 	}
+	
 	
 	private void manageStocks(MainView mainView) {
 		Label OutOfStockProductsLabel = new Label("Produits en rupture de stock " + adminStatsDAO.getOutOfStockProducts());
@@ -288,11 +290,11 @@ public class AdminView {
 	private String name, description, type, brand, imagePath;
 	private Button addButton, deleteButton, clearButton,updateButton, importButton;
 	private double price;
-	private Label idLabel, typeLabel;
+	private Label idLabel, typeLabel, sizeLabel, qtDispoLabel;
 	private int qtDispo;
     private ImageView imageView;
     private VBox a;
-	private ComboBox<String> typeComboBox;
+	private ComboBox<String> typeComboBox, sizeComboBox;
 	private TableView<Product> tableView;
 	private ProductDAO productDAO = new ProductDAO();
 	private GridPane gridPane;
@@ -305,7 +307,7 @@ public class AdminView {
 		idField = new TextField();
     	nameField = new TextField();
     	descriptionField = new TextField();
-    	typeComboBox =  getProductTypeComboBox();
+    	typeComboBox =  getComboBox();
     	brandField = new TextField();
     	priceField = new TextField();
     	qtDispoField = new TextField();
@@ -350,13 +352,16 @@ public class AdminView {
         typeLabel = new Label("Type");
         Label brandLabel = new Label("Marque");
         Label priceLabel = new Label("Prix");
-        Label qtDispoLabel = new Label("Quantité");
+        sizeLabel = new Label("Taille");
+        sizeLabel.setVisible(false);
+        sizeComboBox.setVisible(false);
+        qtDispoLabel = new Label("Quantité");
         
         gridPane.addRow(0, idLabel, idField, priceLabel, priceField);
         gridPane.addRow(1, nameLabel, nameField, qtDispoLabel, qtDispoField);
         gridPane.addRow(2, descriptionLabel);
         gridPane.add(descriptionField, 1, 2, 2, 1); //colonne, ligne, nb col occupe
-        gridPane.addRow(3, typeLabel, typeComboBox);
+        gridPane.addRow(3, typeLabel, typeComboBox, sizeLabel, sizeComboBox);
         gridPane.addRow(4, brandLabel, brandField);
         gridPane.add(a, 4, 0, 1, 2);
         gridPane.add(imageView, 4, 0, 1, 2);
@@ -371,17 +376,40 @@ public class AdminView {
         return gridPane;
 	}
 	  
-    public ComboBox<String> getProductTypeComboBox(){
+    public ComboBox<String> getComboBox(){
         ComboBox<String> typeComboBox = new ComboBox<String>();
-        typeComboBox.getItems().addAll("chaussures", "vetements", "sacs");
+        sizeComboBox = new ComboBox<>();
+        
+        typeComboBox.getItems().addAll("chaussures", "vetement", "sac");
+        
+        // Ajouter une nouvelle ComboBox pour afficher taille vetements ou chaussures
+        typeComboBox.setOnAction(event -> {
+            String selectedCategory = typeComboBox.getValue();
+            
+            sizeLabel.setVisible(true);
+            sizeComboBox.getItems().clear();
+            sizeComboBox.setVisible(true);
+            gridPane.getChildren().removeAll(qtDispoLabel, qtDispoField);
+            gridPane.add(qtDispoLabel, 2, 4); // Nouvelle position pour quantité
+            gridPane.add(qtDispoField, 3, 4);
+
+            if ("chaussures".equals(selectedCategory)) {
+                sizeComboBox.getItems().addAll("36", "37", "38", "39");
+            } else if ("vetement".equals(selectedCategory)) {
+                sizeComboBox.getItems().addAll("S", "M", "L", "XL");
+            }
+        });
+        
+        sizeComboBox.setOnAction(event ->{
+        	
+        });
         return typeComboBox;        
-    }  
+    }
     
 	
     private void addProduct() {
     	clearField();
     	gridPane.getChildren().removeAll(idLabel, idField, typeLabel, typeComboBox, addButton);
-    	addButton.setText("Ajouter");
         	
         gridPane.add(typeLabel, 0, 0); // Nouvelle position pour typeLabel
         gridPane.add(typeComboBox, 1, 0);
@@ -458,6 +486,14 @@ public class AdminView {
         qtDispoField.setText("");
         imageView.setImage(null);
         imagePath = "";
+        
+        sizeLabel.setVisible(false);
+        sizeComboBox.getItems().clear();
+        sizeComboBox.setVisible(false);
+        gridPane.getChildren().removeAll(qtDispoLabel, qtDispoField);
+        gridPane.add(qtDispoLabel, 2, 1); // Nouvelle position pour quantité
+        gridPane.add(qtDispoField, 3, 1);
+        
     }
     
     public Button getImportImageButton(MainView mainView){       
@@ -563,6 +599,7 @@ public class AdminView {
         imageView.setFitHeight(100); // Hauteur fixe
         imageView.setPreserveRatio(true);       
     }
+    
     
     private void getTextFieldValues() {
     	name = nameField.getText();
