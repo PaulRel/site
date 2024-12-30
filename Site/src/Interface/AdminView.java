@@ -319,18 +319,13 @@ public class AdminView {
         a.setStyle("-fx-background-color:transparent;-fx-border-color: lightgray; -fx-border-width: 1; -fx-border-radius: 5;");
         
         // Ajout des boutons
-        addButton = new Button("Ajouter un produit");
+        addButton = new Button("+ Ajouter un produit");
         addButton.setStyle("-fx-background-color : #007bff; -fx-text-fill: white;");
         deleteButton = new Button("Supprimer");
         updateButton = new Button("Mettre à jour");
         clearButton = new Button("Effacer");
         importButton = getImportImageButton(mainView);
         tableView = getProductTableView();
-        tableView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) { // Vérifie qu'une ligne est sélectionnée
-                productSelect();
-            }
-        });
 
         addButton.setOnAction(event -> addProduct());
         deleteButton.setOnAction(event -> deleteProduct());
@@ -384,6 +379,7 @@ public class AdminView {
     
 	
     private void addProduct() {
+    	clearField();
     	gridPane.getChildren().removeAll(idLabel, idField, typeLabel, typeComboBox, addButton);
     	addButton.setText("Ajouter");
         	
@@ -397,8 +393,9 @@ public class AdminView {
         updateButton.setVisible(false);
         tableView.setVisible(false);
             
-        if(!checkIfEmpty()) {
-        	addProduct.setOnAction(event ->{
+
+        addProduct.setOnAction(event ->{
+        	if(!checkIfEmpty()) {
         		getTextFieldValues();
         		Product product = new Product(0, name, description, type, brand, price, qtDispo, imagePath);
         		productDAO.insertProduct(product);
@@ -410,19 +407,19 @@ public class AdminView {
         		updateButton.setVisible(true);
         		tableView.setVisible(true);
         		clearField();
-        	});         
-        }
+        		tableView.setItems(FXCollections.observableArrayList(productDAO.getAllProduits()));
+        	}
+        });
     }
     
     public void updateProduct(){
-    	int id = Integer.parseInt(idField.getText());
-    	getTextFieldValues();
-        //String uri = getData.path;
-        //uri = uri.replace("\\", "\\\\");
+    	if(!checkIfEmpty()) {
+    		int id = Integer.parseInt(idField.getText());
+    		getTextFieldValues();
         
-        String sql = "UPDATE Produit SET Nom = ?, Description = ?, Type = ?, Marque = ?, Prix = ?, Qt_Dispo = ?, image_path = ? WHERE id = ?";
+    		String sql = "UPDATE Produit SET Nom = ?, Description = ?, Type = ?, Marque = ?, Prix = ?, Qt_Dispo = ?, image_path = ? WHERE id = ?";
         
-        if(!checkIfEmpty()) {
+        
             try(Connection conn = DatabaseConnection.getConnection();
             	PreparedStatement updateStmt = conn.prepareStatement(sql)){
             		updateStmt.setString(1, name);
@@ -437,7 +434,7 @@ public class AdminView {
                     if (rowsAffected > 0) {
                     	MainView.showAlert("Information Message", null, "Modifier avec succès", AlertType.INFORMATION);                    
                     	clearField();
-                    	//getProductTableView();
+                    	tableView.setItems(FXCollections.observableArrayList(productDAO.getAllProduits()));
                     }
               	}catch(Exception e){e.printStackTrace();}
         }
@@ -446,7 +443,7 @@ public class AdminView {
     public void deleteProduct(){ 
     	if(!checkIfEmpty()) {
         	productDAO.deleteProduct(Integer.parseInt(idField.getText()));
-        	//getProductTableView();
+        	tableView.setItems(FXCollections.observableArrayList(productDAO.getAllProduits()));
         	clearField();      
         }
     }
@@ -478,10 +475,9 @@ public class AdminView {
             try {
                 // 1. Renommer le fichier (ajout d'un timestamp)
                 String newFileName = "image_" + System.currentTimeMillis() + ".png";
-                String resourcePath = "/Image/";
-                imagePath = resourcePath + newFileName;
-                File destFile = new File(imagePath);
-                
+                String resourcePath = "./resources/Image/";
+                imagePath = "/Image/" + newFileName;
+                File destFile = new File(resourcePath + newFileName);
 
                 // 2. Copier le fichier dans le dossier de ressources
                 Files.copy(selectedFile.toPath(), destFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
@@ -498,7 +494,7 @@ public class AdminView {
                 MainView.showAlert("Erreur", "Impossible d'importer l'image", e.getMessage(), AlertType.ERROR);
             }
     });       
-        return button;        
+        return button;
     }
     
     
@@ -539,6 +535,12 @@ public class AdminView {
         tableView.getColumns().add(colQtDispo);
         tableView.getColumns().add(actionColumn);
         tableView.setItems(productsList);
+        
+        tableView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) { // Vérifie qu'une ligne est sélectionnée
+                productSelect();
+            }
+        });
         
         return tableView;
     }

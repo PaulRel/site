@@ -154,7 +154,7 @@ public class ProductDAO {
     }
     
     public void insertProduct(Product product) {
-    	String query = "INSERT INTO Produit (Nom, Description, Type, Marque, Prix, Qt_dispo) VALUES (?, ?, ?, ?, ?, ?)";
+    	String query = "INSERT INTO Produit (Nom, Description, Type, Marque, Prix, Qt_dispo, image_path) VALUES (?, ?, ?, ?, ?, ?, ?)";
     	try (Connection conn = DatabaseConnection.getConnection();
                PreparedStatement statement = conn.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS)) {
 
@@ -165,6 +165,7 @@ public class ProductDAO {
                statement.setString(4, product.getBrand());            
                statement.setDouble(5, product.getPrice());
                statement.setInt(6, product.getQtDispo());
+               statement.setString(7, product.getImagePath());
 
                int rowsInserted = statement.executeUpdate();
                if (rowsInserted > 0) {
