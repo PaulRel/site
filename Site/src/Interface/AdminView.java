@@ -52,8 +52,10 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
+import products.Chaussures;
 import products.Product;
 import products.ProductWithSize;
+import products.Vetement;
 
 public class AdminView {
 	
@@ -289,15 +291,15 @@ public class AdminView {
 	
 	
 	
-	private TextField idField, nameField, descriptionField, brandField, priceField, qtDispoField;
+	private TextField idField, nameField, descriptionField, brandField, priceField, qtDispoField, genderField, colorField;
 	private String name, description, type, brand, imagePath;
 	private Button addButton, deleteButton, clearButton,updateButton, importButton;
 	private double price;
-	private Label idLabel, typeLabel, sizeLabel, qtDispoLabel;
+	private Label idLabel, typeLabel, sizeLabel, qtDispoLabel, surfaceLabel, genderLabel, colorLabel, typeVLabel;
 	private int qtDispo;
     private ImageView imageView;
     private VBox a;
-	private ComboBox<String> typeComboBox, sizeComboBox;
+	private ComboBox<String> typeComboBox, sizeComboBox, surfaceComboBox, typeVComboBox;
 	private TableView<Product> tableView;
 	private ProductDAO productDAO = new ProductDAO();
 	private GridPane gridPane;
@@ -316,7 +318,15 @@ public class AdminView {
     	priceField = new TextField();
     	qtDispoField = new TextField();
     	
-    	for (TextField txt : new TextField[]{idField, nameField, descriptionField, brandField, priceField, qtDispoField}) {
+    	// Specifique à un type de produit
+    	surfaceComboBox = new ComboBox<String>();
+    	surfaceComboBox.getItems().addAll("TOUTES SURFACES","terre battue","dur","gazon");
+    	genderField = new TextField();
+    	colorField = new TextField();
+    	typeVComboBox = new ComboBox<String>();
+    	typeVComboBox.getItems().addAll("Short","Sweat","Debardeur","Tshirt","Robe","Veste");
+    	
+    	for (TextField txt : new TextField[]{idField, nameField, descriptionField, brandField, priceField, qtDispoField, genderField, colorField}) {
             txt.setStyle("-fx-pref-height: 30px;");
 		}
     	
@@ -361,28 +371,52 @@ public class AdminView {
         Label brandLabel = new Label("Marque");
         Label priceLabel = new Label("Prix");
         sizeLabel = new Label("Taille");
-        sizeLabel.setVisible(false);
-        sizeComboBox.setVisible(false);
         qtDispoLabel = new Label("Quantité");
+        
+        sizeLabel.setVisible(false);
+        sizeComboBox.setVisible(false);        
         
         gridPane.addRow(0, idLabel, idField, priceLabel, priceField);
         gridPane.addRow(1, nameLabel, nameField, qtDispoLabel, qtDispoField);
         gridPane.addRow(2, descriptionLabel);
-        gridPane.add(descriptionField, 1, 2, 2, 1); //colonne, ligne, nb col occupe
+        gridPane.add(descriptionField, 1, 2, 3, 1); //colonne, ligne, nb col occupe
         gridPane.addRow(3, typeLabel, typeComboBox, sizeLabel, sizeComboBox);
         gridPane.addRow(4, brandLabel, brandField);
         gridPane.add(a, 4, 0, 1, 2);
         gridPane.add(imageView, 4, 0, 1, 2);
         GridPane.setHalignment(imageView, HPos.CENTER); // Alignement horizontal
         GridPane.setValignment(imageView, VPos.CENTER);
-        
         gridPane.add(importButton, 4, 2, 1, 1);
-        gridPane.add(addButton, 5, 0, 2, 1);
-        gridPane.add(updateButton, 6, 3, 1, 1);
-        gridPane.add(clearButton, 5, 4, 1, 1);
-        gridPane.add(deleteButton, 6, 4, 1, 1);
+        
+        gridPane.add(clearButton, 0, 5, 1, 1);
+        gridPane.add(updateButton, 1, 5, 1, 1);
+        gridPane.add(deleteButton, 2, 5, 1, 1);
+        gridPane.add(addButton, 3, 5, 2, 1);
+        
+        
+        
+        // Specifique à un type de produit
+        surfaceLabel = new Label("Surface");
+        genderLabel = new Label("Genre");
+        colorLabel = new Label("Couleur");
+        typeVLabel = new Label("Cat.");
+        
+        hideShoesComponents(); hideClothesComponents();
+              
+        gridPane.add(surfaceLabel, 5, 0);
+        gridPane.add(typeVLabel, 5, 0);
+        gridPane.add(genderLabel, 5, 1);
+        gridPane.add(colorLabel, 5, 2);
+        gridPane.add(surfaceComboBox, 6, 0);
+        gridPane.add(typeVComboBox, 6, 0);
+        gridPane.add(genderField, 6, 1);
+        gridPane.add(colorField, 6, 2);
+        
+        
+        
         return gridPane;
 	}
+	
 	  
     public ComboBox<String> getComboBox(){
         ComboBox<String> typeComboBox = new ComboBox<String>();
@@ -403,8 +437,11 @@ public class AdminView {
 
             if ("chaussures".equals(selectedCategory)) {
                 sizeComboBox.getItems().addAll("36", "37", "38", "39");
+                showShoesComponents();
+                
             } else if ("vetement".equals(selectedCategory)) {
                 sizeComboBox.getItems().addAll("S", "M", "L", "XL");
+                showClothesComponents();
             }
         });
         
@@ -415,13 +452,11 @@ public class AdminView {
         		if (entry.getKey().equals(selectedSize)) {
                     qtDispoField.setText(String.valueOf(entry.getValue()));
         		}
-        	}
-                
+        	}       
         	}	
         });
-        return typeComboBox;        
-    }
-    
+        return typeComboBox;
+    }    
 	
     private void addProduct() {
     	clearField();
@@ -429,9 +464,10 @@ public class AdminView {
         	
         gridPane.add(typeLabel, 0, 0); // Nouvelle position pour typeLabel
         gridPane.add(typeComboBox, 1, 0);
+        
             
         Button addProductButton = new Button("Ajouter");
-        gridPane.add(addProductButton, 5, 4);
+        gridPane.add(addProductButton, 5, 4, 2, 1);
             
         deleteButton.setVisible(false);
         updateButton.setVisible(false);
@@ -441,8 +477,16 @@ public class AdminView {
         addProductButton.setOnAction(event ->{
         	if(!checkIfEmpty()) {
         		getTextFieldValues();
+        		
         		Product product = new Product(0, name, description, type, brand, price, qtDispo, imagePath);
-        		productDAO.insertProduct(product);
+        		int id = productDAO.insertProduct(product);
+        		
+        		if (type == "chaussures") {
+        			productDAO.insertChaussures(id, surfaceComboBox.getValue(), genderField.getText(), colorField.getText(), sizeComboBox.getValue(), qtDispo);
+        		}
+        		if (type == "vetement"){
+        			productDAO.insertVetement(id, typeVComboBox.getValue(), genderField.getText(), colorField.getText(), sizeComboBox.getValue(), qtDispo);
+        		}
                         
         		MainView.showAlert("Information Message", null, "Ajouter avec succès", AlertType.INFORMATION);
                 
@@ -457,7 +501,7 @@ public class AdminView {
     }
     
     public void updateProduct(){
-    	if(!checkIfEmpty()) {
+    	if(!idField.getText().isEmpty()) {
     		int id = Integer.parseInt(idField.getText());
     		getTextFieldValues();
         
@@ -482,7 +526,9 @@ public class AdminView {
                     }
               	}catch(Exception e){e.printStackTrace();}
         }
+    	else {MainView.showAlert("Erreur", null, "Merci d'ajouter l'identifiant du produit à supprimer", AlertType.ERROR);}
     }
+    
     
     public void deleteProduct(){ 
     	if(!checkIfEmpty()) {
@@ -492,26 +538,6 @@ public class AdminView {
         }
     }
     
-    public void clearField(){
-        idField.setText("");
-        nameField.setText("");
-        descriptionField.setText("");
-        typeComboBox.getSelectionModel().clearSelection();
-        brandField.setText("");
-        priceField.setText("");
-        qtDispoField.setText("");
-        imageView.setImage(null);
-        imagePath = "";
-        sizesStock = null;
-        
-        sizeLabel.setVisible(false);
-        sizeComboBox.getItems().clear();
-        sizeComboBox.setVisible(false);
-        gridPane.getChildren().removeAll(qtDispoLabel, qtDispoField);
-        gridPane.add(qtDispoLabel, 2, 1); // Nouvelle position pour quantité
-        gridPane.add(qtDispoField, 3, 1);
-        
-    }
     
     public Button getImportImageButton(MainView mainView){       
         FileChooser fileChooser = new FileChooser();
@@ -613,14 +639,54 @@ public class AdminView {
         if (product instanceof ProductWithSize) {
         	ProductWithSize productWithSize = (ProductWithSize) product;
         	sizesStock = productWithSize.getTailleStock();
-        }        
+        }
+        
+        if (product instanceof Chaussures) {
+        	hideClothesComponents();
+        	showShoesComponents();;
+        	surfaceComboBox.setValue(((Chaussures)product).getSurface());
+            genderField.setText(((Chaussures)product).getGender());
+            colorField.setText(((Chaussures)product).getColor());
+        }
+        
+        if (product instanceof Vetement) {
+        	hideShoesComponents();
+        	showClothesComponents();
+        	typeVComboBox.setValue(((Vetement)product).getTypeVetement().toString());
+            genderField.setText(((Vetement)product).getGender());
+            colorField.setText(((Vetement)product).getCouleur());
+        }
+        
         
         imagePath = product.getImagePath();
-        
+        System.out.println(imagePath);
         imageView.setImage(new Image(getClass().getResource(imagePath).toExternalForm()));
     	imageView.setFitWidth(90);  // Largeur fixe
         imageView.setFitHeight(90); // Hauteur fixe
         imageView.setPreserveRatio(true);       
+    }
+    
+    
+    public void clearField(){
+        idField.setText("");
+        nameField.setText("");
+        descriptionField.setText("");
+        typeComboBox.getSelectionModel().clearSelection();
+        brandField.setText("");
+        priceField.setText("");
+        qtDispoField.setText("");
+        imageView.setImage(null);
+        imagePath = "";
+        sizesStock = null;
+        
+        hideShoesComponents(); hideClothesComponents();
+        
+        sizeLabel.setVisible(false);
+        sizeComboBox.getItems().clear();
+        sizeComboBox.setVisible(false);
+        gridPane.getChildren().removeAll(qtDispoLabel, qtDispoField);
+        gridPane.add(qtDispoLabel, 2, 1); // Nouvelle position pour quantité
+        gridPane.add(qtDispoField, 3, 1);
     }
     
     
@@ -646,6 +712,53 @@ public class AdminView {
     	 	return true;
     	 }
     	 return false;	
+    }
+    
+    private void showShoesComponents() {
+    	surfaceLabel.setVisible(true);
+        genderLabel.setVisible(true);
+        colorLabel.setVisible(true);
+        
+        surfaceComboBox.setVisible(true);
+        genderField.setVisible(true);
+        colorField.setVisible(true);
+    }
+    
+    private void showClothesComponents() {
+    	typeVLabel.setVisible(true);
+        genderLabel.setVisible(true);
+        colorLabel.setVisible(true);
+        
+        typeVComboBox.setVisible(true);
+        genderField.setVisible(true);
+        colorField.setVisible(true);
+    }
+    
+    private void hideShoesComponents() {
+    	surfaceLabel.setVisible(false);
+        genderLabel.setVisible(false);
+        colorLabel.setVisible(false);
+        
+        surfaceComboBox.setVisible(false);
+        genderField.setVisible(false);
+        colorField.setVisible(false);
+          
+        genderField.setText("");
+        colorField.setText("");
+    }
+    
+    private void hideClothesComponents() {
+    	typeVLabel.setVisible(false);
+        genderLabel.setVisible(false);
+        colorLabel.setVisible(false);
+        
+        typeVComboBox.setVisible(false);
+        genderField.setVisible(false);
+        colorField.setVisible(false);
+        
+        typeVComboBox.getSelectionModel().clearSelection();
+        genderField.setText("");
+        colorField.setText("");
     }
 
 }
