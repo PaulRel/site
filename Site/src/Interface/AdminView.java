@@ -38,6 +38,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -769,6 +770,11 @@ public class AdminView {
     
     private GridPane createInvoiceGridPane() {
     	GridPane gridPane = new GridPane();
+    	gridPane.setPadding(new Insets(15));
+        gridPane.setHgap(5);
+        gridPane.setVgap(10);
+        gridPane.setStyle("-fx-border-color: lightgray; -fx-border-width: 1; -fx-border-radius: 5;");
+        
     	Label invoiceIdLabel = new Label("Identifiant");
     	Label billingAddressLabel = new Label("Adresse de facturation");
     	Label shippingAddressLabel = new Label("Adresse de livraison");
@@ -792,6 +798,7 @@ public class AdminView {
     	gridPane.addRow(2, shippingAddressLabel, shippingAddressField);
     	gridPane.addRow(3, shippingMethodLabel, shippingMethodField);
     	gridPane.addRow(4, paymentMethodLabel, paymentMethodField);
+    	gridPane.add(updateInvoiceButton, 1, 5, 1, 1);
     	
     	return gridPane;
     }
@@ -822,6 +829,27 @@ public class AdminView {
 
         // Créer une colonne pour le bouton d'action
         TableColumn<Invoice, Void> actionColumn = new TableColumn<>("Action");
+        actionColumn.setCellFactory(param -> new TableCell<>() {
+            private final Button deleteInvoiceButton = new Button("Supprimer"); {
+                deleteInvoiceButton.setOnAction(event -> {	   
+                	// Récupérer la facture correspondant à cette ligne                    
+                    Invoice invoice = getTableView().getItems().get(getIndex());
+                    // Supprimer la facture
+                    invoiceDAO.deleteInvoice(invoice);
+                    // Mettre à jour la TableView
+                    invoicesTable.setItems(FXCollections.observableArrayList(invoiceDAO.getAllInvoices()));
+                });
+            }
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null); // Pas de bouton pour les lignes vides
+                } else {
+                    setGraphic(deleteButton); // Afficher le bouton pour les lignes valides
+                }
+            }
+        });
         
         invoicesTable.getColumns().add(colId);
         invoicesTable.getColumns().add(colOrderId);

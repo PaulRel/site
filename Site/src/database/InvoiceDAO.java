@@ -18,6 +18,8 @@ import javafx.scene.control.Alert.AlertType;
 import products.Product;
 
 public class InvoiceDAO {
+	
+	// RECUPERER TOUTES LES FACTURES
 	public List<Invoice> getAllInvoices() {
         List<Invoice> invoices = new ArrayList<>();
         String query = "SELECT * FROM invoice";
@@ -54,6 +56,8 @@ public class InvoiceDAO {
         return invoices;
     }
 	
+	
+	// INSERTION
 	public void insertInvoice(Invoice invoice) {
 		try (Connection conn = DatabaseConnection.getConnection()) {
 			String sql = "INSERT INTO invoice (order_id, billing_address, shipping_address, shipping_method, payment_method, invoice_date) VALUES (?, ?, ?, ?, ?, ?)";
@@ -78,6 +82,7 @@ public class InvoiceDAO {
         }
     }
 	
+	// UPDATE
 	public void updateInvoice(String billingAddress, String shippingAddress, String shippingMethod, String paymentMethod, int invoiceId) {
 		String sql = "UPDATE Invoice SET billing_address = ?, shipping_address = ?, shipping_method = ?, payment_method = ? WHERE invoice_id = ?";     
         
@@ -95,6 +100,8 @@ public class InvoiceDAO {
           	}catch(Exception e){e.printStackTrace();}
 	}
 	
+	
+	// RECUPERATION UNE FACTURE A PARTIR DE SON ID
 	public Invoice getInvoiceById(Order order) {
         String query = "SELECT * FROM invoice WHERE order_id = ?";
         try (Connection connection = DatabaseConnection.getConnection();
@@ -125,4 +132,17 @@ public class InvoiceDAO {
         }
         return null; // Retourne null si aucune facture n'est trouvée
     }
+	
+	
+	// SUPPRESSION
+	public void deleteInvoice(Invoice invoice) {
+    	String sql = "DELETE FROM Invoice WHERE id = '"+ invoice.getInvoiceId()+"'";
+    	try (Connection conn = DatabaseConnection.getConnection();
+    			PreparedStatement statement = conn.prepareStatement(sql)) {
+                int rowsAffected = statement.executeUpdate();
+                if (rowsAffected > 0) {MainView.showAlert("Succès", null, "La facture a été supprimée avec succès.", AlertType.INFORMATION);}
+    	}catch (SQLException e) {
+             MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);
+    	}
+	}	
 }
