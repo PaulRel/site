@@ -104,7 +104,7 @@ public class SignUpView {
         Button submitButton = new Button("VALIDER");       
         HBox buttonBox = new HBox(submitButton);
         buttonBox.setAlignment(Pos.CENTER);        
-        submitButton.setOnAction(e -> handleSubmitButton(mainView, mrRadio, firstNameField, lastNameField, addressField, emailField, passwordBox, newsletterCheckBox));
+        submitButton.setOnAction(e -> handleSubmitButton(mainView, mrRadio, firstNameField, lastNameField, addressField, emailField, passwordBox, termsCheckBox));
 
         // Disposition du formulaire
         GridPane gridPane = new GridPane();
@@ -154,7 +154,7 @@ public class SignUpView {
         mainView.getPrimaryStage().setScene(createAccountScene);
 	}
 	
-	private void handleSubmitButton(MainView mainView, RadioButton mrRadio, TextField firstNameField, TextField lastNameField, TextField addressField, TextField emailField, HBox passwordBox, CheckBox newsletterCheckBox) {
+	private void handleSubmitButton(MainView mainView, RadioButton mrRadio, TextField firstNameField, TextField lastNameField, TextField addressField, TextField emailField, HBox passwordBox, CheckBox termsCheckBox) {
 		// Récupère les valeurs saisies par l'utilisateur
     	Civility civility;
         if (mrRadio.isSelected()) {
@@ -168,10 +168,10 @@ public class SignUpView {
                 || lastNameField.getText().isEmpty()
                 || addressField.getText().isEmpty()
                 || emailField.getText().isEmpty()
-                || ((PasswordField) passwordBox.getChildren().get(0)).getText().isEmpty()
-                || !newsletterCheckBox.isSelected()){
+                || ((PasswordField) passwordBox.getChildren().get(0)).getText().isEmpty()){
         	MainView.showAlert("Erreur", null, "Merci de remplir tous les champs ", AlertType.ERROR);
         }
+        if (!termsCheckBox.isSelected()) {MainView.showAlert("Erreur", null, "Merci d'accepter les règles de confidentialité ", AlertType.ERROR);}
         else {
     	String firstName = firstNameField.getText();
     	String lastName = lastNameField.getText();

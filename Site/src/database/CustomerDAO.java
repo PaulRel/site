@@ -6,6 +6,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import customer.Customer;
+import customer.Customer.Civility;
+import customer.Customer.Role;
+import products.Product;
+import products.Vetement.TypeVetement;
 
 public class CustomerDAO {
 	public void signUpCustomer(Customer customer) {
@@ -40,5 +44,37 @@ public class CustomerDAO {
         } catch (SQLException e) {
         	e.printStackTrace();
         }
+    }
+	
+	public Customer getCustomerById(int id) {
+        String query = "SELECT * FROM Customer WHERE CustomerID = ?";
+        Customer customer = null;  // Initialiser à null pour l'instant, si aucun produit n'est trouvé
+
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setInt(1, id);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                	String firstName = resultSet.getString("FirstName");
+                	String lastName = resultSet.getString("LastName");
+                	Civility civility = Civility.valueOf(resultSet.getString("Civility"));
+                	
+                	String email = resultSet.getString("Email");
+                	String phoneNumber = resultSet.getString("PhoneNumber");
+
+                	String password = resultSet.getString("Password");
+                	Role role = Role.valueOf(resultSet.getString("Role").toUpperCase());
+                	String address = resultSet.getString("Address");
+
+                    customer = new Customer(id, firstName, lastName, civility, email, phoneNumber, password, role, address);
+                    
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return customer;
     }
 }

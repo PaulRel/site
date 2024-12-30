@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import Interface.MainView;
+import javafx.collections.FXCollections;
 import javafx.scene.control.Alert.AlertType;
 import products.Chaussures;
 import products.Product;
@@ -249,6 +250,27 @@ public class ProductDAO {
         } catch (SQLException e) {
             e.printStackTrace();
     	}
+    }
+    
+    // UPDATE
+    public void updateProduct(Product product) {
+    	String sql = "UPDATE Produit SET Nom = ?, Description = ?, Type = ?, Marque = ?, Prix = ?, Qt_Dispo = ?, image_path = ? WHERE id = ?";
+        
+        try(Connection conn = DatabaseConnection.getConnection();
+        	PreparedStatement updateStmt = conn.prepareStatement(sql)){
+        		updateStmt.setString(1, product.getName());
+                updateStmt.setString(2, product.getDescription());
+                updateStmt.setString(3, product.getType());
+                updateStmt.setString(4, product.getBrand());
+                updateStmt.setDouble(5, product.getPrice());
+                updateStmt.setInt(6, product.getQtDispo());
+                updateStmt.setString(7, product.getImagePath());
+                updateStmt.setInt(8, product.getId());
+                int rowsAffected = updateStmt.executeUpdate();
+                if (rowsAffected > 0) {
+                	MainView.showAlert("Information Message", null, "Modifier avec succès", AlertType.INFORMATION);                    
+                }
+          	}catch(Exception e){e.printStackTrace();}
     }
     
     

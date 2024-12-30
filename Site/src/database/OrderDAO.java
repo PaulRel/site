@@ -102,4 +102,33 @@ public class OrderDAO {
         }
         psDetail.executeBatch();
     }
+    
+    public Order getOrderById(int id) {
+        String query = "SELECT * FROM Orders WHERE order_id = ?";
+        Order order = null;
+        
+        try (Connection connection = DatabaseConnection.getConnection();
+        		PreparedStatement statement = connection.prepareStatement(query);){
+        	
+        	statement.setInt(1, id);
+        	
+            try (ResultSet rs = statement.executeQuery()) {
+            	if (rs.next()) {
+            		int customerId = rs.getInt("customer_id");
+            		LocalDate orderDate = rs.getDate("order_date").toLocalDate();
+            		String status = rs.getString("status");
+
+            		CustomerDAO customerDAO = new CustomerDAO();
+            		order = new Order(customerDAO.getCustomerById(customerId));
+            		order.setOrderDate(orderDate);
+            		order.setStatus(status);
+
+            		addOrderDetails(order, connection);
+            	}
+            }
+        } catch (SQLException e) {
+        	e.printStackTrace();
+        }
+        return order;
+    }
 }

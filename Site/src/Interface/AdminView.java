@@ -13,9 +13,11 @@ import java.util.List;
 import java.util.Map;
 
 import customer.CartItem;
+import customer.Invoice;
 import customer.Order;
 import database.AdminStatsDAO;
 import database.DatabaseConnection;
+import database.InvoiceDAO;
 import database.ProductDAO;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -101,7 +103,7 @@ public class AdminView {
 		statsButton.setOnAction(e -> showStats());
 		customersButton.setOnAction(e -> showClients());
 		stockManagementButton.setOnAction(e -> manageStocks(mainView));
-		editInvoiceButton.setOnAction(e -> editInvoice());
+		editInvoiceButton.setOnAction(e -> manageInvoice());
 		logoutButton.setOnAction(e -> {
         	MainView.setCurrentCustomer(null);
         	mainView.showProductView(Product.class, null);
@@ -257,8 +259,8 @@ public class AdminView {
 		mainContent.getChildren().setAll(editProductsBox, OutOfStockProductsLabel);
 	}
 	
-	private void editInvoice() {
-		
+	private void manageInvoice() {
+		mainContent.getChildren().setAll(editInvoiceBox());
 	}
 	
 	private VBox createVBox(Label label, Chart chart) {
@@ -267,6 +269,10 @@ public class AdminView {
 		vBox.setStyle("-fx-padding: 10;-fx-spacing:10;-fx-background-color: #FFFFFF; -fx-background-radius:10;");
 		return vBox;
 	}
+	
+	
+	// STATISTIQUES
+	
 	
 	private TableView<Map.Entry<String, Integer>> createBestProductsTable() {
 		TableView<Map.Entry<String, Integer>> tableView = new TableView<>();
@@ -306,8 +312,8 @@ public class AdminView {
 	HashMap<String, Integer> sizesStock;
 	
 	private VBox editProducts(MainView mainView) {
-		VBox productDetails = new VBox();
-		productDetails.setStyle("-fx-padding: 10;-fx-spacing:10;-fx-background-color: #FFFFFF; -fx-background-radius:10;");
+		VBox editProductsBox = new VBox();
+		editProductsBox.setStyle("-fx-padding: 10;-fx-spacing:10;-fx-background-color: #FFFFFF; -fx-background-radius:10;");
 		
 		// TextField
 		idField = new TextField();
@@ -353,11 +359,11 @@ public class AdminView {
         clearButton.setOnAction(event -> clearField());
         
         // Ajout de gridPane et table des produits
-		productDetails.getChildren().addAll(createGridPane(), tableView);
-		return productDetails;
+        editProductsBox.getChildren().addAll(createProductGridPane(), tableView);
+		return editProductsBox;
 	}
 	
-	private GridPane createGridPane() {
+	private GridPane createProductGridPane() {
 		gridPane = new GridPane();
         gridPane.setPadding(new Insets(15));
         gridPane.setHgap(10);
@@ -500,31 +506,15 @@ public class AdminView {
         });
     }
     
+    
     public void updateProduct(){
     	if(!idField.getText().isEmpty()) {
     		int id = Integer.parseInt(idField.getText());
     		getTextFieldValues();
-        
-    		String sql = "UPDATE Produit SET Nom = ?, Description = ?, Type = ?, Marque = ?, Prix = ?, Qt_Dispo = ?, image_path = ? WHERE id = ?";
-        
-        
-            try(Connection conn = DatabaseConnection.getConnection();
-            	PreparedStatement updateStmt = conn.prepareStatement(sql)){
-            		updateStmt.setString(1, name);
-                    updateStmt.setString(2, description);
-                    updateStmt.setString(3, type);
-                    updateStmt.setString(4, brand);
-                    updateStmt.setDouble(5, price);
-                    updateStmt.setInt(6, qtDispo);
-                    updateStmt.setString(7, imagePath);
-                    updateStmt.setInt(8, id);
-                    int rowsAffected = updateStmt.executeUpdate();
-                    if (rowsAffected > 0) {
-                    	MainView.showAlert("Information Message", null, "Modifier avec succès", AlertType.INFORMATION);                    
-                    	clearField();
-                    	tableView.setItems(FXCollections.observableArrayList(productDAO.getAllProduits()));
-                    }
-              	}catch(Exception e){e.printStackTrace();}
+    		Product product = new Product(id, name, description, type, brand, price, qtDispo, imagePath);
+    		productDAO.updateProduct(product);
+            clearField();
+            tableView.setItems(FXCollections.observableArrayList(productDAO.getAllProduits()));
         }
     	else {MainView.showAlert("Erreur", null, "Merci d'ajouter l'identifiant du produit à supprimer", AlertType.ERROR);}
     }
@@ -624,6 +614,9 @@ public class AdminView {
         return tableView;
     }
     
+    
+    
+    
     private void productSelect(){
         Product product = tableView.getSelectionModel().getSelectedItem();
         
@@ -707,7 +700,6 @@ public class AdminView {
                  || priceField.getText().isEmpty()
                  || qtDispoField.getText().isEmpty()
                  || imagePath == null || imagePath == ""){
-    		System.out.println("ImagePath : "+ imagePath);
          	MainView.showAlert("Erreur", null, "Merci de remplir tous les champs ", AlertType.ERROR);
     	 	return true;
     	 }
@@ -760,5 +752,142 @@ public class AdminView {
         genderField.setText("");
         colorField.setText("");
     }
+    
+    
+    // EDIT INVOICE
+    
+    TextField billingAddressField, shippingAddressField, shippingMethodField, paymentMethodField;
+    Button updateInvoiceButton;
+    TableView<Invoice> invoicesTable;
+    InvoiceDAO invoiceDAO;
+    int invoiceId, orderId;
+    String billingAddress, shippingAddress, shippingMethod, paymentMethod;
+    
+    private VBox editInvoiceBox() {
+    	VBox editInvoiceBox = new VBox(createInvoiceGridPane(), getInvoiceTableView());
+    	editInvoiceBox.setStyle("-fx-padding: 10;-fx-spacing:10;-fx-background-color: #FFFFFF; -fx-background-radius:10;");
+    	return editInvoiceBox;
+    }
+    
+    private GridPane createInvoiceGridPane() {
+    	GridPane gridPane = new GridPane();
+    	Label invoiceIdLabel = new Label("Identifiant");
+    	Label billingAddressLabel = new Label("Adresse de facturation");
+    	Label shippingAddressLabel = new Label("Adresse de livraison");
+    	Label shippingMethodLabel = new Label("Méthode de livraison");
+    	Label paymentMethodLabel = new Label("Méthode de paiement");
+        
+    	updateInvoiceButton = new Button("Mettre à jour");
+    	updateInvoiceButton.setOnAction(event -> updateInvoice());   	
+    	
+    	billingAddressField = new TextField();
+    	shippingAddressField = new TextField();
+    	shippingMethodField = new TextField();
+    	paymentMethodField = new TextField();
+    	
+    	for (TextField txt : new TextField[]{billingAddressField, shippingAddressField, shippingMethodField, paymentMethodField}) {
+            txt.setStyle("-fx-pref-height: 30px;");
+		}
+    	
+    	gridPane.addRow(0, invoiceIdLabel);
+    	gridPane.addRow(1, billingAddressLabel, billingAddressField);
+    	gridPane.addRow(2, shippingAddressLabel, shippingAddressField);
+    	gridPane.addRow(3, shippingMethodLabel, shippingMethodField);
+    	gridPane.addRow(4, paymentMethodLabel, paymentMethodField);
+    	
+    	return gridPane;
+    }
 
+    
+    private TableView<Invoice> getInvoiceTableView(){
+    	invoiceDAO = new InvoiceDAO();
+    	ObservableList<Invoice> invoicesList = FXCollections.observableArrayList(invoiceDAO.getAllInvoices());
+        invoicesTable = new TableView<>();
+        
+        TableColumn<Invoice, Integer> colId = new TableColumn<>("ID");
+        colId.setCellValueFactory(new PropertyValueFactory<>("invoiceId"));
+
+        TableColumn<Invoice, Integer> colOrderId = new TableColumn<>("N° Commande");
+        colOrderId.setCellValueFactory(invoice -> new SimpleIntegerProperty(invoice.getValue().getOrder().getOrderId()).asObject());
+
+        TableColumn<Invoice, String> colBillingAddress = new TableColumn<>("Adresse de facturation");
+        colBillingAddress.setCellValueFactory(invoice -> new SimpleStringProperty(invoice.getValue().getBillingAddress()));
+
+        TableColumn<Invoice, String> colShippingAddress = new TableColumn<>("Adresse de livraison");
+        colShippingAddress.setCellValueFactory(invoice -> new SimpleStringProperty(invoice.getValue().getShippingAddress()));
+
+        TableColumn<Invoice, String> colShippingMethod = new TableColumn<>("Méthode de livraison");
+        colShippingMethod.setCellValueFactory(invoice -> new SimpleStringProperty(invoice.getValue().getShippingMethod()));
+
+        TableColumn<Invoice, String> colPaymentMethod = new TableColumn<>("Méthode de paiement");
+        colPaymentMethod.setCellValueFactory(invoice -> new SimpleStringProperty(invoice.getValue().getPaymentMethod()));
+
+        // Créer une colonne pour le bouton d'action
+        TableColumn<Invoice, Void> actionColumn = new TableColumn<>("Action");
+        
+        invoicesTable.getColumns().add(colId);
+        invoicesTable.getColumns().add(colOrderId);
+        invoicesTable.getColumns().add(colBillingAddress);
+        invoicesTable.getColumns().add(colShippingAddress);
+        invoicesTable.getColumns().add(colShippingMethod);
+        invoicesTable.getColumns().add(colPaymentMethod);
+        invoicesTable.getColumns().add(actionColumn);
+        invoicesTable.setItems(invoicesList);
+        
+        invoicesTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) { // Vérifie qu'une ligne est sélectionnée
+                invoiceSelect();
+            }
+        });
+        
+        return invoicesTable;
+    }
+    
+    private void invoiceSelect(){
+        Invoice invoice = invoicesTable.getSelectionModel().getSelectedItem();
+        invoiceId = invoice.getInvoiceId();
+        orderId = invoice.getOrder().getOrderId();
+        
+        billingAddressField = new TextField();
+    	shippingAddressField = new TextField();
+    	shippingMethodField = new TextField();
+    	paymentMethodField = new TextField();
+    	
+    	billingAddressField.setText(invoice.getBillingAddress());
+    	shippingAddressField.setText(invoice.getShippingAddress());
+    	shippingMethodField.setText(invoice.getShippingMethod());
+    	paymentMethodField.setText(invoice.getPaymentMethod());
+    }
+    
+    private void updateInvoice() {
+    	if(!checkIfEmptyInvoice()) {
+    		getInvoiceTextFieldValues();
+    		invoiceDAO.updateInvoice(billingAddress, shippingAddress, shippingMethod, paymentMethod, invoiceId);
+    		clearInvoiceField();
+    		invoicesTable.setItems(FXCollections.observableArrayList(invoiceDAO.getAllInvoices()));
+    	}
+    }
+    
+    private void getInvoiceTextFieldValues() {
+    	billingAddress = billingAddressField.getText();
+    	shippingAddress = shippingAddressField.getText();
+    	shippingMethod = shippingMethodField.getText();
+    	paymentMethod = paymentMethodField.getText();
+    }
+    
+    private void clearInvoiceField(){
+    	billingAddressField.setText("");
+    	shippingAddressField.setText("");
+    	shippingMethodField.setText("");
+    	paymentMethodField.setText("");
+    }
+    
+    private boolean checkIfEmptyInvoice() {
+    	if(billingAddressField.getText().isEmpty()
+                || shippingAddressField.getText().isEmpty()
+                || shippingMethodField.getText().isEmpty()
+                || paymentMethodField.getText().isEmpty()){
+        	MainView.showAlert("Erreur", null, "Merci de remplir tous les champs", AlertType.ERROR);
+   	 	return true;
+   	 }return false;}    
 }

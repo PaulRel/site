@@ -17,7 +17,7 @@ public class InvoiceView {
 	public void genererFacture(Order order) {
 		// Récupération des informations de la facture
 		InvoiceDAO invoiceDAO = new InvoiceDAO();
-		Invoice invoice = invoiceDAO.getInvoiceByOrder(order);
+		Invoice invoice = invoiceDAO.getInvoiceById(order);
 
 	    // Si la facture est introuvable, afficher une erreur
 	    if (invoice == null) {

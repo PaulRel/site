@@ -149,7 +149,7 @@ public class AccountView {
     }
     
     private void editCustomerInfo() {
-    	Label editLabel = new Label("Editer les informations du compte");
+    	Label editLabel = new Label("Modifier les informations du compte");
     	TextField lastNameField = new TextField(MainView.getCurrentCustomer().getLastName());
     	TextField firstNameField = new TextField(MainView.getCurrentCustomer().getFirstName());
     	TextField emailField = new TextField(MainView.getCurrentCustomer().getEmail());
