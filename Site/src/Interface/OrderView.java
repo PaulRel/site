@@ -113,19 +113,19 @@ public class OrderView {
 		
         ToggleGroup deliveryGroup = new ToggleGroup();
 
-        RadioButton upsOption = new RadioButton("UPS Domicile    		48h* 		9,00 €");
+        RadioButton upsOption = new RadioButton("UPS Domicile    	9,00 €");
         upsOption.setToggleGroup(deliveryGroup);
         upsOption.setStyle("-fx-font-size: 12px;");
 
-        RadioButton colissimoOption = new RadioButton("Colissimo mon domicile    48h*		0,00 €");
+        RadioButton colissimoOption = new RadioButton("Colissimo mon domicile	0,00 €");
         colissimoOption.setToggleGroup(deliveryGroup);
         colissimoOption.setStyle("-fx-font-size: 12px;");
 
-        RadioButton chronopostOption = new RadioButton("Chronopost    		24h*   	 15,00 €");
+        RadioButton chronopostOption = new RadioButton("Chronopost		15,00 €");
         chronopostOption.setToggleGroup(deliveryGroup);
         chronopostOption.setStyle("-fx-font-size: 12px;");
 
-        RadioButton storePickupOption = new RadioButton("Retrait en magasin TennisShop    72h*    0,00 €");
+        RadioButton storePickupOption = new RadioButton("Retrait en magasin TennisShop 0,00 €");
         storePickupOption.setToggleGroup(deliveryGroup);
         storePickupOption.setStyle("-fx-font-size: 12px;");
 
