@@ -138,13 +138,14 @@ public class SignUpView {
         mainView.getPrimaryStage().heightProperty().addListener((observable, oldValue, newValue) -> {
             root.setPrefHeight(newValue.doubleValue()-116); // Ajuste la hauteur
         });
+        
+        HeaderView v = new HeaderView(mainView);
 
         AnchorPane rootPane = new AnchorPane();
-        rootPane.getChildren().addAll(root);
+        rootPane.getChildren().addAll(root, v.getHeader());
         
         Scene createAccountScene = new Scene(rootPane, 1350, 670);
-        HeaderView v = new HeaderView(mainView);
-        rootPane.getChildren().addAll(v.getHeader());
+
          
         createAccountScene.getStylesheets().add(this.getClass().getResource("/style.css").toExternalForm());
         
