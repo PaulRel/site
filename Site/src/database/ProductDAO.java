@@ -19,6 +19,8 @@ public class ProductDAO {
 	private String type, nom, description, marque, imagePath;
 	int qtDispo;
 	double prix;
+	
+	// RECUPERATION
 
     public List<Product> getAllProduits() {
         List<Product> products = new ArrayList<>();
@@ -153,7 +155,10 @@ public class ProductDAO {
         return product;
     }
     
-    public void insertProduct(Product product) {
+    
+    // INSERTION
+    
+    public int insertProduct(Product product) {
     	String query = "INSERT INTO Produit (Nom, Description, Type, Marque, Prix, Qt_dispo, image_path) VALUES (?, ?, ?, ?, ?, ?, ?)";
     	try (Connection conn = DatabaseConnection.getConnection();
                PreparedStatement statement = conn.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS)) {
@@ -177,6 +182,7 @@ public class ProductDAO {
                            int generatedId = generatedKeys.getInt(1); // Récupérer l'ID généré
                            product.setId(generatedId); // Assigner l'ID généré à l'objet Product
                            System.out.println("ID du nouveau produit : " + generatedId);
+                           return generatedId;
                        } else {
                            throw new SQLException("Échec de récupération de l'ID généré.");
                        }
@@ -185,7 +191,68 @@ public class ProductDAO {
            } catch (SQLException e) {
            	e.printStackTrace();
            }
+    	return 0;
     }
+    
+    public void insertChaussures(int id, String surface, String gender, String color, String size, int qt) {
+    	String query = "INSERT INTO Chaussures (produit_id, surface, genre, couleur) VALUES (?, ?, ?, ?)";
+    	try (Connection conn = DatabaseConnection.getConnection();
+    			PreparedStatement pstmt = conn.prepareStatement(query)) {
+    		pstmt.setInt(1, id);
+            pstmt.setString(2, surface);
+            pstmt.setString(3, gender);
+            pstmt.setString(4, color);
+
+            // Exécuter la requête
+            pstmt.executeUpdate();
+            
+            insertSizeStock(id, size, qt);
+            
+            System.out.println("Chaussure insérée avec succès !");
+        } catch (SQLException e) {
+            e.printStackTrace();
+    	}
+    }
+    
+    
+    public void insertVetement(int id, String type, String gender, String color, String size, int qt) {
+    	String query = "INSERT INTO Vetement (produit_id, type, genre, couleur) VALUES (?, ?, ?, ?)";
+    	try (Connection conn = DatabaseConnection.getConnection();
+    			PreparedStatement pstmt = conn.prepareStatement(query)) {
+    		pstmt.setInt(1, id);
+            pstmt.setString(2, type);
+            pstmt.setString(3, gender);
+            pstmt.setString(4, color);
+
+            // Exécuter la requête
+            pstmt.executeUpdate();
+            
+            insertSizeStock(id, size, qt);
+            
+            System.out.println("Vetement insérée avec succès !");
+        } catch (SQLException e) {
+            e.printStackTrace();
+    	}
+    }
+    
+    private void insertSizeStock(int id, String size, int qt) {
+    	String query = "INSERT INTO TailleStock (produit_id, taille, qt_dispo) VALUES (?, ?, ?)";
+    	try (Connection conn = DatabaseConnection.getConnection();
+    			PreparedStatement pstmt = conn.prepareStatement(query)) {
+    		pstmt.setInt(1, id);
+            pstmt.setString(2, size);
+            pstmt.setInt(3, qtDispo);
+
+            // Exécuter la requête
+            pstmt.executeUpdate();
+            System.out.println("Taille et quantité insérées avec succès !");
+        } catch (SQLException e) {
+            e.printStackTrace();
+    	}
+    }
+    
+    
+    // SUPPRESSION
     
     public void deleteProduct(int id) {
     	String sql = "DELETE FROM Produit WHERE id = '"+ id+"'";
