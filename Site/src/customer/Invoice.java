@@ -8,6 +8,7 @@ public class Invoice {
     private String billingAddress;
     private String shippingAddress;
     private String shippingMethod;
+    private double shippingPrice;
     private String paymentMethod;
 
     private LocalDate invoiceDate;
@@ -83,6 +84,14 @@ public class Invoice {
 
 	public void setInvoiceId(int invoiceId) {
 		this.invoiceId = invoiceId;
+	}
+
+	public double getShippingPrice() {
+		return shippingPrice;
+	}
+
+	public void setShippingPrice(double shippingPrice) {
+		this.shippingPrice = shippingPrice;
 	}
 }
 

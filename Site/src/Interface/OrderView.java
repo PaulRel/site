@@ -179,12 +179,24 @@ public class OrderView {
 
         String shippingMethod = selectedShippingOption != null ? selectedShippingOption.getText() : "";
         String paymentMethod = selectedPaymentOption != null ? selectedPaymentOption.getText() : "";
-        
+        double shippingCost = 0.0;
+		if (shippingMethod != null) {
+		    if (shippingMethod.contains("UPS Domicile")) {
+		        shippingCost = 9.00;
+		    } else if (shippingMethod.contains("Colissimo mon domicile")) {
+		        shippingCost = 4.00;
+		    } else if (shippingMethod.contains("Chronopost")) {
+		        shippingCost = 15.00;
+		    } else if (shippingMethod.contains("Retrait en magasin TennisShop")) {
+		        shippingCost = 0.00;
+		    }
+		}
         // Crée la facture
         Invoice invoice = new Invoice(order);
         invoice.setBillingAddress(billingAddress);
         invoice.setShippingAddress(shippingAddress);
         invoice.setShippingMethod(shippingMethod);
+        invoice.setShippingPrice(shippingCost);
         invoice.setPaymentMethod(paymentMethod);
         
         // Insère la facture dans la base de données

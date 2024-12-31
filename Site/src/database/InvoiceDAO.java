@@ -34,6 +34,7 @@ public class InvoiceDAO {
                 String billingAddress = rs.getString("billing_address");
                 String shippingAddress = rs.getString("shipping_address");
                 String shippingMethod = rs.getString("shipping_method");
+                double shippingPrice = rs.getDouble("shipping_price");
                 String paymentMethod = rs.getString("payment_method");
                 LocalDate invoiceDate = rs.getDate("invoice_date").toLocalDate();
                 
@@ -44,6 +45,7 @@ public class InvoiceDAO {
                 invoice.setBillingAddress(billingAddress);
                 invoice.setShippingAddress(shippingAddress);
                 invoice.setShippingMethod(shippingMethod);
+                invoice.setShippingPrice(shippingPrice);
                 invoice.setPaymentMethod(paymentMethod);
                 invoice.setInvoiceDate(invoiceDate);
                 
@@ -59,15 +61,16 @@ public class InvoiceDAO {
 	// INSERTION
 	public void insertInvoice(Invoice invoice) {
 		try (Connection conn = DatabaseConnection.getConnection()) {
-			String sql = "INSERT INTO invoice (order_id, billing_address, shipping_address, shipping_method, payment_method, invoice_date) VALUES (?, ?, ?, ?, ?, ?)";
+			String sql = "INSERT INTO invoice (order_id, billing_address, shipping_address, shipping_method, shipping_price, payment_method, invoice_date) VALUES (?, ?, ?, ?, ?, ?, ?)";
 			PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             
 			pstmt.setInt(1, invoice.getOrder().getOrderId());
             pstmt.setString(2, invoice.getBillingAddress());
             pstmt.setString(3, invoice.getShippingAddress());
             pstmt.setString(4, invoice.getShippingMethod());
-            pstmt.setString(5, invoice.getPaymentMethod());
-            pstmt.setDate(6, Date.valueOf(invoice.getInvoiceDate()));
+            pstmt.setDouble(5, invoice.getShippingPrice());
+            pstmt.setString(6, invoice.getPaymentMethod());
+            pstmt.setDate(7, Date.valueOf(invoice.getInvoiceDate()));
             pstmt.executeUpdate();
 
             ResultSet rs = pstmt.getGeneratedKeys();
@@ -84,15 +87,28 @@ public class InvoiceDAO {
 	
 	// UPDATE
 	public void updateInvoice(String billingAddress, String shippingAddress, String shippingMethod, String paymentMethod, int invoiceId) {
-		String sql = "UPDATE Invoice SET billing_address = ?, shipping_address = ?, shipping_method = ?, payment_method = ? WHERE invoice_id = ?";     
-        
+		String sql = "UPDATE Invoice SET billing_address = ?, shipping_address = ?, shipping_method = ?, shipping_price = ?, payment_method = ? WHERE invoice_id = ?";     
+		double shippingCost = 0.0;
+		if (shippingMethod != null) {
+		    if (shippingMethod.contains("UPS Domicile")) {
+		        shippingCost = 9.00;
+		    } else if (shippingMethod.contains("Colissimo mon domicile")) {
+		        shippingCost = 4.00;
+		    } else if (shippingMethod.contains("Chronopost")) {
+		        shippingCost = 15.00;
+		    } else if (shippingMethod.contains("Retrait en magasin TennisShop")) {
+		        shippingCost = 0.00;
+		    }
+		}
+		
         try(Connection conn = DatabaseConnection.getConnection();
         	PreparedStatement updateStmt = conn.prepareStatement(sql)){
         		updateStmt.setString(1, billingAddress);
                 updateStmt.setString(2, shippingAddress);
                 updateStmt.setString(3, shippingMethod);
-                updateStmt.setString(4, paymentMethod);
-                updateStmt.setInt(5, invoiceId);
+                updateStmt.setDouble(4, shippingCost);
+                updateStmt.setString(5, paymentMethod);
+                updateStmt.setInt(6, invoiceId);
                 int rowsAffected = updateStmt.executeUpdate();
                 if (rowsAffected > 0) {
                 	MainView.showAlert("Information Message", null, "Modifier avec succès", AlertType.INFORMATION);                    
@@ -116,6 +132,7 @@ public class InvoiceDAO {
                     String billingAddress = rs.getString("billing_address");
                     String shippingAddress = rs.getString("shipping_address");
                     String shippingMethod = rs.getString("shipping_method");
+                    double shippingPrice = rs.getDouble("shipping_price");
                     String paymentMethod = rs.getString("payment_method");
                     LocalDate invoiceDate = rs.getDate("invoice_date").toLocalDate();
                         
@@ -124,6 +141,7 @@ public class InvoiceDAO {
                     invoice.setBillingAddress(billingAddress);
                     invoice.setShippingAddress(shippingAddress);
                     invoice.setShippingMethod(shippingMethod);
+                    invoice.setShippingPrice(shippingPrice);
                     invoice.setPaymentMethod(paymentMethod);
                     invoice.setInvoiceDate(invoiceDate);
                     return invoice;
