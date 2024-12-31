@@ -24,11 +24,13 @@ import products.Product;
 public class AccountView {
 	private AnchorPane rootPane;
 	private VBox mainContent;
+	private MainView mainView;
 
-    public AccountView(MainView mainView) {       
+    public AccountView(MainView mainView) {      
         rootPane = new AnchorPane();
         createMainSection();
         createLeftMenu(mainView);
+        this.mainView = mainView;
 
         
         Scene accountScene = new Scene(rootPane, 1350, 670);
@@ -239,13 +241,20 @@ public class AccountView {
         dateCol.setCellValueFactory(order -> new SimpleStringProperty(order.getValue().getOrderDate().toString()));
         shippingToCol.setCellValueFactory(order -> new SimpleStringProperty(order.getValue().getCustomer().getAddress()));
         totalCol.setCellValueFactory(order -> new SimpleStringProperty(String.format("%.2f €", order.getValue().getTotalPrice())));
-        statusCol.setCellValueFactory(order -> new SimpleStringProperty(order.getValue().getStatus()));
-        
-        actionCol.setCellFactory(column -> new TableCell<Order, Void>() {
-            private final Button viewButton = new Button("Visualiser"); {
+        actionCol.setCellFactory(order -> new TableCell<Order, Void>() {
+            private final Button viewButton = new Button("Visualiser");
+            private final Button finalizeButton = new Button("Finaliser");
+
+            {
+                // Action pour le bouton "Visualiser"
                 viewButton.setOnAction(event -> {
-                	InvoiceView invoiceView = new InvoiceView();
-                	invoiceView.genererFacture(getTableRow().getItem());               	
+                    InvoiceView invoiceView = new InvoiceView();
+                    invoiceView.generateInvoice(getTableRow().getItem());
+                });
+
+                // Action pour le bouton "Finaliser"
+                finalizeButton.setOnAction(event -> {
+                    OrderView orderView = new OrderView(mainView, getTableRow().getItem());
                 });
             }
 
