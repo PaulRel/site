@@ -821,6 +821,9 @@ public class AdminView {
 
         TableColumn<Invoice, Integer> colOrderId = new TableColumn<>("N° Commande");
         colOrderId.setCellValueFactory(invoice -> new SimpleIntegerProperty(invoice.getValue().getOrder().getOrderId()).asObject());
+        
+        TableColumn<Invoice, String> colCustomerName = new TableColumn<>("Nom Client");
+        colCustomerName.setCellValueFactory(invoice -> new SimpleStringProperty(invoice.getValue().getOrder().getCustomer().getLastName()));
 
         TableColumn<Invoice, String> colBillingAddress = new TableColumn<>("Adresse de facturation");
         colBillingAddress.setCellValueFactory(invoice -> new SimpleStringProperty(invoice.getValue().getBillingAddress()));
@@ -838,7 +841,7 @@ public class AdminView {
         TableColumn<Invoice, Void> actionColumn = new TableColumn<>("Action");
         actionColumn.setCellFactory(param -> new TableCell<>() {
             private final Button deleteInvoiceButton = new Button(); {
-                ImageView binIcon = new ImageView(new Image(getClass().getResource("/Image/binIcon.png").toExternalForm()));
+                ImageView binIcon = new ImageView(new Image(getClass().getResource("/Image/binIcon1.png").toExternalForm()));
                 binIcon.setFitHeight(20);
                 binIcon.setFitWidth(20);
                 deleteInvoiceButton.setGraphic(binIcon);
@@ -865,6 +868,7 @@ public class AdminView {
         
         invoicesTable.getColumns().add(colId);
         invoicesTable.getColumns().add(colOrderId);
+        invoicesTable.getColumns().add(colCustomerName);
         invoicesTable.getColumns().add(colBillingAddress);
         invoicesTable.getColumns().add(colShippingAddress);
         invoicesTable.getColumns().add(colShippingMethod);
