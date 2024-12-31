@@ -49,7 +49,6 @@ public class InvoiceDAO {
                 
                 invoices.add(invoice);
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -82,6 +81,7 @@ public class InvoiceDAO {
         }
     }
 	
+	
 	// UPDATE
 	public void updateInvoice(String billingAddress, String shippingAddress, String shippingMethod, String paymentMethod, int invoiceId) {
 		String sql = "UPDATE Invoice SET billing_address = ?, shipping_address = ?, shipping_method = ?, payment_method = ? WHERE invoice_id = ?";     
@@ -97,7 +97,10 @@ public class InvoiceDAO {
                 if (rowsAffected > 0) {
                 	MainView.showAlert("Information Message", null, "Modifier avec succès", AlertType.INFORMATION);                    
                 }
-          	}catch(Exception e){e.printStackTrace();}
+          	}catch(Exception e){
+          		MainView.showAlert("Erreur", null, "Une erreur est survenue lors de la mise à jour de la facture : " + e.getMessage(), AlertType.ERROR);
+          		e.printStackTrace();
+          	}
 	}
 	
 	
@@ -109,26 +112,26 @@ public class InvoiceDAO {
             pstmt.setInt(1, order.getOrderId());
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
-                        int invoiceId = rs.getInt("invoice_id"); 
-                        String billingAddress = rs.getString("billing_address");
-                        String shippingAddress = rs.getString("shipping_address");
-                        String shippingMethod = rs.getString("shipping_method");
-                        String paymentMethod = rs.getString("payment_method");
-                        LocalDate invoiceDate = rs.getDate("invoice_date").toLocalDate();
+                	int invoiceId = rs.getInt("invoice_id"); 
+                    String billingAddress = rs.getString("billing_address");
+                    String shippingAddress = rs.getString("shipping_address");
+                    String shippingMethod = rs.getString("shipping_method");
+                    String paymentMethod = rs.getString("payment_method");
+                    LocalDate invoiceDate = rs.getDate("invoice_date").toLocalDate();
                         
-                        Invoice invoice = new Invoice(order);
-                        invoice.setInvoiceId(invoiceId);
-                        invoice.setBillingAddress(billingAddress);
-                        invoice.setShippingAddress(shippingAddress);
-                        invoice.setShippingMethod(shippingMethod);
-                        invoice.setPaymentMethod(paymentMethod);
-                        invoice.setInvoiceDate(invoiceDate);
-                        return invoice;
+                    Invoice invoice = new Invoice(order);
+                    invoice.setInvoiceId(invoiceId);
+                    invoice.setBillingAddress(billingAddress);
+                    invoice.setShippingAddress(shippingAddress);
+                    invoice.setShippingMethod(shippingMethod);
+                    invoice.setPaymentMethod(paymentMethod);
+                    invoice.setInvoiceDate(invoiceDate);
+                    return invoice;
                 }
             }
            
         } catch (SQLException e) {
-            System.err.println("Erreur lors de la récupération de la facture : " + e.getMessage());
+        	MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);
         }
         return null; // Retourne null si aucune facture n'est trouvée
     }
@@ -136,7 +139,7 @@ public class InvoiceDAO {
 	
 	// SUPPRESSION
 	public void deleteInvoice(Invoice invoice) {
-    	String sql = "DELETE FROM Invoice WHERE id = '"+ invoice.getInvoiceId()+"'";
+    	String sql = "DELETE FROM Invoice WHERE invoice_id = '"+ invoice.getInvoiceId()+"'";
     	try (Connection conn = DatabaseConnection.getConnection();
     			PreparedStatement statement = conn.prepareStatement(sql)) {
                 int rowsAffected = statement.executeUpdate();
