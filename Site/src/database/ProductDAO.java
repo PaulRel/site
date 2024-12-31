@@ -122,7 +122,7 @@ public class ProductDAO {
     }
     
     public Product getProduitById(int id) {
-        String query = "SELECT id, Nom, Description, Type, Marque, Prix, Qt_Dispo, image_Path FROM produit WHERE id = ?";
+        String query = "SELECT id, Nom, Description, Type, Marque, Prix, image_Path FROM produit WHERE id = ?";
         Product product = null;  // Initialiser à null pour l'instant, si aucun produit n'est trouvé
 
         try (Connection connection = DatabaseConnection.getConnection();
@@ -157,7 +157,7 @@ public class ProductDAO {
     // INSERTION
     
     public int insertProduct(Product product) {
-    	String query = "INSERT INTO Produit (Nom, Description, Type, Marque, Prix, Qt_dispo, image_path) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    	String query = "INSERT INTO Produit (Nom, Description, Type, Marque, Prix, image_path) VALUES (?, ?, ?, ?, ?, ?, ?)";
     	try (Connection conn = DatabaseConnection.getConnection();
                PreparedStatement statement = conn.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS)) {
 
