@@ -173,7 +173,7 @@ public class AuthentificationView {
         return null; // Authentification échouée
     }
     
-    private static void syncUserCart() {
+    public static void syncUserCart() {
     	Customer customer = MainView.getCurrentCustomer();
         if (customer != null) {
         	Cart userCart = customer.getCart();
