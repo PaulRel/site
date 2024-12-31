@@ -486,7 +486,7 @@ public class AdminView {
         	// Ajouter le produit à la bdd
         	if(!checkIfEmpty()) {
         		getTextFieldValues();
-        		Product product = new Product(0, name, description, type, brand, price, qtDispo, imagePath);
+        		Product product = new Product(0, name, description, type, brand, price, imagePath);
         		int id = productDAO.insertProduct(product);
         		if (type == "chaussures") {
         			productDAO.insertChaussures(id, surfaceComboBox.getValue(), genderField.getText(), colorField.getText(), sizeComboBox.getValue(), qtDispo);
@@ -513,7 +513,7 @@ public class AdminView {
     	if(!idField.getText().isEmpty()) {
     		int id = Integer.parseInt(idField.getText());
     		getTextFieldValues();
-    		Product product = new Product(id, name, description, type, brand, price, qtDispo, imagePath);
+    		Product product = new Product(id, name, description, type, brand, price, imagePath);
     		productDAO.updateProduct(product);
             clearField();
             productTableView.setItems(FXCollections.observableArrayList(productDAO.getAllProduits()));

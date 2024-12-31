@@ -18,14 +18,13 @@ import products.Vetement.TypeVetement;
 
 public class ProductDAO {
 	private String type, nom, description, marque, imagePath;
-	int qtDispo;
 	double prix;
 	
 	// RECUPERATION
 
     public List<Product> getAllProduits() {
         List<Product> products = new ArrayList<>();
-        String query = "SELECT id, Nom, Description, Type, Marque, Prix, Qt_Dispo, image_Path FROM produit";
+        String query = "SELECT id, Nom, Description, Type, Marque, Prix, image_Path FROM produit";
 
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query);
@@ -39,10 +38,9 @@ public class ProductDAO {
                 type = resultSet.getString("Type");
                 marque = resultSet.getString("Marque");
                 prix = resultSet.getDouble("Prix");
-                qtDispo = resultSet.getInt("Qt_Dispo");
                 imagePath = resultSet.getString("image_Path");
 
-                Product product = new Product(id, nom, description, type, marque, prix, qtDispo, imagePath);
+                Product product = new Product(id, nom, description, type, marque, prix, imagePath);
                 if (type.equalsIgnoreCase("chaussures")) {
                     product = getChaussuresDetails(id);
                 } else if (type.equalsIgnoreCase("vetement")) {
@@ -70,7 +68,7 @@ public class ProductDAO {
     	        String surface = resultSet.getString("surface");
     	        String genre = resultSet.getString("genre");
     	        String couleur = resultSet.getString("couleur");
-                chaussure = new Chaussures(id, nom, description, type, marque, prix, qtDispo, imagePath, surface, genre, couleur);
+                chaussure = new Chaussures(id, nom, description, type, marque, prix, imagePath, surface, genre, couleur);
                 chaussure.setTailleStock(getTaillesStock(id));
     	    }
 
@@ -113,7 +111,7 @@ public class ProductDAO {
                      String stringTypeVetement = resultSet.getString("type"); 
                      TypeVetement typeVetement = TypeVetement.valueOf(stringTypeVetement.toUpperCase());
                      
-                     vetement = new Vetement(id, nom, description, type, marque, prix, qtDispo, imagePath, typeVetement, genre, couleur);
+                     vetement = new Vetement(id, nom, description, type, marque, prix, imagePath, typeVetement, genre, couleur);
                      vetement.setTailleStock(getTaillesStock(id));
                  }
 
@@ -139,10 +137,9 @@ public class ProductDAO {
                     type = resultSet.getString("Type");
                     marque = resultSet.getString("Marque");
                     prix = resultSet.getDouble("Prix");
-                    qtDispo = resultSet.getInt("Qt_Dispo");
                     imagePath = resultSet.getString("image_Path");
 
-                    product = new Product(id, nom, description, type, marque, prix, qtDispo, imagePath);
+                    product = new Product(id, nom, description, type, marque, prix, imagePath);
                     if (type.equalsIgnoreCase("chaussures")) {
                         product = getChaussuresDetails(id);
                     } else if (type.equalsIgnoreCase("vetement")) {
@@ -170,8 +167,7 @@ public class ProductDAO {
                statement.setString(3, product.getType());
                statement.setString(4, product.getBrand());            
                statement.setDouble(5, product.getPrice());
-               statement.setInt(6, product.getQtDispo());
-               statement.setString(7, product.getImagePath());
+               statement.setString(6, product.getImagePath());
 
                int rowsInserted = statement.executeUpdate();
                if (rowsInserted > 0) {
@@ -242,7 +238,7 @@ public class ProductDAO {
     			PreparedStatement pstmt = conn.prepareStatement(query)) {
     		pstmt.setInt(1, id);
             pstmt.setString(2, size);
-            pstmt.setInt(3, qtDispo);
+            pstmt.setInt(3, qt);
 
             // Exécuter la requête
             pstmt.executeUpdate();
@@ -254,7 +250,7 @@ public class ProductDAO {
     
     // UPDATE
     public void updateProduct(Product product) {
-    	String sql = "UPDATE Produit SET Nom = ?, Description = ?, Type = ?, Marque = ?, Prix = ?, Qt_Dispo = ?, image_path = ? WHERE id = ?";
+    	String sql = "UPDATE Produit SET Nom = ?, Description = ?, Type = ?, Marque = ?, Prix = ?, image_path = ? WHERE id = ?";
         
         try(Connection conn = DatabaseConnection.getConnection();
         	PreparedStatement updateStmt = conn.prepareStatement(sql)){
@@ -263,9 +259,8 @@ public class ProductDAO {
                 updateStmt.setString(3, product.getType());
                 updateStmt.setString(4, product.getBrand());
                 updateStmt.setDouble(5, product.getPrice());
-                updateStmt.setInt(6, product.getQtDispo());
-                updateStmt.setString(7, product.getImagePath());
-                updateStmt.setInt(8, product.getId());
+                updateStmt.setString(6, product.getImagePath());
+                updateStmt.setInt(7, product.getId());
                 int rowsAffected = updateStmt.executeUpdate();
                 if (rowsAffected > 0) {
                 	MainView.showAlert("Information Message", null, "Modifier avec succès", AlertType.INFORMATION);                    

@@ -8,8 +8,8 @@ public class Chaussures extends Product implements ProductWithSize{
 	private String gender, color, surface;
 	private HashMap<String, Integer> tailleStock;
 
-	public Chaussures(int id, String Nom, String Description, String Type, String Brand, double Price, int QtDispo,  String imagePath, String surface, String gender, String color) {
-		super(id, Nom, Description, Type, Brand, Price, QtDispo, imagePath);
+	public Chaussures(int id, String Nom, String Description, String Type, String Brand, double Price, String imagePath, String surface, String gender, String color) {
+		super(id, Nom, Description, Type, Brand, Price, imagePath);
 		this.surface = surface;
 		this.tailleStock = new HashMap<>();
 		this.gender = gender;

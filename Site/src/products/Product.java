@@ -2,7 +2,7 @@ package products;
 
 
 public class Product {
-	private int id, qtDispo;
+	private int id;
 	private String description, name, type, brand, imagePath;
 	private double price;
 
@@ -13,19 +13,14 @@ public class Product {
 	 * @param QtDispo
 	 * @param Type
 	 */
-	public Product(int id, String name, String description, String type, String brand, double price, int qtDispo, String imagePath) {
+	public Product(int id, String name, String description, String type, String brand, double price, String imagePath) {
 		this.id = id;
 		this.name = name;
 		this.description = description;
 		this.type = type;
 		this.brand = brand;
 		this.price = price; 
-		this.qtDispo = qtDispo;
 		this.imagePath = imagePath;
-	}
-
-	public Product RechercherPdt(String c) {
-		return new Product(qtDispo, c, c, c, c, price, qtDispo, c);
 	}
 	
 	@Override
@@ -47,14 +42,6 @@ public class Product {
 
 	public void setPrice(int price) {
 		this.price = price;
-	}
-
-	public int getQtDispo() {
-		return qtDispo;
-	}
-
-	public void setQtDispo(int qtDispo) {
-		this.qtDispo = qtDispo;
 	}
 
 	public String getType() {
