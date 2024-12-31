@@ -25,10 +25,11 @@ public class AccountView {
 	private AnchorPane rootPane;
 	private VBox mainContent;
 
-    public AccountView(MainView mainView) {        
+    public AccountView(MainView mainView) {       
         rootPane = new AnchorPane();
-        createLeftMenu(mainView);
         createMainSection();
+        createLeftMenu(mainView);
+
         
         Scene accountScene = new Scene(rootPane, 1350, 670);
         
@@ -70,7 +71,7 @@ public class AccountView {
         Button deleteAccountButton = new Button("Supprimer le compte");
         
         dashboardButton.setOnAction(e -> showDashboard());
-        accountInfoButton.setOnAction(e -> editCustomerInfo());
+        accountInfoButton.setOnAction(e -> mainContent.getChildren().setAll(editCustomerInfo()));
         ordersButton.setOnAction(e -> showCustomerOrders());
         deleteAccountButton.setOnAction(e -> {deleteAccount(); mainView.showProductView(Product.class, null);});
         
@@ -129,7 +130,7 @@ public class AccountView {
         Label infoTitle = new Label ("Informations du compte");
         infoTitle.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
         Hyperlink hyperlink = new Hyperlink("Modifier");
-        hyperlink.setOnAction(event -> editCustomerInfo());
+        hyperlink.setOnAction(event -> mainContent.getChildren().setAll(editCustomerInfo()));
         HBox infoHeader = new HBox(10, infoTitle, hyperlink);
         infoHeader.setAlignment(Pos.CENTER_LEFT);
         
@@ -148,7 +149,12 @@ public class AccountView {
         mainContent.getChildren().setAll(dashboardTitle, dashboardDesc, tableHeader, tableSection, infoHeader, clientInfoBox);    	
     }
     
-    private void editCustomerInfo() {
+    public VBox editCustomerInfo() {
+    	VBox editCustomerInfoBox = new VBox(15);
+    	editCustomerInfoBox.setSpacing(10);
+    	editCustomerInfoBox.setPadding(new Insets(20));
+    	editCustomerInfoBox.setStyle("-fx-background-color: #FFFFFF;");
+	
     	Label editLabel = new Label("Modifier les informations du compte");
     	TextField lastNameField = new TextField(MainView.getCurrentCustomer().getLastName());
     	TextField firstNameField = new TextField(MainView.getCurrentCustomer().getFirstName());
@@ -197,7 +203,8 @@ public class AccountView {
     	    }
     	});
     	
-    	mainContent.getChildren().setAll(editLabel, lastNameField, firstNameField, emailField, phoneField, addressField, saveButton); 
+    	editCustomerInfoBox.getChildren().addAll(editLabel, lastNameField, firstNameField, emailField, phoneField, addressField, saveButton);
+    	return editCustomerInfoBox;
     }
     
     private void showCustomerOrders() {
@@ -207,15 +214,15 @@ public class AccountView {
         subtitle.setWrapText(true);
         subtitle.setStyle("-fx-font-size: 12px; -fx-font-weight: normal");
         
-        TableView<Order> tableSection = createOrdersTable();
+        TableView<Order> ordersTable = createOrdersTable();
+        ordersTable.setMaxHeight(300);
         
-        mainContent.getChildren().setAll(ordersTitle, subtitle, tableSection);
+        mainContent.getChildren().setAll(ordersTitle, subtitle, ordersTable);
     }
     
     private TableView<Order> createOrdersTable() {    	
     	TableView<Order> ordersTable = new TableView<>();
-        ordersTable.setMinHeight(200);
-        ordersTable.setMaxHeight(300);
+        ordersTable.setMaxHeight(200);
         ordersTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         ordersTable.setId("ordersTable");
 
@@ -235,8 +242,7 @@ public class AccountView {
         statusCol.setCellValueFactory(order -> new SimpleStringProperty(order.getValue().getStatus()));
         
         actionCol.setCellFactory(column -> new TableCell<Order, Void>() {
-            private final Button viewButton = new Button("Visualiser");
-            {
+            private final Button viewButton = new Button("Visualiser"); {
                 viewButton.setOnAction(event -> {
                 	InvoiceView invoiceView = new InvoiceView();
                 	invoiceView.genererFacture(getTableRow().getItem());               	
