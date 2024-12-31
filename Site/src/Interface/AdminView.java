@@ -264,6 +264,7 @@ public class AdminView {
 		mainContent.getChildren().setAll(editInvoiceBox());
 	}
 	
+	
 	private VBox createVBox(Label label, Chart chart) {
 		VBox vBox = new VBox();
 		vBox.getChildren().addAll(label, chart);
@@ -273,8 +274,7 @@ public class AdminView {
 	
 	
 	// STATISTIQUES
-	
-	
+		
 	private TableView<Map.Entry<String, Integer>> createBestProductsTable() {
 		TableView<Map.Entry<String, Integer>> tableView = new TableView<>();
         // Configurer les colonnes
@@ -297,6 +297,7 @@ public class AdminView {
 	}
 	
 	
+	// MODIFIER PRODUITS et STOCKS
 	
 	private TextField idField, nameField, descriptionField, brandField, priceField, qtDispoField, genderField, colorField;
 	private String name, description, type, brand, imagePath;
@@ -816,7 +817,7 @@ public class AdminView {
     	invoicesTable.setPrefHeight(200);
     	invoicesTable.setId("ordersTable"); // réduire taille des entetes
         
-        TableColumn<Invoice, Integer> colId = new TableColumn<>("ID");
+        TableColumn<Invoice, Integer> colId = new TableColumn<>("Réf.");
         colId.setCellValueFactory(new PropertyValueFactory<>("invoiceId"));
 
         TableColumn<Invoice, Integer> colOrderId = new TableColumn<>("N° Commande");
@@ -841,7 +842,7 @@ public class AdminView {
         TableColumn<Invoice, Void> actionColumn = new TableColumn<>("Action");
         actionColumn.setCellFactory(param -> new TableCell<>() {
             private final Button deleteInvoiceButton = new Button(); {
-                ImageView binIcon = new ImageView(new Image(getClass().getResource("/Image/binIcon1.png").toExternalForm()));
+                ImageView binIcon = new ImageView(new Image(getClass().getResource("/Image/binIcon.png").toExternalForm()));
                 binIcon.setFitHeight(20);
                 binIcon.setFitWidth(20);
                 deleteInvoiceButton.setGraphic(binIcon);
