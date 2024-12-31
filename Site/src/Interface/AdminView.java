@@ -127,11 +127,7 @@ public class AdminView {
 	    //scrollPane.setStyle("-fx-background-color: rgba(0,0,0, 0.6)");
 		
 		adminStatsDAO = new AdminStatsDAO();
-		
-		Label pendingOrders = new Label("Nombre de commandes en cours " + adminStatsDAO.getPendingOrders());
-		Label deliveredOrders = new Label("Nombre de commandes livrées " + adminStatsDAO.getDeliveredOrders());
-		
-		mainContent.getChildren().addAll(pendingOrders, deliveredOrders);
+		showStats();
 		return scrollPane;
 	}
 	
