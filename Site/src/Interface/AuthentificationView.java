@@ -121,7 +121,7 @@ public class AuthentificationView {
         rootPane.getChildren().addAll(root);
     }
     
-    public static void handleLogin(String email, String password) {
+    private void handleLogin(String email, String password) {
     	Customer customer = authenticate(email, password);
     	
     	if (customer != null) {
@@ -137,7 +137,7 @@ public class AuthentificationView {
     }
 
  // Méthode pour vérifier les identifiants
-    public static Customer authenticate(String email, String password) {
+    private Customer authenticate(String email, String password) {
         String query = "SELECT * FROM Customer WHERE Email = ?";
         
         try (Connection conn = DatabaseConnection.getConnection();
@@ -173,7 +173,7 @@ public class AuthentificationView {
         return null; // Authentification échouée
     }
     
-    public static void syncUserCart() {
+    private static void syncUserCart() {
     	Customer customer = MainView.getCurrentCustomer();
         if (customer != null) {
         	Cart userCart = customer.getCart();
