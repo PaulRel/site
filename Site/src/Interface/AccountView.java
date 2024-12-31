@@ -242,7 +242,7 @@ public class AccountView {
         shippingToCol.setCellValueFactory(order -> new SimpleStringProperty(order.getValue().getCustomer().getAddress()));
         totalCol.setCellValueFactory(order -> new SimpleStringProperty(String.format("%.2f €", order.getValue().getTotalPrice())));
         actionCol.setCellFactory(order -> new TableCell<Order, Void>() {
-            private final Button viewButton = new Button("Visualiser");
+            private final Button viewButton = new Button("Facture");
             private final Button finalizeButton = new Button("Finaliser");
 
             {
@@ -254,7 +254,7 @@ public class AccountView {
 
                 // Action pour le bouton "Finaliser"
                 finalizeButton.setOnAction(event -> {
-                    OrderView orderView = new OrderView(mainView, getTableRow().getItem());
+                    new OrderView(mainView, getTableRow().getItem());
                 });
             }
 
@@ -264,7 +264,15 @@ public class AccountView {
                 if (empty) {
                     setGraphic(null);
                 } else {
-                    setGraphic(viewButton);
+                	Order currentOrder = getTableRow().getItem();
+
+                    if ("En cours".equals(currentOrder.getStatus())) {
+                        // Afficher le bouton "Finaliser" si le statut est "En cours"
+                        setGraphic(finalizeButton);
+                    } else {
+                        // Sinon, afficher le bouton "Visualiser"
+                        setGraphic(viewButton);
+                    }
                 }
             }
         });
