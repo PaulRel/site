@@ -768,7 +768,7 @@ public class AdminView {
     	invoiceGridPane = createInvoiceGridPane();
     	invoicesTable = getInvoiceTableView();
     	VBox editInvoiceBox = new VBox(invoicesTable, invoiceGridPane);
-    	editInvoiceBox.setStyle("-fx-padding: 10;-fx-spacing:10;-fx-background-color: #FFFFFF; -fx-background-radius:10;");
+    	editInvoiceBox.setStyle("-fx-padding: 20;-fx-spacing:10;-fx-background-color: #FFFFFF; -fx-background-radius:10;");
     	return editInvoiceBox;
     }
     
@@ -813,6 +813,8 @@ public class AdminView {
     	invoiceDAO = new InvoiceDAO();
     	ObservableList<Invoice> invoicesList = FXCollections.observableArrayList(invoiceDAO.getAllInvoices());
     	TableView<Invoice> invoicesTable = new TableView<>();
+    	invoicesTable.setPrefHeight(200);
+    	invoicesTable.setId("ordersTable"); // réduire taille des entetes
         
         TableColumn<Invoice, Integer> colId = new TableColumn<>("ID");
         colId.setCellValueFactory(new PropertyValueFactory<>("invoiceId"));
@@ -835,10 +837,15 @@ public class AdminView {
         // Créer une colonne pour le bouton d'action
         TableColumn<Invoice, Void> actionColumn = new TableColumn<>("Action");
         actionColumn.setCellFactory(param -> new TableCell<>() {
-            private final Button deleteInvoiceButton = new Button("Supprimer"); {
-                deleteInvoiceButton.setOnAction(event -> {	   
+            private final Button deleteInvoiceButton = new Button(); {
+                ImageView binIcon = new ImageView(new Image(getClass().getResource("/Image/binIcon.png").toExternalForm()));
+                binIcon.setFitHeight(20);
+                binIcon.setFitWidth(20);
+                deleteInvoiceButton.setGraphic(binIcon);
+                deleteInvoiceButton.setId("roundButton");
+                deleteInvoiceButton.setOnAction(event -> {
                 	// Récupérer la facture correspondant à cette ligne                    
-                    Invoice invoice = getTableView().getItems().get(getIndex());
+                	Invoice invoice = getTableView().getItems().get(getIndex());
                     // Supprimer la facture
                     invoiceDAO.deleteInvoice(invoice);
                     // Mettre à jour la TableView

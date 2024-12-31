@@ -161,6 +161,19 @@
     -fx-font-size: 12px;            /* Taille de la police */
 }
 
+#roundButton {
+    -fx-background-color: red; /* Couleur de fond */
+    -fx-background-radius: 50%; /* Rendre le bouton rond */
+    -fx-min-width: 30px; /* Largeur minimale */
+    -fx-min-height: 30px; /* Hauteur minimale */
+    -fx-max-width: 30px; /* Largeur maximale */
+    -fx-max-height: 30px; /* Hauteur maximale */
+    -fx-alignment: center; /* Centrer le contenu */
+    -fx-padding: 0;
+    /*-fx-border-color: darkblue; /* Bordure (facultatif) */
+    /*-fx-border-radius: 50%; /* Coin rond */
+}
+
 
 
 
