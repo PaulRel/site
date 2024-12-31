@@ -114,25 +114,32 @@ public class HeaderView{
         
         TextField searchField = new TextField();
         searchField.setPromptText("Rechercher un produit...");
-        searchField.setPrefSize(300, 40);
+        searchField.setPrefSize(300, 40); 
+        searchField.setOnAction(event -> performSearch(searchField.getText(), mainView)); 
         
-        searchField.setOnAction(event -> {
-            // Rafraîchir les produits affichés avec le terme de recherche
-        	String searchTerm = searchField.getText();
-        	SearchDAO searchDAO = new SearchDAO();
-        	List<Product> products = searchDAO.search(searchTerm);
-        	mainView.showProductView(Product.class, products);
-        });
+        Button searchButton = new Button();
+        ImageView searchIcon = new ImageView(new Image(getClass().getResource("/Image/searchIcon.png").toExternalForm()));
+        searchIcon.setFitHeight(30);
+        searchIcon.setFitWidth(30);
+        searchButton.setGraphic(searchIcon);
+        searchButton.setStyle("-fx-background-color:transparent; -fx-border-color: #e0e0e0; -fx-pref-width: 50px; -fx-pref-height: 50px; -fx-padding: 0 0 0 0; -fx-border-radius: 0;");
+        searchButton.setOnAction(event -> performSearch(searchField.getText(), mainView));
         
         Hyperlink hyperlink = new Hyperlink("Recherche avancée");
         hyperlink.setOnAction(event -> new SearchAdvancedView(mainView));
 
-        topBar.getChildren().addAll(logo, shopName, leftSpacer, searchField, hyperlink, rightSpacer, accountButton, cartButton);
+        topBar.getChildren().addAll(logo, shopName, leftSpacer, searchField, searchButton, hyperlink, rightSpacer, accountButton, cartButton);
         header.getChildren().addAll(topBar, menuBar);
         header.setPrefWidth(mainView.getPrimaryStage().getWidth() - 20);
         
         AnchorPane.setTopAnchor(header, 10.0);
         AnchorPane.setLeftAnchor(header, 10.0);
+    }
+    
+    private void performSearch(String searchTerm, MainView mainView) {
+        SearchDAO searchDAO = new SearchDAO();
+        List<Product> products = searchDAO.search(searchTerm);
+        mainView.showProductView(Product.class, products);
     }
 
     public VBox getHeader() {
