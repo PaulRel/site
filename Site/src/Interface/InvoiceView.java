@@ -197,10 +197,10 @@ public class InvoiceView {
         totalCell.setTextAlignment(TextAlignment.RIGHT);
         totalCell.add(new Paragraph("Total produits HT            " + String.format("%.2f €", order.getTotalPrice()/1.2)));
         totalCell.add(new Paragraph("Total produits TTC           " + String.format("%.2f €", order.getTotalPrice())));
-        totalCell.add(new Paragraph("Total frais de port           "));
+        totalCell.add(new Paragraph("Total frais de port           "+ String.format("%.2f €", invoice.getShippingPrice())));
         totalCell.add(new Paragraph("Total HT           " + String.format("%.2f €", order.getTotalPrice()/1.2)));
         totalCell.add(new Paragraph("TVA (20%)             " + String.format("%.2f €", order.getTotalPrice()*0.2)));
-        totalCell.add(new Paragraph("Total TTC           " + String.format("%.2f €", order.getTotalPrice())).setBold().setFontSize(16));
+        totalCell.add(new Paragraph("Total TTC           " + String.format("%.2f €", order.getTotalPrice()+invoice.getShippingPrice())).setBold().setFontSize(16));
         totalTable.addCell(totalCell);
         return totalTable;	
 	}

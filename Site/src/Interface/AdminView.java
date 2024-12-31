@@ -757,7 +757,8 @@ public class AdminView {
     // EDIT INVOICE
     
     Label invoiceIdLabel;
-    TextField billingAddressField, shippingAddressField, shippingMethodField, paymentMethodField;
+    TextField billingAddressField, shippingAddressField;
+    ComboBox<String> shippingMethodComboBox, paymentMethodComboBox;
     Button updateInvoiceButton;
     TableView<Invoice> invoicesTable;
     InvoiceDAO invoiceDAO;
@@ -791,18 +792,22 @@ public class AdminView {
     	
     	billingAddressField = new TextField();
     	shippingAddressField = new TextField();
-    	shippingMethodField = new TextField();
-    	paymentMethodField = new TextField();
     	
-    	for (TextField txt : new TextField[]{billingAddressField, shippingAddressField, shippingMethodField, paymentMethodField}) {
+    	shippingMethodComboBox = new ComboBox<String>();
+    	shippingMethodComboBox.getItems().addAll("UPS Domicile 9,00 €", "Colissimo mon domicile	4,00 €", "Chronopost 15,00 €", "Retrait en magasin TennisShop 0,00 €");
+    	
+    	paymentMethodComboBox = new ComboBox<String>();
+    	paymentMethodComboBox.getItems().addAll("Paiement sécurisé par carte bancaire", "Paiement par Paypal", "Paiement par virement bancaire");
+    	
+    	for (TextField txt : new TextField[]{billingAddressField, shippingAddressField}) {
             txt.setStyle("-fx-pref-height: 30px;");
 		}
     	
     	gridPane.addRow(0, invoiceIdLabel);
     	gridPane.addRow(1, billingAddressLabel, billingAddressField);
     	gridPane.addRow(2, shippingAddressLabel, shippingAddressField);
-    	gridPane.addRow(3, shippingMethodLabel, shippingMethodField);
-    	gridPane.addRow(4, paymentMethodLabel, paymentMethodField);
+    	gridPane.addRow(3, shippingMethodLabel, shippingMethodComboBox);
+    	gridPane.addRow(4, paymentMethodLabel, paymentMethodComboBox);
     	gridPane.add(updateInvoiceButton, 1, 5, 1, 1);
     	
     	gridPane.setVisible(false);
@@ -895,8 +900,8 @@ public class AdminView {
         invoiceGridPane.setVisible(true);
     	billingAddressField.setText(invoice.getBillingAddress());
     	shippingAddressField.setText(invoice.getShippingAddress());
-    	shippingMethodField.setText(invoice.getShippingMethod());
-    	paymentMethodField.setText(invoice.getPaymentMethod());
+    	shippingMethodComboBox.setValue(invoice.getShippingMethod());
+    	paymentMethodComboBox.setValue(invoice.getPaymentMethod());
     }
     
     private void updateInvoice() {
@@ -911,22 +916,22 @@ public class AdminView {
     private void getInvoiceTextFieldValues() {
     	billingAddress = billingAddressField.getText();
     	shippingAddress = shippingAddressField.getText();
-    	shippingMethod = shippingMethodField.getText();
-    	paymentMethod = paymentMethodField.getText();
+    	shippingMethod = shippingMethodComboBox.getValue();
+    	paymentMethod = paymentMethodComboBox.getValue();
     }
     
     private void clearInvoiceField(){
     	billingAddressField.setText("");
     	shippingAddressField.setText("");
-    	shippingMethodField.setText("");
-    	paymentMethodField.setText("");
+    	shippingMethodComboBox.getSelectionModel().clearSelection();
+    	paymentMethodComboBox.getSelectionModel().clearSelection();;
     }
     
     private boolean checkIfEmptyInvoice() {
     	if(billingAddressField.getText().isEmpty()
                 || shippingAddressField.getText().isEmpty()
-                || shippingMethodField.getText().isEmpty()
-                || paymentMethodField.getText().isEmpty()){
+                || shippingMethodComboBox.getSelectionModel().getSelectedItem() == null
+                || paymentMethodComboBox.getSelectionModel().getSelectedItem() == null){
         	MainView.showAlert("Erreur", null, "Merci de remplir tous les champs", AlertType.ERROR);
    	 	return true;
    	 }return false;}    
