@@ -136,6 +136,45 @@ public class CustomerDAO {
 	}
 	
 	
+	// RECUPERATION D'UN CLIENT A PARTIR DE SON ADRESSSE MAIL
+
+	public Customer authenticate(String email, String password) {
+        String query = "SELECT * FROM Customer WHERE Email = ?";
+        
+        try (Connection conn = DatabaseConnection.getConnection();
+            PreparedStatement statement = conn.prepareStatement(query)) {       	
+        	statement.setString(1, email); // Paramètre l'email dans la requête       	
+        	ResultSet rs = statement.executeQuery();
+                       
+        	// Check if a user exists with this email
+            while (rs.next()) {
+            	String storedPassword = rs.getString("Password");
+                if (password.equals(storedPassword))  {
+                	 // Create and return a Customer object
+                	int id = rs.getInt("CustomerID");
+                    String firstName = rs.getString("FirstName");
+                    String lastName = rs.getString("LastName");
+                    String phoneNumber = rs.getString("PhoneNumber");
+                    String address = rs.getString("Address");
+                    String civilityString = rs.getString("Civility");
+                    String roleString = rs.getString("Role");
+                    
+                    // Map civility and role enums
+                    Customer.Civility civility = Customer.Civility.valueOf(civilityString);
+                    Customer.Role role = Customer.Role.valueOf(roleString.toUpperCase());
+
+                    return new Customer(id, firstName, lastName, civility, email, phoneNumber, storedPassword, role, address);
+                }
+            }
+        } catch (SQLException e) {
+        	MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);
+        	e.printStackTrace();
+        }
+        
+        return null; // Authentification échouée
+    }
+	
+	
 	// RECUPERATION  D'UN CLIENT A PARTIR DE SON ID
 	
 	public Customer getCustomerById(int id) {
