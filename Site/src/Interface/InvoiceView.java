@@ -205,8 +205,23 @@ public class InvoiceView {
         return totalTable;	
 	}
 	
-	
-	public void showInvoice(int id) {
-		
+	public void showInvoice(Invoice invoice) {
+	    // Chemin du fichier PDF de la facture
+	    String pdfFilePath = "facture_" + invoice.getInvoiceId() + ".pdf";
+
+	    // Vérification si le fichier PDF existe
+	    File pdfFile = new File(pdfFilePath);
+	    if (pdfFile.exists()) {
+	        try {
+	            // Ouvrir le PDF avec l'application par défaut
+	            java.awt.Desktop.getDesktop().open(pdfFile);
+	        } catch (IOException e) {
+	            // Gestion d'erreur si le PDF ne peut pas être ouvert
+	            System.out.println("Erreur lors de l'ouverture du fichier PDF: " + e.getMessage());
+	        }
+	    } else {
+	        System.out.println("Le fichier PDF de la facture n'existe pas.");
+	    }
 	}
+
 }

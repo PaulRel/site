@@ -307,7 +307,7 @@ public class AdminView {
 		//h.setPrefSize(250, 100);
 		totalUsersBox.getChildren().addAll(total, totalUsers);
 		
-		Label activeUsers = new Label("           Utilisateurs actifs\n(ayant commandé dans les 30 derniers jours)");	
+		Label activeUsers = new Label("                   Utilisateurs actifs\n(ayant commandé dans les 30 derniers jours)");	
 		Label totalActive = new Label("" + adminStatsDAO.getTotalActiveUsers());
 		VBox activeUsersBox = new VBox();
 		activeUsersBox.setStyle("-fx-alignment: center;-fx-padding: 10;-fx-spacing:10;-fx-background-color: #FFFFFF; -fx-background-radius:10;");
@@ -385,7 +385,6 @@ public class AdminView {
 	        private final Button deleteCustomerButton = new Button();
 	        private final Button editCustomerButton = new Button();
 	        private final HBox buttonContainer = new HBox(10); // Conteneur pour regrouper les boutons
-
 	        {
 	            // Configuration du bouton Supprimer
 	            ImageView binIcon = new ImageView(new Image(getClass().getResource("/Image/binIcon.png").toExternalForm()));
@@ -1002,7 +1001,11 @@ public class AdminView {
         // Créer une colonne pour le bouton d'action
         TableColumn<Invoice, Void> actionColumn = new TableColumn<>("Action");
         actionColumn.setCellFactory(param -> new TableCell<>() {
-            private final Button deleteInvoiceButton = new Button(); {
+            private final Button deleteInvoiceButton = new Button();
+            private final Button showInvoiceButton = new Button();
+	        private final Button shipInvoiceButton = new Button();
+	        private final HBox buttonContainer = new HBox(10); // Conteneur pour regrouper les boutons
+	        {
                 ImageView binIcon = new ImageView(new Image(getClass().getResource("/Image/binIcon.png").toExternalForm()));
                 binIcon.setFitHeight(20);
                 binIcon.setFitWidth(20);
@@ -1017,6 +1020,37 @@ public class AdminView {
                     // Mettre à jour la TableView
                     invoicesTable.setItems(FXCollections.observableArrayList(invoiceDAO.getAllInvoices()));
                 });
+                
+                ImageView showIcon = new ImageView(new Image(getClass().getResource("/Image/eyeIcon.png").toExternalForm()));
+                showIcon.setFitHeight(20);
+                showIcon.setFitWidth(20);
+                showInvoiceButton.setGraphic(showIcon);
+                showInvoiceButton.setId("roundButton");
+                showInvoiceButton.setStyle("-fx-background-color: blue;");
+                showInvoiceButton.setOnAction(event -> {
+                	// Récupérer la facture correspondant à cette ligne                    
+                	Invoice invoice = getTableView().getItems().get(getIndex());
+                    // Afficher la facture
+                	new InvoiceView().showInvoice(invoice);
+                });
+                
+                ImageView shipIcon = new ImageView(new Image(getClass().getResource("/Image/manageStockIcon.png").toExternalForm()));
+                shipIcon.setFitHeight(20);
+                shipIcon.setFitWidth(20);
+                shipInvoiceButton.setGraphic(shipIcon);
+                shipInvoiceButton.setId("roundButton");
+                shipInvoiceButton.setStyle("-fx-background-color: green;");
+                shipInvoiceButton.setOnAction(event -> {
+                	// Récupérer la facture correspondant à cette ligne                    
+                	Invoice invoice = getTableView().getItems().get(getIndex());
+                    // Afficher la facture
+                	invoice.getOrder().deliverOrder();
+        	        MainView.showAlert("Succès", null, "Commande livrée avec succès: ", AlertType.INFORMATION);
+        	        invoicesTable.setItems(FXCollections.observableArrayList(invoiceDAO.getAllInvoices()));
+                });
+                
+                buttonContainer.getChildren().addAll(deleteInvoiceButton, showInvoiceButton, shipInvoiceButton);
+	            buttonContainer.setAlignment(Pos.CENTER);
             }
             @Override
             protected void updateItem(Void item, boolean empty) {
@@ -1024,7 +1058,7 @@ public class AdminView {
                 if (empty) {
                     setGraphic(null); // Pas de bouton pour les lignes vides
                 } else {
-                    setGraphic(deleteInvoiceButton); // Afficher le bouton pour les lignes valides
+                    setGraphic(buttonContainer); // Afficher le bouton pour les lignes valides
                 }
             }
         });
