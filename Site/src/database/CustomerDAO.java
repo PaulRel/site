@@ -36,7 +36,7 @@ public class CustomerDAO {
 	            String email = resultSet.getString("Email");
 	            String phoneNumber = resultSet.getString("PhoneNumber");
 	            String password = resultSet.getString("Password");
-	            Role role = Role.valueOf(resultSet.getString("Role"));
+	            Role role = Role.valueOf(resultSet.getString("Role").toUpperCase());
 	            String address = resultSet.getString("Address");
 
 	            // Créer un objet Customer et l'ajouter à la liste
@@ -126,7 +126,7 @@ public class CustomerDAO {
 	        updateStmt.setInt(6, customer.getId());
 	        int rowsAffected = updateStmt.executeUpdate();
 
-	        if (rowsAffected > 0) {	        	
+	        if (rowsAffected > 0) {
 	        	MainView.showAlert("Succès", null, "Vos informations ont été mis à jour avec succès.", AlertType.INFORMATION);
 	        }    	        
 	    } catch (SQLException e) {

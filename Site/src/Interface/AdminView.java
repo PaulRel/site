@@ -325,10 +325,11 @@ public class AdminView {
 		CustomerDAO customerDAO = new CustomerDAO();
 	    ObservableList<Customer> customersList = FXCollections.observableArrayList(customerDAO.getAllCustomers());
 	    TableView<Customer> tableView = new TableView<>();
+	    tableView.setId("ordersTable");
 
 	    // Colonne pour CustomerID
-	    TableColumn<Customer, Integer> colCustomerId = new TableColumn<>("CustomerID");
-	    colCustomerId.setCellValueFactory(new PropertyValueFactory<>("customerID"));
+	    TableColumn<Customer, Integer> colCustomerId = new TableColumn<>("ID");
+	    colCustomerId.setCellValueFactory(new PropertyValueFactory<>("id"));
 
 	    // Colonne pour FirstName
 	    TableColumn<Customer, String> colFirstName = new TableColumn<>("Prénom");
@@ -391,9 +392,11 @@ public class AdminView {
 	            editCustomerButton.setGraphic(editIcon);
 	            editCustomerButton.setId("roundButton");
 	            editCustomerButton.setOnAction(event -> {
-	                // Modifier le client correspondant à cette ligne
+	                // Affichage pour modifier le client correspondant à la ligne sélectionnée
 	                Customer customer = getTableView().getItems().get(getIndex());
-	                new AccountView(mainView).editCustomerInfo(customer);
+	                VBox editCustomerInfoBox = AccountView.editCustomerInfo(customer);
+	                mainContent.getChildren().setAll(editCustomerInfoBox);
+	                tableView.setItems(FXCollections.observableArrayList(customerDAO.getAllCustomers()));
 	            });
 
 	            // Ajouter les boutons au conteneur

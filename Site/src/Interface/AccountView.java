@@ -157,7 +157,7 @@ public class AccountView {
         mainContent.getChildren().setAll(dashboardTitle, dashboardDesc, tableHeader, tableSection, infoHeader, clientInfoBox);    	
     }
     
-    public VBox editCustomerInfo(Customer customer) {
+    public static VBox editCustomerInfo(Customer customer) {
     	VBox editCustomerInfoBox = new VBox(15);
     	editCustomerInfoBox.setSpacing(10);
     	editCustomerInfoBox.setPadding(new Insets(20));
@@ -169,7 +169,6 @@ public class AccountView {
     	TextField emailField = new TextField(customer.getEmail());
     	TextField phoneField = new TextField(customer.getPhoneNumber());
     	TextField addressField = new TextField(customer.getAddress());
-    	
     	
     	lastNameField.setPromptText("Nom");
     	firstNameField.setPromptText("Prénom");
@@ -187,7 +186,7 @@ public class AccountView {
     	    String newAddress = addressField.getText();
     	    
     	    // Mise à jour de la BDD
-    	    Customer newCustomer = new Customer(newLastName, newFirstName, customer.getCivility(), newEmail, newPhone, customer.getPassword(), customer.getRole(), newAddress);
+    	    Customer newCustomer = new Customer(customer.getId(), newLastName, newFirstName, customer.getCivility(), newEmail, newPhone, customer.getPassword(), customer.getRole(), newAddress);
     	    new CustomerDAO().updateCustomer(newCustomer);
     	    
     	    // Mise à jour du client actuel surtout si c currentCustomer
