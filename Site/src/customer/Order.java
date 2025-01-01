@@ -38,7 +38,7 @@ import products.Product;
 	    }
 
 	    public void deliverOrder() {
-	        this.status = "Délivrée";
+	        this.status = "Livrée";
 	        updateOrderStatusInDatabase();
 	    }
 
