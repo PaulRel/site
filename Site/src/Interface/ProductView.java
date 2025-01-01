@@ -113,7 +113,7 @@ public class ProductView {
        //AnchorPane.setTopAnchor(filterBox, 116.0);
        
        Label sortByPrice = new Label("Tri");
-       sortComboBox = new ComboBox<>(FXCollections.observableArrayList("", "Prix croissant", "Prix décroissant"));
+       sortComboBox = new ComboBox<>(FXCollections.observableArrayList("", "Prix croissant", "Prix décroissant", "Nom (de A à Z)", "Nom (de Z à A)"));
        filterBox.getChildren().addAll(sortByPrice, sortComboBox);
 
        Label filters = new Label("Filtres");
@@ -230,12 +230,16 @@ public class ProductView {
 	    updateProductDisplay(mainView);
 	}
    
-   private Comparator<Product> sortByPrice() {
+   private Comparator<Product> sort() {
 	    if ("Prix croissant".equals(sortComboBox.getValue())) {
-	        return Comparator.comparingDouble(Product::getPrice);
+	        return Comparator.comparingDouble(Product::getPrice); // Tri par prix croissant
 	    } else if ("Prix décroissant".equals(sortComboBox.getValue())) {
-	        return Comparator.comparingDouble(Product::getPrice).reversed();
-	    }
+	        return Comparator.comparingDouble(Product::getPrice).reversed(); // Tri par prix décroissant
+   		} else if ("Nom (de A à Z)".equals(sortComboBox.getValue())) {
+   			return Comparator.comparing(Product::getName); // Tri par nom ordre alphabétique
+   		} else if ("Nom (de Z à A)".equals(sortComboBox.getValue())) {
+   			return Comparator.comparing(Product::getName).reversed(); // Tri par nom ordre inverse
+   		}
 	    return (p1, p2) -> 0; // Par défaut, aucun tri spécifique
 	}
 
@@ -263,7 +267,7 @@ public class ProductView {
    private void updateProductDisplay(MainView mainView) {
 	    produitsGrid.getChildren().clear(); // Nettoie l'affichage actuel
 	    actualProducts.stream()
-	    .sorted(sortByPrice())
+	    .sorted(sort())
 	    .filter(this::filterByAttributes)
 	    .filter(this::filterByPrice)
 	    .forEach(produit -> {
