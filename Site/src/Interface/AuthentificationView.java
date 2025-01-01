@@ -49,7 +49,8 @@ public class AuthentificationView {
         PasswordField passwordField = new PasswordField();
         passwordField.setPromptText("Mot de passe *");
         
-        Hyperlink forgotPasswordLink = new Hyperlink("Mot de passe oublié ?");
+        //Hyperlink forgotPasswordLink = new Hyperlink("Mot de passe oublié ?");
+        //forgotPasswordLink.setOnAction(event -> MainView.showAlert("Mot de passe oublié", null, "Un mail vient de vous être envoyé sur "+ MainView.getCurrentCustomer().getEmail() + "/n"+MainView.getCurrentCustomer().getPassword(), AlertType.INFORMATION));
         
         Button loginButton = new Button("CONNEXION");
         loginButton.setOnAction(e -> { 
@@ -66,7 +67,7 @@ public class AuthentificationView {
         	}
         });
         
-        existingCustomerBox.getChildren().addAll(existingLabel, instructionLabel, emailField, passwordField, forgotPasswordLink, loginButton);
+        existingCustomerBox.getChildren().addAll(existingLabel, instructionLabel, emailField, passwordField, loginButton);
         
         
         
