@@ -20,7 +20,7 @@ public class ProductDAO {
 	private String type, nom, description, marque, imagePath;
 	double prix;
 	
-	// RECUPERATION
+	// RECUPERATION DE TOUS LES PRODUITS
 
     public List<Product> getAllProduits() {
         List<Product> products = new ArrayList<>();
