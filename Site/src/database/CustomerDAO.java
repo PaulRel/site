@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import customer.Customer;
 import customer.Customer.Civility;
@@ -12,6 +14,43 @@ import products.Product;
 import products.Vetement.TypeVetement;
 
 public class CustomerDAO {
+	
+	// RECUPERATION DE TOUS LES CLIENTS
+
+	public List<Customer> getAllCustomers() {
+	    List<Customer> customers = new ArrayList<>();
+	    String query = "SELECT * FROM customer";
+
+	    try (Connection connection = DatabaseConnection.getConnection();
+	         PreparedStatement statement = connection.prepareStatement(query);
+	         ResultSet resultSet = statement.executeQuery()) {
+
+	        // Parcourir les résultats et créer des objets Customer
+	        while (resultSet.next()) {
+	            int customerID = resultSet.getInt("CustomerID");
+	            String firstName = resultSet.getString("FirstName");
+	            String lastName = resultSet.getString("LastName");
+	            Civility civility = Civility.valueOf(resultSet.getString("Civility"));
+	            String email = resultSet.getString("Email");
+	            String phoneNumber = resultSet.getString("PhoneNumber");
+	            String password = resultSet.getString("Password");
+	            Role role = Role.valueOf(resultSet.getString("Role"));
+	            String address = resultSet.getString("Address");
+
+	            // Créer un objet Customer et l'ajouter à la liste
+	            Customer customer = new Customer(customerID, firstName, lastName, civility, email, phoneNumber, password, role, address);
+	            customers.add(customer);
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    return customers;
+	}
+
+	
+    // INSERTION
+	
 	public void signUpCustomer(Customer customer) {
         String query = "INSERT INTO Customer (FirstName, LastName, Civility, Email, Password, Address) VALUES (?, ?, ?, ?, ?, ?)";
 
@@ -45,6 +84,9 @@ public class CustomerDAO {
         	e.printStackTrace();
         }
     }
+	
+	
+	// RECUPERATION  D'UN CLIENT A PARTIR DE SON ID
 	
 	public Customer getCustomerById(int id) {
         String query = "SELECT * FROM Customer WHERE CustomerID = ?";
