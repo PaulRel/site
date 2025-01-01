@@ -87,7 +87,9 @@ public class CustomerDAO {
         }
     }
 	
+	
 	// SUPPRESSION
+	
 	public void deleteCustomer(Customer customer) {
 		String query = "DELETE FROM customer WHERE CustomerID = ?";
 
@@ -109,7 +111,9 @@ public class CustomerDAO {
         }
     }
 	
+	
 	// UPDATE
+	
 	public void updateCustomer(Customer customer) {
 		try (Connection conn = DatabaseConnection.getConnection()){
 	        String updateQuery = "UPDATE Customer SET FirstName = ?, LastName = ?, Email = ?, PhoneNumber = ?, Address = ? WHERE CustomerID = ?";
@@ -130,6 +134,7 @@ public class CustomerDAO {
 	        e.printStackTrace();
 	    }
 	}
+	
 	
 	// RECUPERATION  D'UN CLIENT A PARTIR DE SON ID
 	
