@@ -66,19 +66,21 @@ public class AdminView {
 	
 	AdminStatsDAO adminStatsDAO;
 	VBox mainContent;
+	MainView mainView;
 	
 	public AdminView(MainView mainView) {        
         AnchorPane rootPane = new AnchorPane();     
         HeaderView v = new HeaderView(mainView);
         
-        rootPane.getChildren().addAll(v.getHeader(), createLeftMenu(mainView), createMainSection());
+        rootPane.getChildren().addAll(v.getHeader(), createLeftMenu(), createMainSection());
         
         Scene adminScene = new Scene(rootPane, 1350, 670);
         adminScene.getStylesheets().add(this.getClass().getResource("/style.css").toExternalForm());
         mainView.getPrimaryStage().setScene(adminScene);
+        this.mainView = mainView;
     }
 	
-	public VBox createLeftMenu(MainView mainView) {
+	public VBox createLeftMenu() {
 		VBox menuBox = new VBox(20);
 		AnchorPane.setTopAnchor(menuBox, 119.0);
 		AnchorPane.setBottomAnchor(menuBox, 0.0);
@@ -105,7 +107,7 @@ public class AdminView {
         
 		statsButton.setOnAction(e -> showStats());
 		customersButton.setOnAction(e -> showClients());
-		stockManagementButton.setOnAction(e -> manageStocks(mainView));
+		stockManagementButton.setOnAction(e -> manageStocks());
 		editInvoiceButton.setOnAction(e -> manageInvoice());
 		logoutButton.setOnAction(e -> {
         	MainView.setCurrentCustomer(null);
@@ -247,13 +249,14 @@ public class AdminView {
 	
 	private void showClients() {
 		HBox statsUsersBox = getStatsUsersBox();
-		mainContent.getChildren().setAll(statsUsersBox, activeUsers);
+		TableView<Customer> customerTableView = getCustomerTableView();
+		mainContent.getChildren().setAll(statsUsersBox, customerTableView);
 	}
 	
 	
-	private void manageStocks(MainView mainView) {
+	private void manageStocks() {
 		Label OutOfStockProductsLabel = new Label("Produits en rupture de stock " + adminStatsDAO.getOutOfStockProducts());
-		VBox editProductsBox = editProducts(mainView);
+		VBox editProductsBox = editProducts();
 		mainContent.getChildren().setAll(editProductsBox, OutOfStockProductsLabel);
 	}
 	
@@ -362,31 +365,52 @@ public class AdminView {
 	    // Colonne pour Actions (si nécessaire)
 	    TableColumn<Customer, Void> actionColumn = new TableColumn<>("Action");
 	    actionColumn.setCellFactory(param -> new TableCell<>() {
-            private final Button deleteInvoiceButton = new Button(); {
-                ImageView binIcon = new ImageView(new Image(getClass().getResource("/Image/binIcon.png").toExternalForm()));
-                binIcon.setFitHeight(20);
-                binIcon.setFitWidth(20);
-                deleteInvoiceButton.setGraphic(binIcon);
-                deleteInvoiceButton.setId("roundButton");
-                deleteInvoiceButton.setOnAction(event -> {
-                	// Récupérer la facture correspondant à cette ligne                    
-                	Customer customer = getTableView().getItems().get(getIndex());
-                    // Supprimer la facture
-                	customerDAO.deleteCustomer(customer);
-                    // Mettre à jour la TableView
-                    invoicesTable.setItems(FXCollections.observableArrayList(invoiceDAO.getAllInvoices()));
-                });
-            }
-            @Override
-            protected void updateItem(Void item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty) {
-                    setGraphic(null); // Pas de bouton pour les lignes vides
-                } else {
-                    setGraphic(deleteInvoiceButton); // Afficher le bouton pour les lignes valides
-                }
-            }
-        });
+	        private final Button deleteCustomerButton = new Button();
+	        private final Button editCustomerButton = new Button();
+	        private final HBox buttonContainer = new HBox(10); // Conteneur pour regrouper les boutons
+
+	        {
+	            // Configuration du bouton Supprimer
+	            ImageView binIcon = new ImageView(new Image(getClass().getResource("/Image/binIcon.png").toExternalForm()));
+	            binIcon.setFitHeight(20);
+	            binIcon.setFitWidth(20);
+	            deleteCustomerButton.setGraphic(binIcon);
+	            deleteCustomerButton.setId("roundButton");
+	            deleteCustomerButton.setStyle("-fx-background-color: red;");
+	            deleteCustomerButton.setOnAction(event -> {
+	                // Supprimer le client correspondant à cette ligne
+	                customerDAO.deleteCustomer(getTableView().getItems().get(getIndex()));
+	                // Mettre à jour la TableView
+	                tableView.setItems(FXCollections.observableArrayList(customerDAO.getAllCustomers()));
+	            });
+
+	            // Configuration du bouton Modifier
+	            ImageView editIcon = new ImageView(new Image(getClass().getResource("/Image/editIcon.png").toExternalForm()));
+	            editIcon.setFitHeight(20);
+	            editIcon.setFitWidth(20);
+	            editCustomerButton.setGraphic(editIcon);
+	            editCustomerButton.setId("roundButton");
+	            editCustomerButton.setOnAction(event -> {
+	                // Modifier le client correspondant à cette ligne
+	                Customer customer = getTableView().getItems().get(getIndex());
+	                new AccountView(mainView).editCustomerInfo(customer);
+	            });
+
+	            // Ajouter les boutons au conteneur
+	            buttonContainer.getChildren().addAll(deleteCustomerButton, editCustomerButton);
+	            buttonContainer.setAlignment(Pos.CENTER); // Centrer les boutons
+	        }
+
+	        @Override
+	        protected void updateItem(Void item, boolean empty) {
+	            super.updateItem(item, empty);
+	            if (empty) {
+	                setGraphic(null); // Pas de boutons pour les lignes vides
+	            } else {
+	                setGraphic(buttonContainer); // Afficher le conteneur de boutons pour les lignes valides
+	            }
+	        }
+	    });
 
 	    // Ajout des colonnes à la table	    
 	    tableView.getColumns().add(colCustomerId);
@@ -405,7 +429,6 @@ public class AdminView {
 
 	    return tableView;
 	}
-
 	
 	
 	// MODIFIER PRODUITS et STOCKS
@@ -424,7 +447,7 @@ public class AdminView {
 	private GridPane productGridPane;
 	HashMap<String, Integer> sizesStock;
 	
-	private VBox editProducts(MainView mainView) {
+	private VBox editProducts() {
 		VBox editProductsBox = new VBox();
 		editProductsBox.setStyle("-fx-padding: 10;-fx-spacing:10;-fx-background-color: #FFFFFF; -fx-background-radius:10;");
 		
@@ -463,7 +486,7 @@ public class AdminView {
         deleteButton = new Button("Supprimer");
         updateButton = new Button("Mettre à jour");
         clearButton = new Button("Effacer");
-        importButton = getImportImageButton(mainView);
+        importButton = getImportImageButton();
 
         addButton.setOnAction(event -> addProduct());
         deleteButton.setOnAction(event -> deleteProduct());
@@ -642,7 +665,7 @@ public class AdminView {
     }
     
     
-    public Button getImportImageButton(MainView mainView){       
+    public Button getImportImageButton(){       
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Import Image File");
         fileChooser.getExtensionFilters().add(new ExtensionFilter("Image File", "*jpg", "*png"));
@@ -963,6 +986,7 @@ public class AdminView {
                 binIcon.setFitWidth(20);
                 deleteInvoiceButton.setGraphic(binIcon);
                 deleteInvoiceButton.setId("roundButton");
+                deleteInvoiceButton.setStyle("-fx-background-color: red;");
                 deleteInvoiceButton.setOnAction(event -> {
                 	// Récupérer la facture correspondant à cette ligne                    
                 	Invoice invoice = getTableView().getItems().get(getIndex());

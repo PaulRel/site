@@ -162,7 +162,6 @@
 }
 
 #roundButton {
-    -fx-background-color: red; /* Couleur de fond */
     -fx-background-radius: 50%; /* Rendre le bouton rond */
     -fx-min-width: 30px; /* Largeur minimale */
     -fx-min-height: 30px; /* Hauteur minimale */
