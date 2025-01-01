@@ -249,7 +249,7 @@ public class AdminView {
 	
 	private void showClients() {
 		HBox statsUsersBox = getStatsUsersBox();
-		TableView<Customer> customerTableView = getCustomerTableView();
+		VBox customerTableView = getCustomerTableBox();
 		mainContent.getChildren().setAll(statsUsersBox, customerTableView);
 	}
 	
@@ -307,7 +307,7 @@ public class AdminView {
 		//h.setPrefSize(250, 100);
 		totalUsersBox.getChildren().addAll(total, totalUsers);
 		
-		Label activeUsers = new Label("Utilisateurs actifs ayant commandé dans les 30 derniers jours ");	
+		Label activeUsers = new Label("           Utilisateurs actifs\n(ayant commandé dans les 30 derniers jours)");	
 		Label totalActive = new Label("" + adminStatsDAO.getTotalActiveUsers());
 		VBox activeUsersBox = new VBox();
 		activeUsersBox.setStyle("-fx-alignment: center;-fx-padding: 10;-fx-spacing:10;-fx-background-color: #FFFFFF; -fx-background-radius:10;");
@@ -321,12 +321,27 @@ public class AdminView {
 		return box;	
 	}
 	
-	public TableView<Customer> getCustomerTableView() {
+	private VBox getCustomerTableBox() {
+        VBox box = new VBox();
+		box.setStyle("-fx-padding: 10;-fx-spacing:10;-fx-background-color: #FFFFFF; -fx-background-radius:10;");
+		
+		TableView<Customer> customerTableView = getCustomerTableView();
+		Button addButton = new Button("+ Ajouter un client");
+        addButton.setStyle("-fx-background-color : #007bff; -fx-text-fill: white; -fx-pref-height: 20px");
+        addButton.setOnAction(event -> new SignUpView(mainView));
+        VBox.setMargin(addButton, new Insets(0, 0, 0, 700));
+        
+		box.getChildren().addAll(customerTableView, addButton);
+		return box;	
+	}
+	
+	
+	private TableView<Customer> getCustomerTableView() {
 		CustomerDAO customerDAO = new CustomerDAO();
 	    ObservableList<Customer> customersList = FXCollections.observableArrayList(customerDAO.getAllCustomers());
 	    TableView<Customer> tableView = new TableView<>();
-	    tableView.setId("ordersTable");
-	    tableView.setMaxHeight(400);
+	    tableView.setId("customerTable");
+	    tableView.setMaxHeight(300);
 
 	    // Colonne pour CustomerID
 	    TableColumn<Customer, Integer> colCustomerId = new TableColumn<>("ID");
@@ -349,7 +364,7 @@ public class AdminView {
 	    colEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
 
 	    // Colonne pour PhoneNumber
-	    TableColumn<Customer, String> colPhoneNumber = new TableColumn<>("Numéro de téléphone");
+	    TableColumn<Customer, String> colPhoneNumber = new TableColumn<>("Téléphone");
 	    colPhoneNumber.setCellValueFactory(new PropertyValueFactory<>("phoneNumber"));
 
 	    // Colonne pour Password

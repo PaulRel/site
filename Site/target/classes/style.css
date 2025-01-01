@@ -173,6 +173,15 @@
     /*-fx-border-radius: 50%; /* Coin rond */
 }
 
+#customerTable .table-row-cell {
+    -fx-font-size: 11px;
+}
+
+#customerTable .column-header .label{
+    -fx-padding: 2px; /* Espace interne des en-têtes */
+    -fx-font-size: 12px;
+}
+
 
 
 

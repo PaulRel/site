@@ -154,6 +154,7 @@ public class SignUpView {
         mainView.getPrimaryStage().setScene(createAccountScene);
 	}
 	
+	
 	private void handleSubmitButton(MainView mainView, RadioButton mrRadio, TextField firstNameField, TextField lastNameField, TextField addressField, TextField emailField, HBox passwordBox, CheckBox termsCheckBox) {
 		// Récupère les valeurs saisies par l'utilisateur
     	Civility civility;
@@ -187,26 +188,30 @@ public class SignUpView {
         CustomerDAO customerDAO = new CustomerDAO();
 		customerDAO.signUpCustomer(newCustomer);
  	
-		// Initialise la session
-		MainView.setCurrentCustomer(newCustomer);
-		Cart cart = CartManager.getTempCart();
-		if (cart!=null) {
-			AuthentificationView.syncUserCart();
-		}
+		
      
 		// Affiche une alerte de création de compte
 		Alert alert = new Alert(Alert.AlertType.INFORMATION);
 		alert.setTitle("Création de compte réussie");
-		alert.setHeaderText("Votre compte a bien été créée.");
-		alert.setContentText("Vous pouvez désormais modifier vos informations dans les paramètres du compte.");
+		alert.setHeaderText("Le compte a bien été créée.");
+		alert.setContentText("Vous pouvez désormais modifier les informations dans les paramètres du compte.");
 
 		// Redirige vers la page du compte
 		ButtonType loginButton = new ButtonType("Continuer");
 		alert.getButtonTypes().setAll(loginButton);
 		Optional<ButtonType> result = alert.showAndWait();
 		if (result.isPresent() && result.get() == loginButton) {
-			new AccountView(mainView);
-		}
+			if (MainView.getCurrentCustomer().getRole()==Role.CUSTOMER) {
+				// Initialise la session
+				MainView.setCurrentCustomer(newCustomer);
+				Cart cart = CartManager.getTempCart();
+				if (cart!=null) {
+					AuthentificationView.syncUserCart();
+				}
+    			new AccountView(mainView);
+			}
+    		else new AdminView(mainView);       		
+    	}
         }
 	}
 }
