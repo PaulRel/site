@@ -7,9 +7,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import Interface.MainView;
 import customer.Customer;
 import customer.Customer.Civility;
 import customer.Customer.Role;
+import javafx.scene.control.Alert.AlertType;
 import products.Product;
 import products.Vetement.TypeVetement;
 
@@ -85,6 +87,49 @@ public class CustomerDAO {
         }
     }
 	
+	// SUPPRESSION
+	public void deleteCustomer(Customer customer) {
+		String query = "DELETE FROM customer WHERE CustomerID = ?";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+        	PreparedStatement statement = conn.prepareStatement(query)) {
+
+            // On définit l'ID du client à supprimer dans la requête
+            statement.setInt(1, customer.getId());
+
+            int rowsAffected = statement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                MainView.showAlert("Succès", null, "Le compte a été supprimé avec succès.", AlertType.INFORMATION);
+            }
+        }
+        catch (SQLException e) {
+            MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);
+            e.printStackTrace();
+        }
+    }
+	
+	// UPDATE
+	public void updateCustomer(Customer customer) {
+		try (Connection conn = DatabaseConnection.getConnection()){
+	        String updateQuery = "UPDATE Customer SET FirstName = ?, LastName = ?, Email = ?, PhoneNumber = ?, Address = ? WHERE CustomerID = ?";
+	        PreparedStatement updateStmt = conn.prepareStatement(updateQuery);
+	        updateStmt.setString(1, customer.getFirstName());
+	        updateStmt.setString(2, customer.getLastName());
+	        updateStmt.setString(3, customer.getEmail());
+	        updateStmt.setString(4, customer.getPhoneNumber());
+	        updateStmt.setString(5, customer.getAddress());
+	        updateStmt.setInt(6, customer.getId());
+	        int rowsAffected = updateStmt.executeUpdate();
+
+	        if (rowsAffected > 0) {	        	
+	        	MainView.showAlert("Succès", null, "Vos informations ont été mis à jour avec succès.", AlertType.INFORMATION);
+	        }    	        
+	    } catch (SQLException e) {
+	    	MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);
+	        e.printStackTrace();
+	    }
+	}
 	
 	// RECUPERATION  D'UN CLIENT A PARTIR DE SON ID
 	

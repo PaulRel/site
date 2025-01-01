@@ -5,7 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 
+import customer.Customer;
 import customer.Order;
+import database.CustomerDAO;
 import database.DatabaseConnection;
 import database.OrderDAO;
 import javafx.beans.property.SimpleStringProperty;
@@ -73,9 +75,13 @@ public class AccountView {
         Button deleteAccountButton = new Button("Supprimer le compte");
         
         dashboardButton.setOnAction(e -> showDashboard());
-        accountInfoButton.setOnAction(e -> mainContent.getChildren().setAll(editCustomerInfo()));
+        accountInfoButton.setOnAction(e -> mainContent.getChildren().setAll(editCustomerInfo(MainView.getCurrentCustomer())));
         ordersButton.setOnAction(e -> showCustomerOrders());
-        deleteAccountButton.setOnAction(e -> {deleteAccount(); mainView.showProductView(Product.class, null);});
+        deleteAccountButton.setOnAction(e -> {
+        	new CustomerDAO().deleteCustomer(MainView.getCurrentCustomer());
+        	MainView.setCurrentCustomer(null); 
+        	mainView.showProductView(Product.class, null);
+        });
         
         deleteAccountButton.setStyle("-fx-background-color: white; -fx-text-fill: red; -fx-border-color: red; -fx-border-width: 2");
         
@@ -132,7 +138,7 @@ public class AccountView {
         Label infoTitle = new Label ("Informations du compte");
         infoTitle.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
         Hyperlink hyperlink = new Hyperlink("Modifier");
-        hyperlink.setOnAction(event -> mainContent.getChildren().setAll(editCustomerInfo()));
+        hyperlink.setOnAction(event -> mainContent.getChildren().setAll(editCustomerInfo(MainView.getCurrentCustomer())));
         HBox infoHeader = new HBox(10, infoTitle, hyperlink);
         infoHeader.setAlignment(Pos.CENTER_LEFT);
         
@@ -151,18 +157,19 @@ public class AccountView {
         mainContent.getChildren().setAll(dashboardTitle, dashboardDesc, tableHeader, tableSection, infoHeader, clientInfoBox);    	
     }
     
-    public VBox editCustomerInfo() {
+    public VBox editCustomerInfo(Customer customer) {
     	VBox editCustomerInfoBox = new VBox(15);
     	editCustomerInfoBox.setSpacing(10);
     	editCustomerInfoBox.setPadding(new Insets(20));
     	editCustomerInfoBox.setStyle("-fx-background-color: #FFFFFF;");
 	
     	Label editLabel = new Label("Modifier les informations du compte");
-    	TextField lastNameField = new TextField(MainView.getCurrentCustomer().getLastName());
-    	TextField firstNameField = new TextField(MainView.getCurrentCustomer().getFirstName());
-    	TextField emailField = new TextField(MainView.getCurrentCustomer().getEmail());
-    	TextField phoneField = new TextField(MainView.getCurrentCustomer().getPhoneNumber());
-    	TextField addressField = new TextField(MainView.getCurrentCustomer().getAddress());
+    	TextField lastNameField = new TextField(customer.getLastName());
+    	TextField firstNameField = new TextField(customer.getFirstName());
+    	TextField emailField = new TextField(customer.getEmail());
+    	TextField phoneField = new TextField(customer.getPhoneNumber());
+    	TextField addressField = new TextField(customer.getAddress());
+    	
     	
     	lastNameField.setPromptText("Nom");
     	firstNameField.setPromptText("Prénom");
@@ -178,32 +185,19 @@ public class AccountView {
     	    String newEmail = emailField.getText();
     	    String newPhone = phoneField.getText();
     	    String newAddress = addressField.getText();
-
-    	    try (Connection conn = DatabaseConnection.getConnection()){
-    	        String updateQuery = "UPDATE Customer SET FirstName = ?, LastName = ?, Email = ?, PhoneNumber = ?, Address = ? WHERE CustomerID = ?";
-    	        PreparedStatement updateStmt = conn.prepareStatement(updateQuery);
-    	        updateStmt.setString(1, newFirstName);
-    	        updateStmt.setString(2, newLastName);
-    	        updateStmt.setString(3, newEmail);
-    	        updateStmt.setString(4, newPhone);
-    	        updateStmt.setString(5, newAddress);
-    	        updateStmt.setInt(6, MainView.getCurrentCustomer().getId());
-    	        int rowsAffected = updateStmt.executeUpdate();
-
-    	        if (rowsAffected > 0) {
-    	        	MainView.getCurrentCustomer().setLastName(newLastName);
-    	        	MainView.getCurrentCustomer().setFirstName(newFirstName);
-    	        	MainView.getCurrentCustomer().setEmail(newEmail);
-    	        	MainView.getCurrentCustomer().setPhoneNumber(newPhone);
-    	        	MainView.getCurrentCustomer().setAddress(newAddress);
-    	        	
-    	        	MainView.showAlert("Succès", null, "Vos informations ont été mis à jour avec succès.", AlertType.INFORMATION);
-    	        }    	        
-    	    } catch (SQLException e) {
-    	    	MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);
-    	        e.printStackTrace();
-    	    }
+    	    
+    	    // Mise à jour de la BDD
+    	    Customer newCustomer = new Customer(newLastName, newFirstName, customer.getCivility(), newEmail, newPhone, customer.getPassword(), customer.getRole(), newAddress);
+    	    new CustomerDAO().updateCustomer(newCustomer);
+    	    
+    	    // Mise à jour du client actuel surtout si c currentCustomer
+    	    customer.setLastName(newLastName);
+        	customer.setFirstName(newFirstName);
+        	customer.setEmail(newEmail);
+        	customer.setPhoneNumber(newPhone);
+        	customer.setAddress(newAddress);
     	});
+    	    
     	
     	editCustomerInfoBox.getChildren().addAll(editLabel, lastNameField, firstNameField, emailField, phoneField, addressField, saveButton);
     	return editCustomerInfoBox;
@@ -295,27 +289,5 @@ public class AccountView {
         ordersTable.setItems(observableOrders);
 
         return ordersTable;
-    }
-    
-    public void deleteAccount() {
-    	String query = "DELETE FROM customer WHERE CustomerID = ?";
-
-        try (Connection conn = DatabaseConnection.getConnection();
-        	PreparedStatement statement = conn.prepareStatement(query)) {
-
-            // On définit l'ID du client à supprimer dans la requête
-            statement.setInt(1, MainView.getCurrentCustomer().getId());
-
-            int rowsAffected = statement.executeUpdate();
-
-            if (rowsAffected > 0) {
-                MainView.showAlert("Succès", null, "Votre compte a été supprimé avec succès.", AlertType.INFORMATION);
-                MainView.setCurrentCustomer(null); // On réinitialise l'instance après suppression
-            }
-        }
-        catch (SQLException e) {
-            MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);
-            e.printStackTrace();
-        }
-    }
+    }    	
 }
