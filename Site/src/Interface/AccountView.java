@@ -1,14 +1,10 @@
 package Interface;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.List;
 
 import customer.Customer;
 import customer.Order;
 import database.CustomerDAO;
-import database.DatabaseConnection;
 import database.OrderDAO;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -17,7 +13,6 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -33,8 +28,7 @@ public class AccountView {
         createMainSection();
         createLeftMenu(mainView);
         this.mainView = mainView;
-
-        
+     
         Scene accountScene = new Scene(rootPane, 1350, 670);
         
         HeaderView v = new HeaderView(mainView);      
@@ -269,7 +263,6 @@ public class AccountView {
                 }
             }
         });
-
 
         // Ajouter les colonnes à la table
         ordersTable.getColumns().add(orderNumberCol);

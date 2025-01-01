@@ -12,8 +12,6 @@ import customer.Customer;
 import customer.Customer.Civility;
 import customer.Customer.Role;
 import javafx.scene.control.Alert.AlertType;
-import products.Product;
-import products.Vetement.TypeVetement;
 
 public class CustomerDAO {
 	

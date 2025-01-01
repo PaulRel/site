@@ -326,6 +326,7 @@ public class AdminView {
 	    ObservableList<Customer> customersList = FXCollections.observableArrayList(customerDAO.getAllCustomers());
 	    TableView<Customer> tableView = new TableView<>();
 	    tableView.setId("ordersTable");
+	    tableView.setMaxHeight(400);
 
 	    // Colonne pour CustomerID
 	    TableColumn<Customer, Integer> colCustomerId = new TableColumn<>("ID");
