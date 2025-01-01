@@ -13,9 +13,11 @@ import java.util.List;
 import java.util.Map;
 
 import customer.CartItem;
+import customer.Customer;
 import customer.Invoice;
 import customer.Order;
 import database.AdminStatsDAO;
+import database.CustomerDAO;
 import database.DatabaseConnection;
 import database.InvoiceDAO;
 import database.ProductDAO;
@@ -244,9 +246,8 @@ public class AdminView {
 	
 	
 	private void showClients() {
-		Label totalUsers = new Label("Nombre total d'utilisateurs " + adminStatsDAO.getTotalUsers());
-		Label activeUsers = new Label("Utilisateurs actifs ayant commandé dans les 30 derniers jours " + adminStatsDAO.getTotalActiveUsers());
-		mainContent.getChildren().setAll(totalUsers, activeUsers);
+		HBox statsUsersBox = getStatsUsersBox();
+		mainContent.getChildren().setAll(statsUsersBox, activeUsers);
 	}
 	
 	
@@ -291,6 +292,120 @@ public class AdminView {
         
         return tableView;
 	}
+	
+	
+	// GESTION DES CLIENTS
+	
+	private HBox getStatsUsersBox() {
+		Label totalUsers = new Label("Nombre total d'utilisateurs " );	
+		Label total = new Label(""+ adminStatsDAO.getTotalUsers());
+		VBox totalUsersBox = new VBox();
+		totalUsersBox.setStyle("-fx-alignment: center;-fx-padding: 10;-fx-spacing:10;-fx-background-color: #FFFFFF; -fx-background-radius:10;");
+		//h.setPrefSize(250, 100);
+		totalUsersBox.getChildren().addAll(total, totalUsers);
+		
+		Label activeUsers = new Label("Utilisateurs actifs ayant commandé dans les 30 derniers jours ");	
+		Label totalActive = new Label("" + adminStatsDAO.getTotalActiveUsers());
+		VBox activeUsersBox = new VBox();
+		activeUsersBox.setStyle("-fx-alignment: center;-fx-padding: 10;-fx-spacing:10;-fx-background-color: #FFFFFF; -fx-background-radius:10;");
+		//h.setPrefSize(250, 100);
+		activeUsersBox.getChildren().addAll(totalActive, activeUsers);
+		
+		HBox box = new HBox();
+		box.getChildren().addAll(totalUsersBox, activeUsersBox);
+		box.setStyle("-fx-alignment: center; -fx-spacing:20;");
+		
+		return box;	
+	}
+	
+	public TableView<Customer> getCustomerTableView() {
+		CustomerDAO customerDAO = new CustomerDAO();
+	    ObservableList<Customer> customersList = FXCollections.observableArrayList(customerDAO.getAllCustomers());
+	    TableView<Customer> tableView = new TableView<>();
+
+	    // Colonne pour CustomerID
+	    TableColumn<Customer, Integer> colCustomerId = new TableColumn<>("CustomerID");
+	    colCustomerId.setCellValueFactory(new PropertyValueFactory<>("customerID"));
+
+	    // Colonne pour FirstName
+	    TableColumn<Customer, String> colFirstName = new TableColumn<>("Prénom");
+	    colFirstName.setCellValueFactory(new PropertyValueFactory<>("firstName"));
+
+	    // Colonne pour LastName
+	    TableColumn<Customer, String> colLastName = new TableColumn<>("Nom");
+	    colLastName.setCellValueFactory(new PropertyValueFactory<>("lastName"));
+
+	    // Colonne pour Civility
+	    TableColumn<Customer, String> colCivility = new TableColumn<>("Civilité");
+	    colCivility.setCellValueFactory(new PropertyValueFactory<>("civility"));
+
+	    // Colonne pour Email
+	    TableColumn<Customer, String> colEmail = new TableColumn<>("Email");
+	    colEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
+
+	    // Colonne pour PhoneNumber
+	    TableColumn<Customer, String> colPhoneNumber = new TableColumn<>("Numéro de téléphone");
+	    colPhoneNumber.setCellValueFactory(new PropertyValueFactory<>("phoneNumber"));
+
+	    // Colonne pour Password
+	    TableColumn<Customer, String> colPassword = new TableColumn<>("Mot de passe");
+	    colPassword.setCellValueFactory(new PropertyValueFactory<>("password"));
+
+	    // Colonne pour Role
+	    TableColumn<Customer, String> colRole = new TableColumn<>("Rôle");
+	    colRole.setCellValueFactory(new PropertyValueFactory<>("role"));
+
+	    // Colonne pour Address
+	    TableColumn<Customer, String> colAddress = new TableColumn<>("Adresse");
+	    colAddress.setCellValueFactory(new PropertyValueFactory<>("address"));
+
+	    // Colonne pour Actions (si nécessaire)
+	    TableColumn<Customer, Void> actionColumn = new TableColumn<>("Action");
+	    actionColumn.setCellFactory(param -> new TableCell<>() {
+            private final Button deleteInvoiceButton = new Button(); {
+                ImageView binIcon = new ImageView(new Image(getClass().getResource("/Image/binIcon.png").toExternalForm()));
+                binIcon.setFitHeight(20);
+                binIcon.setFitWidth(20);
+                deleteInvoiceButton.setGraphic(binIcon);
+                deleteInvoiceButton.setId("roundButton");
+                deleteInvoiceButton.setOnAction(event -> {
+                	// Récupérer la facture correspondant à cette ligne                    
+                	Customer customer = getTableView().getItems().get(getIndex());
+                    // Supprimer la facture
+                	customerDAO.deleteCustomer(customer);
+                    // Mettre à jour la TableView
+                    invoicesTable.setItems(FXCollections.observableArrayList(invoiceDAO.getAllInvoices()));
+                });
+            }
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null); // Pas de bouton pour les lignes vides
+                } else {
+                    setGraphic(deleteInvoiceButton); // Afficher le bouton pour les lignes valides
+                }
+            }
+        });
+
+	    // Ajout des colonnes à la table	    
+	    tableView.getColumns().add(colCustomerId);
+        tableView.getColumns().add(colFirstName);
+        tableView.getColumns().add(colLastName);
+        tableView.getColumns().add(colCivility);
+        tableView.getColumns().add(colEmail);
+        tableView.getColumns().add(colPhoneNumber);
+        tableView.getColumns().add(colPassword);
+        tableView.getColumns().add(colRole);
+        tableView.getColumns().add(colAddress);
+        tableView.getColumns().add(actionColumn);
+
+	    // Associer les données à la table
+	    tableView.setItems(customersList);
+
+	    return tableView;
+	}
+
 	
 	
 	// MODIFIER PRODUITS et STOCKS
