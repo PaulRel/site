@@ -995,6 +995,9 @@ public class AdminView {
 
         TableColumn<Invoice, String> colPaymentMethod = new TableColumn<>("Méthode de paiement");
         colPaymentMethod.setCellValueFactory(invoice -> new SimpleStringProperty(invoice.getValue().getPaymentMethod()));
+        
+        TableColumn<Invoice, String> colOrderStatus = new TableColumn<>("Statut");
+        colOrderStatus.setCellValueFactory(invoice -> new SimpleStringProperty(invoice.getValue().getOrder().getStatus()));
 
         // Créer une colonne pour le bouton d'action
         TableColumn<Invoice, Void> actionColumn = new TableColumn<>("Action");
@@ -1033,6 +1036,7 @@ public class AdminView {
         invoicesTable.getColumns().add(colShippingAddress);
         invoicesTable.getColumns().add(colShippingMethod);
         invoicesTable.getColumns().add(colPaymentMethod);
+        invoicesTable.getColumns().add(colOrderStatus);
         invoicesTable.getColumns().add(actionColumn);
         invoicesTable.setItems(invoicesList);
         
