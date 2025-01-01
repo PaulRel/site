@@ -71,7 +71,7 @@ public class AdminStatsDAO {
 
     // 3. Produits en rupture de stock
     public int getOutOfStockProducts() {
-        String query = "SELECT COUNT(*) AS produits_en_rupture FROM Produit WHERE Qt_Dispo = 0";
+        String query = "SELECT COUNT(*) AS produits_en_rupture FROM taillestock WHERE qt_dispo = 0";
         try (PreparedStatement stmt = connection.prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {
             if (rs.next()) {

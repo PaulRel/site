@@ -587,8 +587,8 @@ public class AdminView {
         TableColumn<Product, Double> colPrice = new TableColumn<>("Prix");
         colPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
 
-        TableColumn<Product, Integer> colQtDispo = new TableColumn<>("Quantité");
-        colQtDispo.setCellValueFactory(new PropertyValueFactory<>("qtDispo"));
+        //TableColumn<Product, Integer> colQtDispo = new TableColumn<>("Quantité");
+        //colQtDispo.setCellValueFactory(new PropertyValueFactory<>("qtDispo"));
         
         // Créer une colonne pour le bouton d'action
         TableColumn<Product, Void> actionColumn = new TableColumn<>("Action");
@@ -599,7 +599,7 @@ public class AdminView {
         tableView.getColumns().add(colType);
         tableView.getColumns().add(colBrand);
         tableView.getColumns().add(colPrice);
-        tableView.getColumns().add(colQtDispo);
+        //tableView.getColumns().add(colQtDispo);
         tableView.getColumns().add(actionColumn);
         tableView.setItems(productsList);
         
