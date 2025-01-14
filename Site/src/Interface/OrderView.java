@@ -12,6 +12,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Alert.AlertType;
@@ -20,7 +22,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import products.Product;
 
 public class OrderView {
@@ -30,16 +34,16 @@ public class OrderView {
 	public OrderView(MainView mainView, Order order) {
 		rootPane = new AnchorPane();
         HBox mainBox = new HBox();
-        mainBox.setPadding(new Insets(50)); // Espace  Haut, Droite>, Bas, Gauche<  de l'AnchorPane
+        mainBox.setPadding(new Insets(20)); // Espace  Haut, Droite>, Bas, Gauche<  de l'AnchorPane
         mainBox.setSpacing(20); // Espacement entre mainBox et Panier
-        mainBox.setPrefSize(1350, 554);
+        mainBox.setPrefSize(1350, 570);
         mainBox.setStyle("-fx-background-color: #EEEEEE");
         mainBox.getChildren().addAll(MainView.createScrollPane(createOrderZone(mainView, order)), createInfoBar(order));	
         
         AnchorPane.setTopAnchor(mainBox, 116.0);
         
         Scene orderScene = new Scene(rootPane, 1350, 670);
-        HeaderView v = new HeaderView(mainView);      
+        HeaderView v = new HeaderView(mainView);
         rootPane.getChildren().addAll(v.getHeader(), mainBox);
         String css = this.getClass().getResource("/style.css").toExternalForm();        
         orderScene.getStylesheets().add(css);
@@ -81,6 +85,25 @@ public class OrderView {
 		new AccountView(mainView);
 	}
 	
+	private ScrollPane createInfoBar(Order order) {
+		Label recapTitle = new Label("Récapitulatif");
+		VBox orderProductsBox = createOrderProductsBox(order);
+		VBox totalBox = createTotalBox(order);
+		
+		VBox recapBox = new VBox();
+		recapBox.setStyle("-fx-padding: 10; -fx-background-color : white; -fx-pref-height: 510px;");
+		
+		Region spacer = new Region();
+		VBox.setVgrow(spacer, Priority.ALWAYS);
+		
+		recapBox.getChildren().addAll(recapTitle, orderProductsBox, spacer, totalBox);
+		ScrollPane infoBar = MainView.createScrollPane(recapBox);
+		infoBar.setStyle("-fx-background-color: white");
+		
+		return infoBar;
+	}
+	
+	
 	private VBox createBillingInfoBox() {
 		Label billing  = new Label("1 - Informations de facturation");
 		Label billingInfo  = new Label("Sélectionnez l'adresse de facturation");
@@ -91,20 +114,7 @@ public class OrderView {
 		vbox.setStyle("-fx-padding: 10; -fx-background-color : white");
         vbox.getChildren().addAll(billing, billingInfo , addressField);
         return vbox;
-	}
-	
-	
-	private VBox createInfoBar(Order order) {
-		Label recapTitle = new Label("Récapitulatif");
-		VBox orderProductsBox = createOrderProductsBox(order);
-		VBox totalBox = createTotalBox(order);
-		
-		VBox recapBox = new VBox();
-		recapBox.setStyle("-fx-padding: 10; -fx-background-color : white");
-		recapBox.getChildren().addAll(recapTitle, orderProductsBox, totalBox);
-		return recapBox;
-	}
-	
+	}	
 	
 	private VBox createDeliveryInfoBox() {
 		Label delivery = new Label("2 - Informations de livraison");
@@ -209,17 +219,17 @@ public class OrderView {
 	
 	private VBox createOrderProductsBox(Order order) {	
 		List<CartItem> products = order.getProducts();
-		System.out.println(products);
 		VBox vBox = new VBox();
+		vBox.setSpacing(10);
 		
 		for (CartItem item : products) {
-			System.out.println("Dans la boucle" + item.toString());
             Product product = item.getProduct();
             Label nameLabel = new Label(product.getName());
+            nameLabel.setWrapText(true);
             Label sizeLabel = new Label ("Taille : " + item.getSize());
-            //Label sizeLabel2 = new Label(item.getSize());
             Label quantityLabel = new Label("Quantité : " + item.getQuantity());
             Label priceLabel = new Label(product.getPrice() + "€");
+            priceLabel.setStyle("-fx-padding: 0; -fx-margin: 0;");
             ImageView imageView = new ImageView(new Image(getClass().getResource(product.getImagePath()).toExternalForm()));
             imageView.setFitHeight(100);
             imageView.setFitWidth(100);
@@ -231,7 +241,13 @@ public class OrderView {
             HBox hBox = new HBox();
             hBox.getChildren().addAll(imageView,  new VBox(nameLabel, sizeLabel, quantityLabel, priceLabel));
             
-            vBox.getChildren().add(hBox);
+            Region separator = new Region();
+            separator.setStyle("-fx-background-color: gray; -fx-pref-height: 1px; -fx-max-height: 1px;");
+            vBox.widthProperty().addListener((observable, oldValue, newValue) -> {
+                separator.setMaxWidth(newValue.doubleValue() * 0.8);
+            });
+            vBox.setAlignment(Pos.CENTER); // Centrer le séparateur
+            vBox.getChildren().addAll(hBox, separator);
 		}
 		
 		return vBox;
@@ -245,7 +261,7 @@ public class OrderView {
 		String shippingMethod = selectedShippingOption != null ? selectedShippingOption.getText() : "";
 		double shippingPrice = getShippingPrice(shippingMethod);
 		
-		HBox subTotalLine = createLine("Total produits TTC", String.format("%.2f €", order.getTotalPrice()));
+		HBox subTotalLine = createLine("\nTotal produits TTC", String.format("%.2f €", order.getTotalPrice()));
 		HBox htLine = createLine("Total HT", String.format("%.2f €", order.getTotalPrice() / 1.2));
 		HBox tvaLine = createLine("TVA (20%)", String.format("%.2f €", order.getTotalPrice() * 0.2));
 		HBox shippingLine = createLine("Frais de Port", String.format("%.2f €", shippingPrice));
@@ -263,7 +279,7 @@ public class OrderView {
 	
 	private HBox createLine(String labelText, String valueText) {
 	    Label textLabel = new Label(labelText);
-	    Label valueLabel = new Label(valueText);  
+	    Label valueLabel = new Label(valueText);
 	    textLabel.setMaxWidth(Double.MAX_VALUE); // Permet de prendre toute la largeur disponible 
 	    HBox.setHgrow(textLabel, Priority.ALWAYS); // Force l'alignement à gauche
 	    
