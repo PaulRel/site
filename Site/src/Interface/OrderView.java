@@ -1,5 +1,8 @@
 package Interface;
 
+import java.util.List;
+
+import customer.CartItem;
 import customer.Invoice;
 import customer.Order;
 import database.InvoiceDAO;
@@ -11,9 +14,12 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import products.Product;
 
 public class OrderView {
 	private AnchorPane rootPane;
@@ -26,7 +32,7 @@ public class OrderView {
         mainBox.setSpacing(50); // Espacement entre mainBox et Panier
         mainBox.setPrefSize(1350, 554);
         mainBox.setStyle("-fx-background-color: #EEEEEE");
-        mainBox.getChildren().addAll(MainView.createScrollPane(createOrderZone(mainView, order)), createInfoBar());	
+        mainBox.getChildren().addAll(MainView.createScrollPane(createOrderZone(mainView, order)), createInfoBar(order));	
         
         AnchorPane.setTopAnchor(mainBox, 116.0);
         
@@ -86,10 +92,15 @@ public class OrderView {
 	}
 	
 	
-	private VBox createInfoBar() {
-		VBox box = new VBox();
-		box.getChildren().addAll(new VBox());
-        return box;    
+	private VBox createInfoBar(Order order) {
+		Label recapTitle = new Label("Récapitulatif");
+		VBox orderProductsBox = createOrderProductsBox(order);
+		VBox totalBox = createTotalBox(order);
+		
+		VBox recapBox = new VBox();
+		recapBox.setStyle("-fx-padding: 10; -fx-background-color : white");
+		recapBox.getChildren().addAll(recapTitle, orderProductsBox, totalBox);
+		return recapBox;
 	}
 	
 	
@@ -169,38 +180,101 @@ public class OrderView {
 		// Récupère les valeurs saisies par l'utilisateur
 		TextField billingField = (TextField) ((VBox) orderBox.getChildren().get(0)).getChildren().get(2);
 	    TextField deliveryField = (TextField) ((VBox) orderBox.getChildren().get(1)).getChildren().get(2);
-	    ToggleGroup deliveryGroup = ((RadioButton) ((VBox) orderBox.getChildren().get(2)).getChildren().get(2)).getToggleGroup();
+	    ToggleGroup shippingGroup = ((RadioButton) ((VBox) orderBox.getChildren().get(2)).getChildren().get(2)).getToggleGroup();
 	    ToggleGroup paymentGroup = ((RadioButton) ((VBox) orderBox.getChildren().get(3)).getChildren().get(2)).getToggleGroup();
 	    
         String billingAddress = billingField.getText();
         String shippingAddress = deliveryField.getText();
-        RadioButton selectedShippingOption = (RadioButton) deliveryGroup.getSelectedToggle();
+        RadioButton selectedShippingOption = (RadioButton) shippingGroup.getSelectedToggle();
         RadioButton selectedPaymentOption = (RadioButton) paymentGroup.getSelectedToggle();
 
         String shippingMethod = selectedShippingOption != null ? selectedShippingOption.getText() : "";
         String paymentMethod = selectedPaymentOption != null ? selectedPaymentOption.getText() : "";
-        double shippingCost = 0.0;
-		if (shippingMethod != null) {
-		    if (shippingMethod.contains("UPS Domicile")) {
-		        shippingCost = 9.00;
-		    } else if (shippingMethod.contains("Colissimo mon domicile")) {
-		        shippingCost = 4.00;
-		    } else if (shippingMethod.contains("Chronopost")) {
-		        shippingCost = 15.00;
-		    } else if (shippingMethod.contains("Retrait en magasin TennisShop")) {
-		        shippingCost = 0.00;
-		    }
-		}
+        
         // Crée la facture
         Invoice invoice = new Invoice(order);
         invoice.setBillingAddress(billingAddress);
         invoice.setShippingAddress(shippingAddress);
         invoice.setShippingMethod(shippingMethod);
-        invoice.setShippingPrice(shippingCost);
+        invoice.setShippingPrice(getShippingPrice(shippingMethod));
         invoice.setPaymentMethod(paymentMethod);
         
         // Insère la facture dans la base de données
         InvoiceDAO invoiceDAO = new InvoiceDAO();
         invoiceDAO.insertInvoice(invoice);
     }
+	
+	
+	private VBox createOrderProductsBox(Order order) {	
+		List<CartItem> products = order.getProducts();
+		VBox vBox = new VBox();
+		HBox hBox = new HBox();
+		
+		for (CartItem item : products) {
+            Product product = item.getProduct();
+            Label nameLabel = new Label(product.getName());
+            Label sizeLabel = new Label ("Taille : " + item.getSize());
+            //Label sizeLabel2 = new Label(item.getSize());
+            Label quantityLabel = new Label("Quantité : " + item.getQuantity());
+            Label priceLabel = new Label(product.getPrice() + "€");
+            ImageView imageView = new ImageView(new Image(getClass().getResource(product.getImagePath()).toExternalForm()));
+            imageView.setFitHeight(100);
+            imageView.setFitWidth(100);
+            
+            for (Label label : new Label[]{nameLabel, sizeLabel, quantityLabel}) {
+    			label.setStyle("-fx-font-weight: normal");
+    		}
+            
+            VBox productBox = new VBox();
+            productBox.getChildren().addAll(nameLabel, sizeLabel, quantityLabel, priceLabel);
+            productBox.setStyle("-fx-padding: 10 0 10 0; ");
+            
+            hBox.getChildren().addAll(imageView, productBox);
+            vBox.getChildren().add(hBox);
+		}
+		
+		return vBox;
+	}
+	
+	private VBox createTotalBox(Order order) {
+		Label subTotal = new Label("Total produits TTC " + String.format("%.2f €", order.getTotalPrice()));
+		
+		ToggleGroup shippingGroup = ((RadioButton) ((VBox) orderBox.getChildren().get(2)).getChildren().get(2)).getToggleGroup();
+		RadioButton selectedShippingOption = (RadioButton) shippingGroup.getSelectedToggle();
+		String shippingMethod = selectedShippingOption != null ? selectedShippingOption.getText() : "";
+		
+		Label HTLabel = new Label("Total HT "+ String.format("%.2f €", order.getTotalPrice()/1.2 ));
+		Label TVALabel = new Label("TVA (20%) " + String.format("%.2f €", order.getTotalPrice()*0.2));
+		
+		double shippingPrice = getShippingPrice(shippingMethod);
+		Label shippingPriceLabel = new Label("Frais de Port : " + shippingPrice);
+		
+		Label totalLabel = new Label("Total TTC " + String.format("%.2f €", order.getTotalPrice() + shippingPrice));
+		
+		for (Label label : new Label[]{subTotal, HTLabel, TVALabel, shippingPriceLabel}) {
+			label.setStyle("-fx-font-weight: normal");
+		}
+		
+		VBox totalBox = new VBox();
+		totalBox.getChildren().addAll(subTotal, HTLabel, TVALabel, shippingPriceLabel, totalLabel);
+		totalBox.setStyle("-fx-padding: 10 0 10 0;");
+		
+		return totalBox;
+	}
+	
+	private double getShippingPrice(String shippingMethod) {	
+        double shippingPrice = 0.0;
+		if (shippingMethod != null) {
+		    if (shippingMethod.contains("UPS Domicile")) {
+		        shippingPrice = 9.00;
+		    } else if (shippingMethod.contains("Colissimo mon domicile")) {
+		        shippingPrice = 4.00;
+		    } else if (shippingMethod.contains("Chronopost")) {
+		        shippingPrice = 15.00;
+		    } else if (shippingMethod.contains("Retrait en magasin TennisShop")) {
+		        shippingPrice = 0.00;
+		    }
+		}		
+		return shippingPrice;
+	}
 }
