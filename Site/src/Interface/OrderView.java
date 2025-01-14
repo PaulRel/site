@@ -7,6 +7,7 @@ import customer.Invoice;
 import customer.Order;
 import database.InvoiceDAO;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -18,6 +19,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import products.Product;
 
@@ -29,7 +31,7 @@ public class OrderView {
 		rootPane = new AnchorPane();
         HBox mainBox = new HBox();
         mainBox.setPadding(new Insets(50)); // Espace  Haut, Droite>, Bas, Gauche<  de l'AnchorPane
-        mainBox.setSpacing(50); // Espacement entre mainBox et Panier
+        mainBox.setSpacing(20); // Espacement entre mainBox et Panier
         mainBox.setPrefSize(1350, 554);
         mainBox.setStyle("-fx-background-color: #EEEEEE");
         mainBox.getChildren().addAll(MainView.createScrollPane(createOrderZone(mainView, order)), createInfoBar(order));	
@@ -207,10 +209,11 @@ public class OrderView {
 	
 	private VBox createOrderProductsBox(Order order) {	
 		List<CartItem> products = order.getProducts();
+		System.out.println(products);
 		VBox vBox = new VBox();
-		HBox hBox = new HBox();
 		
 		for (CartItem item : products) {
+			System.out.println("Dans la boucle" + item.toString());
             Product product = item.getProduct();
             Label nameLabel = new Label(product.getName());
             Label sizeLabel = new Label ("Taille : " + item.getSize());
@@ -222,14 +225,12 @@ public class OrderView {
             imageView.setFitWidth(100);
             
             for (Label label : new Label[]{nameLabel, sizeLabel, quantityLabel}) {
-    			label.setStyle("-fx-font-weight: normal");
+    			label.setStyle("-fx-font-weight: normal; -fx-font-size: 14px; -fx-padding: 0; -fx-margin: 0; ");
     		}
             
-            VBox productBox = new VBox();
-            productBox.getChildren().addAll(nameLabel, sizeLabel, quantityLabel, priceLabel);
-            productBox.setStyle("-fx-padding: 10 0 10 0; ");
+            HBox hBox = new HBox();
+            hBox.getChildren().addAll(imageView,  new VBox(nameLabel, sizeLabel, quantityLabel, priceLabel));
             
-            hBox.getChildren().addAll(imageView, productBox);
             vBox.getChildren().add(hBox);
 		}
 		
@@ -237,29 +238,43 @@ public class OrderView {
 	}
 	
 	private VBox createTotalBox(Order order) {
-		Label subTotal = new Label("Total produits TTC " + String.format("%.2f €", order.getTotalPrice()));
+		VBox totalBox = new VBox();
 		
 		ToggleGroup shippingGroup = ((RadioButton) ((VBox) orderBox.getChildren().get(2)).getChildren().get(2)).getToggleGroup();
 		RadioButton selectedShippingOption = (RadioButton) shippingGroup.getSelectedToggle();
 		String shippingMethod = selectedShippingOption != null ? selectedShippingOption.getText() : "";
-		
-		Label HTLabel = new Label("Total HT "+ String.format("%.2f €", order.getTotalPrice()/1.2 ));
-		Label TVALabel = new Label("TVA (20%) " + String.format("%.2f €", order.getTotalPrice()*0.2));
-		
 		double shippingPrice = getShippingPrice(shippingMethod);
-		Label shippingPriceLabel = new Label("Frais de Port : " + shippingPrice);
 		
-		Label totalLabel = new Label("Total TTC " + String.format("%.2f €", order.getTotalPrice() + shippingPrice));
-		
-		for (Label label : new Label[]{subTotal, HTLabel, TVALabel, shippingPriceLabel}) {
-			label.setStyle("-fx-font-weight: normal");
-		}
-		
-		VBox totalBox = new VBox();
-		totalBox.getChildren().addAll(subTotal, HTLabel, TVALabel, shippingPriceLabel, totalLabel);
-		totalBox.setStyle("-fx-padding: 10 0 10 0;");
+		HBox subTotalLine = createLine("Total produits TTC", String.format("%.2f €", order.getTotalPrice()));
+		HBox htLine = createLine("Total HT", String.format("%.2f €", order.getTotalPrice() / 1.2));
+		HBox tvaLine = createLine("TVA (20%)", String.format("%.2f €", order.getTotalPrice() * 0.2));
+		HBox shippingLine = createLine("Frais de Port", String.format("%.2f €", shippingPrice));
+		HBox totalLine = createLine("Total TTC", String.format("%.2f €", order.getTotalPrice() + shippingPrice));
+
+		//for (Label label : new Label[]{subTotal, HTLabel, TVALabel, shippingPriceLabel}) {
+			//label.setStyle("-fx-font-weight: normal;-fx-font-size: 14px; -fx-padding: 0; -fx-margin: 0; ");
+		//}
+
+		totalBox.getChildren().addAll(subTotalLine, htLine, tvaLine, shippingLine, totalLine);
+		//totalBox.setStyle("");
 		
 		return totalBox;
+	}
+	
+	private HBox createLine(String labelText, String valueText) {
+	    Label textLabel = new Label(labelText);
+	    Label valueLabel = new Label(valueText);  
+	    textLabel.setMaxWidth(Double.MAX_VALUE); // Permet de prendre toute la largeur disponible 
+	    HBox.setHgrow(textLabel, Priority.ALWAYS); // Force l'alignement à gauche
+	    
+	    if (labelText != "Total TTC") {
+	    	textLabel.setStyle("-fx-font-weight: normal; -fx-font-size: 14px; -fx-padding: 0; -fx-margin: 0;");
+	    	valueLabel.setStyle("-fx-font-weight: normal; -fx-font-size: 14px; -fx-padding: 0; -fx-margin: 0;");
+	    }
+	    
+	    HBox line = new HBox(textLabel, valueLabel);
+	    line.setAlignment(Pos.CENTER_LEFT); // Aligne le contenu
+	    return line;
 	}
 	
 	private double getShippingPrice(String shippingMethod) {	
