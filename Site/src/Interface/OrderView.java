@@ -229,7 +229,7 @@ public class OrderView {
             Label sizeLabel = new Label ("Taille : " + item.getSize());
             Label quantityLabel = new Label("Quantité : " + item.getQuantity());
             Label priceLabel = new Label(product.getPrice() + "€");
-            priceLabel.setStyle("-fx-padding: 0; -fx-margin: 0;");
+            priceLabel.setStyle("-fx-padding: 10 0 0 0;; -fx-margin: 0;");
             ImageView imageView = new ImageView(new Image(getClass().getResource(product.getImagePath()).toExternalForm()));
             imageView.setFitHeight(100);
             imageView.setFitWidth(100);
@@ -242,7 +242,7 @@ public class OrderView {
             hBox.getChildren().addAll(imageView,  new VBox(nameLabel, sizeLabel, quantityLabel, priceLabel));
             
             Region separator = new Region();
-            separator.setStyle("-fx-background-color: gray; -fx-pref-height: 1px; -fx-max-height: 1px;");
+            separator.setStyle("-fx-background-color: silver; -fx-pref-height: 1px; -fx-max-height: 1px;");
             vBox.widthProperty().addListener((observable, oldValue, newValue) -> {
                 separator.setMaxWidth(newValue.doubleValue() * 0.8);
             });
@@ -270,6 +270,14 @@ public class OrderView {
 		//for (Label label : new Label[]{subTotal, HTLabel, TVALabel, shippingPriceLabel}) {
 			//label.setStyle("-fx-font-weight: normal;-fx-font-size: 14px; -fx-padding: 0; -fx-margin: 0; ");
 		//}
+		shippingGroup.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
+		    if (newValue != null) {
+		        String newShippingMethod = ((RadioButton) newValue).getText(); // Méthode d'expédition sélectionnée
+		        double newShippingPrice = getShippingPrice(newShippingMethod); // Calcul du nouveau prix des frais de port
+		        shippingLine.getChildren().set(1, new Label(String.format("%.2f €", newShippingPrice))); // Mise à jour
+		        totalLine.getChildren().set(1, new Label(String.format("%.2f €", order.getTotalPrice() + newShippingPrice)));
+		    }
+		});
 
 		totalBox.getChildren().addAll(subTotalLine, htLine, tvaLine, shippingLine, totalLine);
 		//totalBox.setStyle("");
