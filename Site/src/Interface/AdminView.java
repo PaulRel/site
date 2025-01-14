@@ -160,7 +160,7 @@ public class AdminView {
 			
 		// Chiffres d'affaires
 		Label totalRevenueLabel = new Label("Chiffre d'affaires");
-		Label totalRevenue = new Label(""+adminStatsDAO.getTotalRevenue());
+		Label totalRevenue = new Label(""+adminStatsDAO.getTotalRevenue()+" €");
 		VBox b = new VBox();
 		b.setStyle("-fx-alignment: center;");
 		b.setPrefSize(250, 100);
@@ -216,7 +216,7 @@ public class AdminView {
 		midHBox2.getChildren().addAll(f, g);
 		
 		
-		Label averageOrder = new Label(""+adminStatsDAO.getAverageOrderValue());
+		Label averageOrder = new Label(""+adminStatsDAO.getAverageOrderValue() + " €");
 		Label averageOrderLabel = new Label("Montant moyen d'une commande");
 		VBox h = new VBox();
 		h.setStyle("-fx-alignment: center;-fx-padding: 10;-fx-spacing:10;-fx-background-color: #FFFFFF; -fx-background-radius:10;");
@@ -501,7 +501,14 @@ public class AdminView {
         // Ajout des boutons
         addButton = new Button("+ Ajouter un produit");
         addButton.setStyle("-fx-background-color : #007bff; -fx-text-fill: white;");
-        deleteButton = new Button("Supprimer");
+        
+        deleteButton = new Button();
+        deleteButton.setStyle("-fx-background-color : red;");
+        ImageView binIcon = new ImageView(new Image(getClass().getResource("/Image/binIcon.png").toExternalForm()));
+        binIcon.setFitHeight(20);
+        binIcon.setFitWidth(20);
+        deleteButton.setGraphic(binIcon);
+        
         updateButton = new Button("Mettre à jour");
         clearButton = new Button("Effacer");
         importButton = getImportImageButton();
@@ -803,7 +810,6 @@ public class AdminView {
         }
         
         imagePath = product.getImagePath();
-        System.out.println(imagePath);
         imageView.setImage(new Image(getClass().getResource(imagePath).toExternalForm()));
     	imageView.setFitWidth(90);  // Largeur fixe
         imageView.setFitHeight(90); // Hauteur fixe
