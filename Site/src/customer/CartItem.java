@@ -36,5 +36,13 @@ public class CartItem {
 	public void setQuantity(int quantity) {
 		this.quantity = quantity;
 	}
+	
+	@Override
+	public String toString() {
+		return "Nom du produit : " + this.product.getName() +
+				" Taille : "+ this.size +
+				" Quantité :"+ this.quantity +
+				" Prix : " + this.product.getPrice();
+	}
 
 }
