@@ -82,10 +82,13 @@ public class AdminView {
 	
 	public VBox createLeftMenu() {
 		VBox menuBox = new VBox(20);
+		
 		AnchorPane.setTopAnchor(menuBox, 119.0);
 		AnchorPane.setBottomAnchor(menuBox, 0.0);
+		
 		menuBox.setPadding(new Insets(20));
 	    menuBox.setStyle("-fx-background-color: linear-gradient(to bottom right, #2d658c, #2ca772)");
+	    
 		//#F8F8F8
 		Button statsButton = new Button("Statistiques globales");
 		Button customersButton = new Button("Clients");
@@ -138,99 +141,89 @@ public class AdminView {
 	
 	private void showStats() {
 		VBox topVBox = new VBox();
-		topVBox.setStyle("-fx-padding: 10; -fx-background-color: #FFFFFF; -fx-background-radius:10;");
 		Label topVBoxTitle = new Label("CHIFFRES CLES");
-		topVBoxTitle.setStyle("-fx-font-size: 16px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 5)");
-		
-		
 		HBox topHBox = new HBox();
+		
+		topVBox.setStyle("-fx-padding: 10; -fx-background-color: #FFFFFF; -fx-background-radius:10;");		
+		topVBoxTitle.setStyle("-fx-font-size: 16px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 5)");
 		topHBox.setStyle("-fx-alignment: center; -fx-spacing:20; -fx-background-color: #FFFFFF");
 		
-		// Nombre total de produits vendus
-		Label totalProducts = new Label(""+adminStatsDAO.getTotalProducts());
+		
 		Label totalProductsLabel = new Label("Nombre total de produits ");
+		Label totalProducts = new Label(""+adminStatsDAO.getTotalProducts());
+		Label totalRevenueLabel = new Label("Chiffre d'affaires");
+		Label totalRevenue = new Label(""+adminStatsDAO.getTotalRevenue()+" €");
+		Label totalOrdersLabel = new Label("Nombre total de commandes ");
+		Label totalOrders = new Label(""+adminStatsDAO.getTotalOrders());
+		
 		VBox a = new VBox();
 		a.setStyle("-fx-alignment: center;");
 		a.setPrefSize(250, 100);
 		a.getChildren().addAll(totalProducts, totalProductsLabel);
-				
-		Pane pane1 = new Pane();
-		pane1.setPrefSize(1, 50);
-		pane1.setStyle("-fx-background-color: #ececec");
-			
-		// Chiffres d'affaires
-		Label totalRevenueLabel = new Label("Chiffre d'affaires");
-		Label totalRevenue = new Label(""+adminStatsDAO.getTotalRevenue()+" €");
+		
 		VBox b = new VBox();
 		b.setStyle("-fx-alignment: center;");
 		b.setPrefSize(250, 100);
 		b.getChildren().addAll(totalRevenue, totalRevenueLabel);
-				
-		Pane pane2 = new Pane();
-		pane2.setPrefSize(1, 50);
-		pane2.setStyle("-fx-background-color: #ececec");
 		
-		// Nombre total de commandes
-		Label totalOrdersLabel = new Label("Nombre total de commandes ");
-		Label totalOrders = new Label(""+adminStatsDAO.getTotalOrders());
 		VBox c = new VBox();
 		c.setStyle("-fx-alignment: center;");
 		c.setPrefSize(250, 100);
 		c.getChildren().addAll(totalOrders, totalOrdersLabel);
+					
+		Pane pane1 = new Pane();
+		pane1.setPrefSize(1, 50);
+		pane1.setStyle("-fx-background-color: #ececec");		
+						
+		Pane pane2 = new Pane();
+		pane2.setPrefSize(1, 50);
+		pane2.setStyle("-fx-background-color: #ececec");
 		
-		topHBox.getChildren().addAll(a, pane1, b, pane2, c);
-		
-		
+		topHBox.getChildren().addAll(a, pane1, b, pane2, c);		
 		topVBox.getChildren().addAll(topVBoxTitle, topHBox);
 		
 		
-		// Graphique des ventes par mois (en euros)
+	
 		Label salesByPeriod = new Label("Évolution des ventes par mois " );
-		LineChart<String, Number> salesLineChart= adminStatsDAO.getSalesByPeriodLineChart();
-		VBox d = createVBox(salesByPeriod, salesLineChart);
+		Label bestProductsLabel = new Label("Produits les plus vendus");
+		Label averageOrder = new Label(""+adminStatsDAO.getAverageOrderValue() + " €");
+		Label averageOrderLabel = new Label("Montant moyen d'une commande");
+		Label salesqtByPeriod = new Label("Évolution des ventes par mois " );
 		
-		// Camembert des ventes par catégories de produits
-		PieChart pieChart = adminStatsDAO.getTypeProductsPieChart();
+		LineChart<String, Number> salesLineChart= adminStatsDAO.getSalesByPeriodLineChart(); // Graphique des ventes par mois (en euros)
+		BarChart<String, Number> barChart = adminStatsDAO.getSalesByBrandBarChart(); //Histogramme des ventes par marques (montant et quantité)
+		PieChart pieChart = adminStatsDAO.getTypeProductsPieChart(); // Camembert des ventes par catégories de produits
+		TableView<Map.Entry<String, Integer>> tableView = createBestProductsTable(); //Table des produits les plus vendus (nom et quantité)
+		LineChart<String, Number> salesqtLineChart= adminStatsDAO.getSalesQtyLineChart();
+		
+		VBox d = createVBox(salesByPeriod, salesLineChart);
 		VBox e = createVBox(new Label("Répartition des produits vendus par catégories"), pieChart);
+		VBox f = createVBox(new Label("Ventes par marques"), barChart);
+		VBox g = new VBox(bestProductsLabel, tableView);
+		VBox h = new VBox(); h.getChildren().addAll(averageOrder, averageOrderLabel);
+		VBox i = createVBox(salesqtByPeriod, salesqtLineChart);
 		
 		HBox midHBox = new HBox(10);
 		midHBox.setSpacing(30);
 		midHBox.setPrefSize(350, 300);
 		midHBox.getChildren().addAll(d, e);
 		
-		
-		//Histogramme des ventes par marques (montant et quantité)
-		BarChart<String, Number> barChart = adminStatsDAO.getSalesByBrandBarChart();
-		VBox f = createVBox(new Label("Ventes par marques"), barChart);
-		
-		//Table des produits les plus vendus (nom et quantité)
-		Label bestProductsLabel = new Label("Produits les plus vendus");
-		TableView<Map.Entry<String, Integer>> tableView = createBestProductsTable();
-		VBox g = new VBox(bestProductsLabel, tableView);
-		g.setPrefSize(500, 300);
-		g.setStyle("-fx-padding: 10;-fx-spacing:10;-fx-background-color: #FFFFFF; -fx-background-radius:10;");
-		
 		HBox midHBox2 = new HBox(10);
 		midHBox2.setSpacing(30);
 		midHBox2.setPrefSize(350, 300);
 		midHBox2.getChildren().addAll(f, g);
 		
-		
-		Label averageOrder = new Label(""+adminStatsDAO.getAverageOrderValue() + " €");
-		Label averageOrderLabel = new Label("Montant moyen d'une commande");
-		VBox h = new VBox();
-		h.setStyle("-fx-alignment: center;-fx-padding: 10;-fx-spacing:10;-fx-background-color: #FFFFFF; -fx-background-radius:10;");
-		//h.setPrefSize(250, 100);
-		h.getChildren().addAll(averageOrder, averageOrderLabel);
-		
-		Label salesqtByPeriod = new Label("Évolution des ventes par mois " );
-		LineChart<String, Number> salesqtLineChart= adminStatsDAO.getSalesQtyLineChart();
-		VBox i = createVBox(salesqtByPeriod, salesqtLineChart);
-		
 		HBox bottomHBox = new HBox(10);
 		bottomHBox.setSpacing(30);
 		bottomHBox.getChildren().addAll(i, h);
 		bottomHBox.setPrefSize(250, 100);
+			
+		g.setPrefSize(500, 300);
+		//h.setPrefSize(250, 100);
+		g.setStyle("-fx-padding: 10;-fx-spacing:10;-fx-background-color: #FFFFFF; -fx-background-radius:10;");
+		h.setStyle("-fx-alignment: center;-fx-padding: 10;-fx-spacing:10;-fx-background-color: #FFFFFF; -fx-background-radius:10;");
+		
+		
 		
 		for (Label data : new Label[]{totalProducts, totalRevenue, totalOrders, averageOrder}) {
             data.setStyle("-fx-font-size: 32px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 5);");
