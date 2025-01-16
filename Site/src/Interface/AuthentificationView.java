@@ -57,7 +57,16 @@ public class AuthentificationView {
         	// Récupère les valeurs saisies par l'utilisateur
         	String email = emailField.getText();
         	String password = passwordField.getText();
-        
+        	
+        	/*
+        	if (!SignUpView.isValidEmail(email)) {
+        		MainView.showAlert("Erreur", null, "L'adresse email saisie est invalide. Exemple : nom@domaine.fr", AlertType.ERROR);
+        	}
+            else if (!SignUpView.isValidPassword(password)) {
+            	MainView.showAlert("Erreur", null, "Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre, et un caractère spécial", Alert.AlertType.ERROR);
+     	    }
+        	*/
+        	
         	// Appelle la méthode d'authentification
         	handleLogin(email, password);
         	if (MainView.getCurrentCustomer() != null) {
