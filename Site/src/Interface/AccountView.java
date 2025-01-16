@@ -13,6 +13,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -113,24 +114,23 @@ public class AccountView {
     
     private void showDashboard() {
     	Label dashboardTitle = new Label("Mon tableau de bord");
-        //dashboardTitle.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
-        
         Label dashboardDesc = new Label("Depuis le tableau de bord 'Mon compte', vous pouvez avoir un aperçu de vos récentes activités et mettre à jour les informations de votre compte. Sélectionnez un lien ci-dessous pour voir ou modifier les informations.");
+        Label recentOrdersTitle = new Label ("Commandes récentes");
+        Label infoTitle = new Label ("Informations du compte");
+
+        //dashboardTitle.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
+        recentOrdersTitle.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
         dashboardDesc.setWrapText(true);
         dashboardDesc.setStyle("-fx-font-size: 12px; -fx-font-weight: normal");
-        
-        Label recentOrdersTitle = new Label ("Commandes récentes");
-        recentOrdersTitle.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
+        infoTitle.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
         
         Hyperlink hyperlink1 = new Hyperlink("Voir tout");
         hyperlink1.setOnAction(event -> showCustomerOrders());
     	HBox tableHeader = new HBox(10, recentOrdersTitle, hyperlink1);
         tableHeader.setAlignment(Pos.CENTER_LEFT);
         
-        TableView<Order> tableSection = createOrdersTable();
+        TableView<Order> tableSection = createOrdersTable();   
         
-        Label infoTitle = new Label ("Informations du compte");
-        infoTitle.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
         Hyperlink hyperlink = new Hyperlink("Modifier");
         hyperlink.setOnAction(event -> mainContent.getChildren().setAll(editCustomerInfo(MainView.getCurrentCustomer())));
         HBox infoHeader = new HBox(10, infoTitle, hyperlink);
@@ -154,21 +154,57 @@ public class AccountView {
     public static VBox editCustomerInfo(Customer customer) {
     	VBox editCustomerInfoBox = new VBox(15);
     	editCustomerInfoBox.setSpacing(10);
-    	editCustomerInfoBox.setPadding(new Insets(20));
+    	editCustomerInfoBox.setPadding(new Insets(10));
     	editCustomerInfoBox.setStyle("-fx-background-color: #FFFFFF;");
-	
+    	editCustomerInfoBox.setAlignment(Pos.CENTER);
+    	
     	Label editLabel = new Label("Modifier les informations du compte");
+        Label lastNameLabel = new Label("Nom");
+        Label firstNameLabel = new Label("Prénom");
+        Label emailLabel = new Label("Email");
+        Label phoneLabel = new Label("Téléphone");
+        Label addressLabel= new Label("Adresse");
+        Label passwordLabel = new Label("Mot de passe");
+        
+        for (Label label : new Label[]{firstNameLabel, lastNameLabel, addressLabel, phoneLabel, emailLabel, passwordLabel}) {
+        	label.setStyle("-fx-font-weight: normal;");
+        }
+	
     	TextField lastNameField = new TextField(customer.getLastName());
     	TextField firstNameField = new TextField(customer.getFirstName());
     	TextField emailField = new TextField(customer.getEmail());
     	TextField phoneField = new TextField(customer.getPhoneNumber());
     	TextField addressField = new TextField(customer.getAddress());
+    	PasswordField passwordField = new PasswordField();
+    	TextField textField = new TextField(customer.getPassword());
+    	
+    	textField.setVisible(false); // Masquer le TextField initialement
+    	passwordField.textProperty().bindBidirectional(textField.textProperty()); // Synchronisation du texte entre les champs
     	
     	lastNameField.setPromptText("Nom");
     	firstNameField.setPromptText("Prénom");
     	emailField.setPromptText("Email");
     	phoneField.setPromptText("Téléphone");
     	addressField.setPromptText("Adresse");
+    	addressField.setPrefWidth(300);
+    	
+
+    	Button showPasswordButton = new Button();       
+        showPasswordButton.setStyle("-fx-background-color: white; -fx-padding: 5;");
+        ImageView showIcon = new ImageView(new Image(AccountView.class.getResource("/Image/eyeIcon.png").toExternalForm()));
+        ImageView hideIcon = new ImageView(new Image(AccountView.class.getResource("/Image/eyeOffIcon.png").toExternalForm()));
+        showIcon.setFitHeight(20);
+        showIcon.setFitWidth(20);
+        hideIcon.setFitHeight(20);
+        hideIcon.setFitWidth(20);
+        showPasswordButton.setGraphic(showIcon);
+        
+        showPasswordButton.setOnAction(e -> {
+        	boolean isMasked = passwordField.isVisible();
+    	    passwordField.setVisible(!isMasked);
+    	    textField.setVisible(isMasked);
+            showPasswordButton.setGraphic(isMasked? hideIcon : showIcon);
+        });
 
     	Button saveButton = new Button("Enregistrer");
     	
@@ -178,7 +214,28 @@ public class AccountView {
     	    String newEmail = emailField.getText();
     	    String newPhone = phoneField.getText();
     	    String newAddress = addressField.getText();
+    	    String newPassword = passwordField.getText();
     	    
+    		if(newFirstName.isEmpty() || newLastName.isEmpty() || newEmail.isEmpty() || newPhone.isEmpty() || newAddress.isEmpty()){
+            	MainView.showAlert("Erreur", null, "Merci de remplir tous les champs ", AlertType.ERROR);
+            }
+    		else if (!newFirstName.matches("[a-zA-Z]+") || !newLastName.matches("[a-zA-Z]+")) {
+    	          MainView.showAlert("Erreur", null, "Les noms et prénoms ne doivent pas contenir de caractères spéciaux ou des chiffres", AlertType.ERROR);
+    	    }
+    		
+    		else if (!addressField.getText().matches("^[a-zA-Z0-9à-ÿÀ-Ÿ\\s,'-]+$")) {
+    			MainView.showAlert("Erreur", null, "Veuillez entrer une adresse valide", Alert.AlertType.ERROR);
+    		}
+    		
+            else if (!SignUpView.isValidEmail(newEmail)) {
+                MainView.showAlert("Erreur", null, "L'adresse email saisie est invalide. Exemple : nom@domaine.fr", AlertType.ERROR);
+            }
+    		
+            else if (!SignUpView.isValidPassword(newPassword)) {
+    	        MainView.showAlert("Erreur", null, "Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre, et un caractère spécial", Alert.AlertType.ERROR);
+    	    }
+    		
+    		
     	    // Mise à jour de la BDD
     	    Customer newCustomer = new Customer(customer.getId(), newLastName, newFirstName, customer.getCivility(), newEmail, newPhone, customer.getPassword(), customer.getRole(), newAddress);
     	    new CustomerDAO().updateCustomer(newCustomer);
@@ -189,12 +246,28 @@ public class AccountView {
         	customer.setEmail(newEmail);
         	customer.setPhoneNumber(newPhone);
         	customer.setAddress(newAddress);
+    		
     	});
-    	    
-    	
-    	editCustomerInfoBox.getChildren().addAll(editLabel, lastNameField, firstNameField, emailField, phoneField, addressField, saveButton);
+
+    	// Disposition du formulaire
+        GridPane gridPane = new GridPane();
+        gridPane.setHgap(10);
+        gridPane.setVgap(10);
+        gridPane.setAlignment(Pos.CENTER); 
+        gridPane.addRow(0, lastNameLabel, lastNameField );
+        gridPane.addRow(1, firstNameLabel, firstNameField);
+        gridPane.addRow(2, emailLabel, emailField);
+        gridPane.addRow(3, phoneLabel, phoneField);
+        gridPane.addRow(4, addressLabel, addressField);
+        gridPane.addRow(5, passwordLabel);
+    	gridPane.add(passwordField, 1, 5);
+    	gridPane.add(textField, 1, 5);
+    	gridPane.add(showPasswordButton, 2, 5);
+        
+    	editCustomerInfoBox.getChildren().addAll(editLabel, gridPane, saveButton);
     	return editCustomerInfoBox;
     }
+
     
     private void showCustomerOrders() {
     	Label ordersTitle = new Label ("Toutes mes commandes");
