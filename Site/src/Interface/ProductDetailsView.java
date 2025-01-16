@@ -71,16 +71,19 @@ public class ProductDetailsView {
             for (Map.Entry<String, Integer> entry : sizesStock.entrySet()) {
                 String size = entry.getKey();
                 int qtDispo = entry.getValue();
-                String texte;
-                if (qtDispo <= 5) {
-                    texte = "Plus que " + qtDispo + " en stock";
+                String text;
+                if (qtDispo == 0) {
+                	text = "En rupture de stock";
+                } 
+                else if (qtDispo <= 5) {
+                    text = "Plus que " + qtDispo + " en stock";
                 } else {
-                    texte = "Stock 5+";
+                    text = "Stock 5+";
                 }	
-                sizeChoiceBox.getItems().add(size + " : " + texte);
+                sizeChoiceBox.getItems().add(size + " : " + text);
             }
 
-            // Add a listener to the size selection ComboBox
+            // Quand l'utilisateur choisit une taille, on active la combobox permettant de choisir la qte souhaite de cette taille
             sizeChoiceBox.setOnAction(event -> {
             	addToCartButton.setDisable(sizeChoiceBox.getValue() == null);
             	String selectedSize = sizeChoiceBox.getValue(); // e.g., "39 : Plus que 1 en stock"
@@ -92,6 +95,8 @@ public class ProductDetailsView {
 
                     // Update the options in the quantity ComboBox
                     ObservableList<Integer> quantities = FXCollections.observableArrayList();
+                    
+                    // Le client ne peut pas acheter plus de 5 fois le meme produit sur vue -> evite liste trop longue
                     for (int i = 1; i <= Math.min(availableQuantity, 5); i++) {
                         quantities.add(i);
                     }
