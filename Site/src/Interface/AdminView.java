@@ -1027,7 +1027,7 @@ public class AdminView {
                     invoicesTable.setItems(FXCollections.observableArrayList(invoiceDAO.getAllInvoices()));
                 });
                 
-                ImageView showIcon = new ImageView(new Image(getClass().getResource("/Image/eyeIcon.png").toExternalForm()));
+                ImageView showIcon = new ImageView(new Image(getClass().getResource("/Image/eyeIconW.png").toExternalForm()));
                 showIcon.setFitHeight(20);
                 showIcon.setFitWidth(20);
                 showInvoiceButton.setGraphic(showIcon);
