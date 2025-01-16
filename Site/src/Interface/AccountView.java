@@ -223,8 +223,12 @@ public class AccountView {
     	          MainView.showAlert("Erreur", null, "Les noms et prénoms ne doivent pas contenir de caractères spéciaux ou des chiffres", AlertType.ERROR);
     	    }
     		
-    		else if (!addressField.getText().matches("^[a-zA-Z0-9à-ÿÀ-Ÿ\\s,'-]+$")) {
+    		else if (!newAddress.matches("^[a-zA-Z0-9à-ÿÀ-Ÿ\\s,'-]+$")) {
     			MainView.showAlert("Erreur", null, "Veuillez entrer une adresse valide", Alert.AlertType.ERROR);
+    		}
+    		
+    		else if (!newPhone.matches("^0[0-9]{9}$")) {
+    			MainView.showAlert("Erreur", null, "Le numéro de téléphone doit comporter 10 chiffres et commencé par 0", Alert.AlertType.ERROR);
     		}
     		
             else if (!SignUpView.isValidEmail(newEmail)) {
