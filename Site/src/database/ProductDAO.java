@@ -268,6 +268,57 @@ public class ProductDAO {
           	}catch(Exception e){e.printStackTrace();}
     }
     
+    public void updateChaussures(int id, String surface, String gender, String color, String size, int qt) {
+    	String sql = "UPDATE Chaussures SET Surface = ?, Genre = ?, Couleur = ? WHERE id = ?";
+        
+        try(Connection conn = DatabaseConnection.getConnection();
+        	PreparedStatement updateStmt = conn.prepareStatement(sql)){
+        		updateStmt.setString(1, surface);
+        		updateStmt.setString(2, gender);
+        		updateStmt.setString(3, color);
+        		updateStmt.setInt(4, id);
+                int rowsAffected = updateStmt.executeUpdate();
+                updateSizeStock(id, size, qt);
+                if (rowsAffected > 0) {
+                	MainView.showAlert("Information Message", null, "Modifier avec succès", AlertType.INFORMATION);                    
+                }
+          	}catch(Exception e){e.printStackTrace();}
+    }
+    
+    public void updateVetement(int id, String type, String gender, String color, String size, int qt) {
+    	String sql = "UPDATE Vetement SET Type = ?, Genre = ?, Couleur = ? WHERE id = ?";
+        
+        try(Connection conn = DatabaseConnection.getConnection();
+        	PreparedStatement updateStmt = conn.prepareStatement(sql)){
+        		updateStmt.setString(1, type);
+        		updateStmt.setString(2, gender);
+        		updateStmt.setString(3, color);
+        		updateStmt.setInt(4, id);
+                int rowsAffected = updateStmt.executeUpdate();
+                updateSizeStock(id, size, qt);
+                if (rowsAffected > 0) {
+                	MainView.showAlert("Information Message", null, "Modifier avec succès", AlertType.INFORMATION);                   
+                }
+          	}catch(Exception e){e.printStackTrace();}
+    }
+    
+    private void updateSizeStock(int id, String size, int qt) {
+    	String sql = "UPDATE taillestock SET taille = ?, qt_dispo = ? WHERE id = ?";
+    	try (Connection conn = DatabaseConnection.getConnection();
+    			PreparedStatement updateStmt = conn.prepareStatement(sql)) {
+    		updateStmt.setString(1, size);
+    		updateStmt.setInt(2, qt);
+    		updateStmt.setInt(3, id);
+
+            // Exécuter la requête
+    		updateStmt.executeUpdate();
+            System.out.println("Taille et quantité insérées avec succès !");
+        } catch (SQLException e) {
+            e.printStackTrace();
+    	}
+    }
+    
+    
     
     // SUPPRESSION
     

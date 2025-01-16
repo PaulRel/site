@@ -224,7 +224,6 @@ public class AdminView {
 		h.setStyle("-fx-alignment: center;-fx-padding: 10;-fx-spacing:10;-fx-background-color: #FFFFFF; -fx-background-radius:10;");
 		
 		
-		
 		for (Label data : new Label[]{totalProducts, totalRevenue, totalOrders, averageOrder}) {
             data.setStyle("-fx-font-size: 32px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 5);");
             //-fx-alignment: CENTER_LEFT;
@@ -640,11 +639,24 @@ public class AdminView {
         		getTextFieldValues();
         		Product product = new Product(0, name, description, type, brand, price, imagePath);
         		int id = productDAO.insertProduct(product);
+        		
         		if (type == "chaussures") {
-        			productDAO.insertChaussures(id, surfaceComboBox.getValue(), genderField.getText(), colorField.getText(), sizeComboBox.getValue(), qtDispo);
+        			if (surfaceComboBox.getSelectionModel().getSelectedItem() == null || genderField.getText().isEmpty() || colorField.getText().isEmpty() || sizeComboBox.getSelectionModel().getSelectedItem() == null) {
+        				MainView.showAlert("Erreur", null, "Merci de remplir tous les champs ", AlertType.ERROR);
+        			}
+        			else {
+        				productDAO.insertChaussures(id, surfaceComboBox.getValue(), genderField.getText(), colorField.getText(), sizeComboBox.getValue(), qtDispo);
+        			}
         		}
-        		if (type == "vetement"){
-        			productDAO.insertVetement(id, typeVComboBox.getValue(), genderField.getText(), colorField.getText(), sizeComboBox.getValue(), qtDispo);
+        		
+        		else if (type == "vetement"){
+        			if (genderField.getText().isEmpty() || colorField.getText().isEmpty() || typeVComboBox.getSelectionModel().getSelectedItem() == null || sizeComboBox.getSelectionModel().getSelectedItem() == null) {
+        				MainView.showAlert("Erreur", null, "Merci de remplir tous les champs ", AlertType.ERROR);
+        			}
+        			else {
+        				productDAO.insertVetement(id, typeVComboBox.getValue(), genderField.getText(), colorField.getText(), sizeComboBox.getValue(), qtDispo);
+        			}
+        			
         		}
                 
         		// Afficher l'affichage par défaut pour manageProduct
@@ -662,11 +674,30 @@ public class AdminView {
     
     
     public void updateProduct(){
-    	if(!idField.getText().isEmpty()) {
+    	if(!idField.getText().isEmpty() && !checkIfEmpty()) {
     		int id = Integer.parseInt(idField.getText());
     		getTextFieldValues();
     		Product product = new Product(id, name, description, type, brand, price, imagePath);
     		productDAO.updateProduct(product);
+    		
+    		if (type == "chaussures") {
+        		if (surfaceComboBox.getSelectionModel().getSelectedItem() == null || genderField.getText().isEmpty() || colorField.getText().isEmpty() || sizeComboBox.getSelectionModel().getSelectedItem() == null) {
+        			MainView.showAlert("Erreur", null, "Merci de remplir tous les champs ", AlertType.ERROR);
+        		}
+        		else{
+        			productDAO.updateChaussures(id, surfaceComboBox.getValue(), genderField.getText(), colorField.getText(), sizeComboBox.getValue(), qtDispo);
+        		}
+    		}
+    		
+    		else if (type == "vetement"){
+    			if (genderField.getText().isEmpty() || colorField.getText().isEmpty() || typeVComboBox.getSelectionModel().getSelectedItem() == null || sizeComboBox.getSelectionModel().getSelectedItem() == null) {
+    				MainView.showAlert("Erreur", null, "Merci de remplir tous les champs ", AlertType.ERROR);
+    			}
+    			else {
+    				productDAO.updateVetement(id, typeVComboBox.getValue(), genderField.getText(), colorField.getText(), sizeComboBox.getValue(), qtDispo);
+    			}
+    		}
+    		
             clearField();
             productTableView.setItems(FXCollections.observableArrayList(productDAO.getAllProduits()));
         }
