@@ -85,13 +85,15 @@ public class ProductDetailsView {
 
             // Quand l'utilisateur choisit une taille, on active la combobox permettant de choisir la qte souhaite de cette taille
             sizeChoiceBox.setOnAction(event -> {
-            	addToCartButton.setDisable(sizeChoiceBox.getValue() == null);
             	String selectedSize = sizeChoiceBox.getValue(); // e.g., "39 : Plus que 1 en stock"
 
                 // Extract the size and find the available quantity
                 if (selectedSize != null) {
                     String chosenSize = selectedSize.split(" :")[0];
                     int availableQuantity = sizesStock.get(chosenSize);
+                    
+                    addToCartButton.setDisable(availableQuantity == 0);
+                    
 
                     // Update the options in the quantity ComboBox
                     ObservableList<Integer> quantities = FXCollections.observableArrayList();
