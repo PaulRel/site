@@ -269,7 +269,7 @@ public class ProductDAO {
     }
     
     public void updateChaussures(int id, String surface, String gender, String color, String size, int qt) {
-    	String sql = "UPDATE Chaussures SET Surface = ?, Genre = ?, Couleur = ? WHERE id = ?";
+    	String sql = "UPDATE Chaussures SET Surface = ?, Genre = ?, Couleur = ? WHERE Produit_ID = ?";
         
         try(Connection conn = DatabaseConnection.getConnection();
         	PreparedStatement updateStmt = conn.prepareStatement(sql)){
@@ -286,7 +286,7 @@ public class ProductDAO {
     }
     
     public void updateVetement(int id, String type, String gender, String color, String size, int qt) {
-    	String sql = "UPDATE Vetement SET Type = ?, Genre = ?, Couleur = ? WHERE id = ?";
+    	String sql = "UPDATE Vetement SET Type = ?, Genre = ?, Couleur = ? WHERE Produit_ID = ?";
         
         try(Connection conn = DatabaseConnection.getConnection();
         	PreparedStatement updateStmt = conn.prepareStatement(sql)){
@@ -303,12 +303,12 @@ public class ProductDAO {
     }
     
     private void updateSizeStock(int id, String size, int qt) {
-    	String sql = "UPDATE taillestock SET taille = ?, qt_dispo = ? WHERE id = ?";
+    	String sql = "UPDATE taillestock SET qt_dispo = ? WHERE Produit_ID = ? AND taille = ?";
     	try (Connection conn = DatabaseConnection.getConnection();
-    			PreparedStatement updateStmt = conn.prepareStatement(sql)) {
-    		updateStmt.setString(1, size);
-    		updateStmt.setInt(2, qt);
-    		updateStmt.setInt(3, id);
+    			PreparedStatement updateStmt = conn.prepareStatement(sql)) {		
+    		updateStmt.setInt(1, qt);
+    		updateStmt.setInt(2, id);
+    		updateStmt.setString(3, size);
 
             // Exécuter la requête
     		updateStmt.executeUpdate();
