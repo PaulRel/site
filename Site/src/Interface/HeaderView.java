@@ -50,7 +50,7 @@ public class HeaderView{
         shopName.setOnMouseClicked(e -> mainView.showProductView(Product.class, null));
         
         // Bouton du compte
-        ImageView accountIcon = new ImageView(new Image(getClass().getResource("/Image/accountIcon.png").toExternalForm()));
+        ImageView accountIcon = new ImageView(new Image(getClass().getResource("/Image/Icons/accountIcon.png").toExternalForm()));
         accountIcon.setFitHeight(40);
         accountIcon.setFitWidth(40);
         Button accountButton = new Button();
@@ -70,7 +70,7 @@ public class HeaderView{
     	});
     	
     	// Bouton du cart
-        ImageView cartIcon = new ImageView(new Image(getClass().getResource("/Image/cartIcon.jpg").toExternalForm()));
+        ImageView cartIcon = new ImageView(new Image(getClass().getResource("/Image/Icons/cartIcon.jpg").toExternalForm()));
         cartIcon.setFitHeight(40);
         cartIcon.setFitWidth(40);
         Button cartButton = new Button();
@@ -118,7 +118,7 @@ public class HeaderView{
         searchField.setOnAction(event -> performSearch(searchField.getText(), mainView)); 
         
         Button searchButton = new Button();
-        ImageView searchIcon = new ImageView(new Image(getClass().getResource("/Image/searchIcon.png").toExternalForm()));
+        ImageView searchIcon = new ImageView(new Image(getClass().getResource("/Image/Icons/searchIcon.png").toExternalForm()));
         searchIcon.setFitHeight(30);
         searchIcon.setFitWidth(30);
         searchButton.setGraphic(searchIcon);

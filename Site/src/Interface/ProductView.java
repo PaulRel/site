@@ -31,7 +31,7 @@ public class ProductView {
 	List<Product> actualProducts;
 	private ComboBox<String> sortComboBox;
 	private Set<String> sizeSelected, genderSelected, brandSelected, clothingTypeSelected;
-	private CheckBox sizeXS, sizeS, sizeM, sizeL, size36, size37, size38, size39, male, female, child, asicsBrand, babolatBrand, adidasBrand, tankTop, sweat, shorts, tshirt, dress;
+	private CheckBox sizeXS, sizeS, sizeM, sizeL, size36, size37, size38, size39, size40, size41, male, female, asicsBrand, babolatBrand, adidasBrand, tankTop, sweat, shorts, tshirt, dress;
 	private double maxPrice = 200.0;
 	
 	public ProductView(MainView mainView, Class<? extends Product> productType, List<Product> products) {
@@ -117,6 +117,18 @@ public class ProductView {
        filterBox.getChildren().addAll(sortByPrice, sortComboBox);
 
        Label filters = new Label("Filtres");
+       
+       Label genderFilterLabel = new Label("Genre");
+       male = new CheckBox("Homme");
+       female = new CheckBox("Femme");
+       filterBox.getChildren().addAll(genderFilterLabel, male, female);
+       
+       Label brandFilterLabel = new Label("Marques");
+       asicsBrand = new CheckBox("Asics");
+       adidasBrand = new CheckBox("Adidas");
+       babolatBrand = new CheckBox("Babolat");
+       filterBox.getChildren().addAll(brandFilterLabel, asicsBrand, adidasBrand, babolatBrand);
+       
        Label sizeFilterLabel = new Label("Tailles");
        sizeXS = new CheckBox("Taille XS");
        sizeS = new CheckBox("Taille S");
@@ -126,19 +138,9 @@ public class ProductView {
        size37 = new CheckBox("37");
        size38 = new CheckBox("38");
        size39 = new CheckBox("39");
-       filterBox.getChildren().addAll(filters, sizeFilterLabel, sizeXS, sizeS, sizeM, sizeL, size36, size37, size38, size39);
-       
-       Label genderFilterLabel = new Label("Genre");
-       male = new CheckBox("Homme");
-       female = new CheckBox("Femme");
-       child = new CheckBox("Enfant");
-       filterBox.getChildren().addAll(genderFilterLabel, male, female, child);
-       
-       Label brandFilterLabel = new Label("Marques");
-       asicsBrand = new CheckBox("Asics");
-       adidasBrand = new CheckBox("Adidas");
-       babolatBrand = new CheckBox("Babolat");
-       filterBox.getChildren().addAll(brandFilterLabel, asicsBrand, adidasBrand, babolatBrand);
+       size40 = new CheckBox("40");
+       size41 = new CheckBox("41");
+       filterBox.getChildren().addAll(filters, sizeFilterLabel, sizeXS, sizeS, sizeM, sizeL, size36, size37, size38, size39, size40, size41);
        
        Label clothingTypeFilterLabel = new Label("Types");
        tankTop = new CheckBox("Debardeur");
@@ -176,7 +178,6 @@ public class ProductView {
        size39.setOnAction(event -> applyFilters(mainView));
        male.setOnAction(event -> applyFilters(mainView));
        female.setOnAction(event -> applyFilters(mainView));
-       child.setOnAction(event -> applyFilters(mainView));
        asicsBrand.setOnAction(event -> applyFilters(mainView));
        adidasBrand.setOnAction(event -> applyFilters(mainView));
        babolatBrand.setOnAction(event -> applyFilters(mainView));
@@ -214,7 +215,6 @@ public class ProductView {
 	    genderSelected.clear();
 	    if (male.isSelected()) genderSelected.add("Homme");
 	    if (female.isSelected()) genderSelected.add("Femme");
-	    if (child.isSelected()) genderSelected.add("Enfant");
 	    
 	    brandSelected.clear();
 	    if (asicsBrand.isSelected()) brandSelected.add("Asics");

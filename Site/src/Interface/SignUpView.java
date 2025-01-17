@@ -82,8 +82,8 @@ public class SignUpView {
         
         Button showPasswordButton = new Button();       
         showPasswordButton.setStyle("-fx-background-color: white; -fx-padding: 5;");
-        ImageView showIcon = new ImageView(new Image(getClass().getResource("/Image/eyeIcon.png").toExternalForm()));
-        ImageView hideIcon = new ImageView(new Image(getClass().getResource("/Image/eyeOffIcon.png").toExternalForm()));
+        ImageView showIcon = new ImageView(new Image(getClass().getResource("/Image/Icons/eyeIcon.png").toExternalForm()));
+        ImageView hideIcon = new ImageView(new Image(getClass().getResource("/Image/Icons/eyeOffIcon.png").toExternalForm()));
         showIcon.setFitHeight(20);
         showIcon.setFitWidth(20);
         hideIcon.setFitHeight(20);

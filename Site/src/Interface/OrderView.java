@@ -217,12 +217,15 @@ public class OrderView {
     }
 	
 	
-	private VBox createOrderProductsBox(Order order) {	
+	private VBox createOrderProductsBox(Order order) {
+		System.out.println("Entrer dans createOrderProductsBox");
 		List<CartItem> products = order.getProducts();
+		System.out.println("liste des produits : " + products);
 		VBox vBox = new VBox();
 		vBox.setSpacing(10);
 		
 		for (CartItem item : products) {
+			System.out.println("Chaque produit de la liste : "+ item);
             Product product = item.getProduct();
             Label nameLabel = new Label(product.getName());
             nameLabel.setWrapText(true);

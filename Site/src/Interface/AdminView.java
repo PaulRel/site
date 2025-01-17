@@ -379,7 +379,7 @@ public class AdminView {
 	        private final HBox buttonContainer = new HBox(10); // Conteneur pour regrouper les boutons
 	        {
 	            // Configuration du bouton Supprimer
-	            ImageView binIcon = new ImageView(new Image(getClass().getResource("/Image/binIcon.png").toExternalForm()));
+	            ImageView binIcon = new ImageView(new Image(getClass().getResource("/Image/Icons/binIcon.png").toExternalForm()));
 	            binIcon.setFitHeight(20);
 	            binIcon.setFitWidth(20);
 	            deleteCustomerButton.setGraphic(binIcon);
@@ -393,7 +393,7 @@ public class AdminView {
 	            });
 
 	            // Configuration du bouton Modifier
-	            ImageView editIcon = new ImageView(new Image(getClass().getResource("/Image/editIcon.png").toExternalForm()));
+	            ImageView editIcon = new ImageView(new Image(getClass().getResource("/Image/Icons/editIcon.png").toExternalForm()));
 	            editIcon.setFitHeight(20);
 	            editIcon.setFitWidth(20);
 	            editCustomerButton.setGraphic(editIcon);
@@ -496,7 +496,7 @@ public class AdminView {
         
         deleteButton = new Button();
         deleteButton.setStyle("-fx-background-color : red;");
-        ImageView binIcon = new ImageView(new Image(getClass().getResource("/Image/binIcon.png").toExternalForm()));
+        ImageView binIcon = new ImageView(new Image(getClass().getResource("/Image/Icons/binIcon.png").toExternalForm()));
         binIcon.setFitHeight(20);
         binIcon.setFitWidth(20);
         deleteButton.setGraphic(binIcon);
@@ -1038,7 +1038,7 @@ public class AdminView {
 	        private final Button shipInvoiceButton = new Button();
 	        private final HBox buttonContainer = new HBox(10); // Conteneur pour regrouper les boutons
 	        {
-                ImageView binIcon = new ImageView(new Image(getClass().getResource("/Image/binIcon.png").toExternalForm()));
+                ImageView binIcon = new ImageView(new Image(getClass().getResource("/Image/Icons/binIcon.png").toExternalForm()));
                 binIcon.setFitHeight(20);
                 binIcon.setFitWidth(20);
                 deleteInvoiceButton.setGraphic(binIcon);
@@ -1053,7 +1053,7 @@ public class AdminView {
                     invoicesTable.setItems(FXCollections.observableArrayList(invoiceDAO.getAllInvoices()));
                 });
                 
-                ImageView showIcon = new ImageView(new Image(getClass().getResource("/Image/eyeIconW.png").toExternalForm()));
+                ImageView showIcon = new ImageView(new Image(getClass().getResource("/Image/Icons/eyeIconW.png").toExternalForm()));
                 showIcon.setFitHeight(20);
                 showIcon.setFitWidth(20);
                 showInvoiceButton.setGraphic(showIcon);
@@ -1066,7 +1066,7 @@ public class AdminView {
                 	new InvoiceView().showInvoice(invoice);
                 });
                 
-                ImageView shipIcon = new ImageView(new Image(getClass().getResource("/Image/manageStockIcon.png").toExternalForm()));
+                ImageView shipIcon = new ImageView(new Image(getClass().getResource("/Image/Icons/manageStockIcon.png").toExternalForm()));
                 shipIcon.setFitHeight(20);
                 shipIcon.setFitWidth(20);
                 shipInvoiceButton.setGraphic(shipIcon);

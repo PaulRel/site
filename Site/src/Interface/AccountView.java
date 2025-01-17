@@ -51,7 +51,7 @@ public class AccountView {
         VBox userBox = new VBox(10);
         userBox.setAlignment(Pos.CENTER);
         userBox.setPadding(new Insets(10));
-        ImageView profileIcon = new ImageView(new Image(getClass().getResource("/Image/accountIcon.png").toExternalForm()));
+        ImageView profileIcon = new ImageView(new Image(getClass().getResource("/Image/Icons/accountIcon.png").toExternalForm()));
         profileIcon.setFitWidth(60);
         profileIcon.setFitHeight(60);
         Label userNameLabel = new Label("Bonjour,\n" + MainView.getCurrentCustomer().getFirstName() + " " + MainView.getCurrentCustomer().getLastName());
@@ -191,8 +191,8 @@ public class AccountView {
 
     	Button showPasswordButton = new Button();       
         showPasswordButton.setStyle("-fx-background-color: white; -fx-padding: 5;");
-        ImageView showIcon = new ImageView(new Image(AccountView.class.getResource("/Image/eyeIcon.png").toExternalForm()));
-        ImageView hideIcon = new ImageView(new Image(AccountView.class.getResource("/Image/eyeOffIcon.png").toExternalForm()));
+        ImageView showIcon = new ImageView(new Image(AccountView.class.getResource("/Image/Icons/eyeIcon.png").toExternalForm()));
+        ImageView hideIcon = new ImageView(new Image(AccountView.class.getResource("/Image/Icons/eyeOffIcon.png").toExternalForm()));
         showIcon.setFitHeight(20);
         showIcon.setFitWidth(20);
         hideIcon.setFitHeight(20);
