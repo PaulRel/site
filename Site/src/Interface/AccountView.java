@@ -304,6 +304,7 @@ public class AccountView {
         orderNumberCol.setCellValueFactory(order -> new SimpleStringProperty(String.valueOf(order.getValue().getOrderId())));
         dateCol.setCellValueFactory(order -> new SimpleStringProperty(order.getValue().getOrderDate().toString()));
         shippingToCol.setCellValueFactory(order -> new SimpleStringProperty(order.getValue().getCustomer().getAddress()));
+        statusCol.setCellValueFactory(order -> new SimpleStringProperty(order.getValue().getStatus()));
         totalCol.setCellValueFactory(order -> new SimpleStringProperty(String.format("%.2f €", order.getValue().getTotalPrice())));
         actionCol.setCellFactory(order -> new TableCell<Order, Void>() {
             private final Button viewButton = new Button("Facture");
