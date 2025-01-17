@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 import database.ProductDAO;
 import javafx.collections.FXCollections;
+import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
@@ -46,18 +47,21 @@ public class ProductView {
     * @return Le GridPane contenant tous les produits.
     */
    public ScrollPane displayProducts(MainView mainView, Class<? extends Product> typeProduit, List<Product> products) {
-       produitsGrid = new FlowPane();
-       produitsGrid.setPadding(new Insets(20));
-       produitsGrid.setHgap(10); //espace horizontal entre les produits
-       produitsGrid.setVgap(10);
-       produitsGrid.setPrefSize(900, 800);
+	   if (produitsGrid == null) {
+		   produitsGrid = new FlowPane();
+		   produitsGrid.setPadding(new Insets(20));
+		   produitsGrid.setHgap(10); //espace horizontal entre les produits
+		   produitsGrid.setVgap(10);
+		   produitsGrid.setPrefSize(900, 800);
+	   }
        
-       productDAO = new ProductDAO();  // Récupérer les produits depuis la base de données
        if (products == null) {
+    	   productDAO = new ProductDAO();  // Récupérer les produits depuis la base de données
     	   products = productDAO.getAllProduits();
        }
-       actualProducts = new ArrayList<Product>();
        
+       actualProducts = new ArrayList<Product>();
+       if (produitsGrid.getChildren().isEmpty()) {
        products.stream()
        .filter(typeProduit::isInstance) // Filtrer les produits par type
        .forEach(produit -> {
@@ -65,6 +69,7 @@ public class ProductView {
     	   VBox produitBox = createProductBox(mainView, produit);
     	   produitsGrid.getChildren().add(produitBox);
        });
+       }
   
        // Encapsuler le FlowPane dans un ScrollPane
        ScrollPane scrollPane = MainView.createScrollPane(produitsGrid);
@@ -83,9 +88,20 @@ public class ProductView {
     */
    private VBox createProductBox(MainView mainView, Product product) {
    	// Création des composants pour chaque produit
-       ImageView imageView = new ImageView(new Image(getClass().getResource(product.getImagePath()).toExternalForm()));
+       ImageView imageView = new ImageView();
        imageView.setFitHeight(150);
        imageView.setFitWidth(150);
+       
+       Task<Image> loadImageTask = new Task<>() {
+           @Override
+           protected Image call() {
+               return new Image(getClass().getResource(product.getImagePath()).toExternalForm());
+           }
+       };
+
+       loadImageTask.setOnSucceeded(event -> imageView.setImage(loadImageTask.getValue()));
+       new Thread(loadImageTask).start();
+       
 
        Label nomProduit = new Label(product.getName());
        nomProduit.getStyleClass().add("nom-produit"); // Appliquer la classe CSS
