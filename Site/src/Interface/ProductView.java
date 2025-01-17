@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import database.ProductDAO;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import javafx.geometry.Insets;
@@ -62,14 +63,27 @@ public class ProductView {
        
        actualProducts = new ArrayList<Product>();
        if (produitsGrid.getChildren().isEmpty()) {
-       products.stream()
-       .filter(typeProduit::isInstance) // Filtrer les produits par type
-       .forEach(produit -> {
-    	   actualProducts.add(produit);
-    	   VBox produitBox = createProductBox(mainView, produit);
-    	   produitsGrid.getChildren().add(produitBox);
-       });
+           actualProducts = products.stream()
+               .filter(typeProduit::isInstance)
+               .toList(); // Utilisation de toList pour créer une copie immuable
+
+           // Chargement différé des éléments dans un thread séparé
+           Task<Void> loadProductsTask = new Task<>() {
+               @Override
+               protected Void call() {
+                   for (Product produit : actualProducts) {
+                       VBox produitBox = createProductBox(mainView, produit);
+                       
+                       // Mise à jour de l'interface graphique sur le thread principal
+                       Platform.runLater(() -> produitsGrid.getChildren().add(produitBox));
+                   }
+                   return null;
+               }
+           };
+
+           new Thread(loadProductsTask).start();
        }
+
   
        // Encapsuler le FlowPane dans un ScrollPane
        ScrollPane scrollPane = MainView.createScrollPane(produitsGrid);
