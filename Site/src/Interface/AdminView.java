@@ -595,10 +595,12 @@ public class AdminView {
 
             if ("chaussures".equals(selectedCategory)) {
                 sizeComboBox.getItems().addAll("36", "37", "38", "39");
+                hideClothesComponents();
                 showShoesComponents();
                 
             } else if ("vetement".equals(selectedCategory)) {
                 sizeComboBox.getItems().addAll("S", "M", "L", "XL");
+                hideShoesComponents();
                 showClothesComponents();
             }
         });
