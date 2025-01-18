@@ -6,6 +6,7 @@ import customer.CartItem;
 import customer.Invoice;
 import customer.Order;
 import database.InvoiceDAO;
+import database.OrderDAO;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -38,7 +39,7 @@ public class OrderView {
         mainBox.setSpacing(20); // Espacement entre mainBox et Panier
         mainBox.setPrefSize(1350, 570);
         mainBox.setStyle("-fx-background-color: #EEEEEE");
-        mainBox.getChildren().addAll(MainView.createScrollPane(createOrderZone(mainView, order)), createInfoBar(order));	
+        mainBox.getChildren().addAll(MainView.createScrollPane(createOrderZone(mainView, order)), createInfoBar(order));
         
         AnchorPane.setTopAnchor(mainBox, 116.0);
         
@@ -104,6 +105,7 @@ public class OrderView {
 	}
 	
 	
+	// ORDER ZONE
 	private VBox createBillingInfoBox() {
 		Label billing  = new Label("1 - Informations de facturation");
 		Label billingInfo  = new Label("Sélectionnez l'adresse de facturation");
@@ -188,6 +190,7 @@ public class OrderView {
         return vbox;
 	}
 	
+	// CREATION FACTURE
 	private void createInvoice(Order order) {
 		// Récupère les valeurs saisies par l'utilisateur
 		TextField billingField = (TextField) ((VBox) orderBox.getChildren().get(0)).getChildren().get(2);
@@ -217,12 +220,15 @@ public class OrderView {
     }
 	
 	
+	// RECAP ZONE
 	private VBox createOrderProductsBox(Order order) {
-		System.out.println("Entrer dans createOrderProductsBox");
-		List<CartItem> products = order.getProducts();
-		System.out.println("liste des produits : " + products);
-		VBox vBox = new VBox();
-		vBox.setSpacing(10);
+		VBox orderProductsBox = new VBox();
+		orderProductsBox.setSpacing(10);
+		
+		OrderDAO orderDAO = new OrderDAO();
+		Order currentOrder = orderDAO.getOrderById(order.getOrderId());
+		
+		List<CartItem> products = currentOrder.getProducts();
 		
 		for (CartItem item : products) {
 			System.out.println("Chaque produit de la liste : "+ item);
@@ -232,7 +238,7 @@ public class OrderView {
             Label sizeLabel = new Label ("Taille : " + item.getSize());
             Label quantityLabel = new Label("Quantité : " + item.getQuantity());
             Label priceLabel = new Label(product.getPrice() + "€");
-            priceLabel.setStyle("-fx-padding: 10 0 0 0;; -fx-margin: 0;");
+            priceLabel.setStyle("-fx-padding: 10 0 0 0; -fx-margin: 0;");
             ImageView imageView = new ImageView(new Image(getClass().getResource(product.getImagePath()).toExternalForm()));
             imageView.setFitHeight(100);
             imageView.setFitWidth(100);
@@ -246,14 +252,14 @@ public class OrderView {
             
             Region separator = new Region();
             separator.setStyle("-fx-background-color: silver; -fx-pref-height: 1px; -fx-max-height: 1px;");
-            vBox.widthProperty().addListener((observable, oldValue, newValue) -> {
+            orderProductsBox.widthProperty().addListener((observable, oldValue, newValue) -> {
                 separator.setMaxWidth(newValue.doubleValue() * 0.8);
             });
-            vBox.setAlignment(Pos.CENTER); // Centrer le séparateur
-            vBox.getChildren().addAll(hBox, separator);
+            orderProductsBox.setAlignment(Pos.CENTER); // Centrer le séparateur
+            orderProductsBox.getChildren().addAll(hBox, separator);
 		}
 		
-		return vBox;
+		return orderProductsBox;
 	}
 	
 	private VBox createTotalBox(Order order) {

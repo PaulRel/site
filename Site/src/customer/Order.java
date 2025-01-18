@@ -42,7 +42,7 @@ import products.Product;
 	        updateOrderStatusInDatabase();
 	    }
 
-	    // Calcul du prix total de la commande
+	    // Calcul du prix total des produits
 	    public void calculateTotalPrice() {
 	        this.totalPrice = products.stream()
 	                .mapToDouble(product -> product.getProduct().getPrice() * product.getQuantity())
@@ -72,6 +72,13 @@ import products.Product;
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+    
+    @Override
+    public String toString() {
+    	return "L'identifiant de la commande est "+this.getOrderId() + 
+    			".\nLe client est " + this.customer.getFirstName() +
+    			".\nLes produits commandés sont :"+this.getProducts();
     }
     
 	public int getOrderId() {
