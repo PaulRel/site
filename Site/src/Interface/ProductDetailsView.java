@@ -38,7 +38,7 @@ public class ProductDetailsView {
         HBox detailsBox = new HBox();
         detailsBox.setPadding(new Insets(20));
         detailsBox.setSpacing(10);
-        detailsBox.setMaxSize(1200, 500);
+        detailsBox.setMaxSize(1200, 600);
         AnchorPane.setTopAnchor(detailsBox, 116.0);
         
         // Affichage des informations du produit
