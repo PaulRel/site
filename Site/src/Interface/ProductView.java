@@ -192,6 +192,8 @@ public class ProductView {
        size37.setOnAction(event -> applyFilters(mainView));
        size38.setOnAction(event -> applyFilters(mainView));
        size39.setOnAction(event -> applyFilters(mainView));
+       size40.setOnAction(event -> applyFilters(mainView));
+       size41.setOnAction(event -> applyFilters(mainView));
        male.setOnAction(event -> applyFilters(mainView));
        female.setOnAction(event -> applyFilters(mainView));
        asicsBrand.setOnAction(event -> applyFilters(mainView));
@@ -227,6 +229,8 @@ public class ProductView {
 	    if (size37.isSelected()) sizeSelected.add("37");
 	    if (size38.isSelected()) sizeSelected.add("38");
 	    if (size39.isSelected()) sizeSelected.add("39");
+	    if (size40.isSelected()) sizeSelected.add("40");
+	    if (size41.isSelected()) sizeSelected.add("41");
 	    
 	    genderSelected.clear();
 	    if (male.isSelected()) genderSelected.add("Homme");
