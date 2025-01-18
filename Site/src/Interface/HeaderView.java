@@ -92,8 +92,9 @@ public class HeaderView{
         // Création d'une HBox pour aligner les boutons horizontalement
         HBox menuBar = new HBox();
         menuBar.getChildren().addAll(vetementsButton, chaussuresButton);
-        menuBar.setStyle("-fx-spacing: 20px; -fx-padding: 20px; -fx-background-color: #2C3E50;");
-        menuBar.setPrefHeight(30);
+        menuBar.setStyle("-fx-spacing: 2px; -fx-padding: 0 8 0 8; -fx-background-color: linear-gradient(to bottom, derive(#ececec,75%) 0%, -fx-outer-border 90%),"
+        		+ " linear-gradient(to bottom, derive(#ececec,46.9%) 2%, derive(#ececec,-2.1%) 95%); -fx-background-insets: 0 0 0 0, 1 0 1 0; -fx-background-radius: 0, 0 ; ");
+        menuBar.setPrefHeight(36);
         vetementsButton.setId("vetementsButton");
         chaussuresButton.setId("chaussuresButton");
         

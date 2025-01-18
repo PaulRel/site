@@ -3,19 +3,22 @@
     -fx-background-color: white;
 }
 /* Style des boutons dans la barre */
-#vetementsButton, #chaussuressButton {
-    -fx-background-color: white;  /* Couleur de fond des boutons */
-    -fx-text-fill: black;         /* Couleur du texte des boutons */
-    -fx-font-size: 16px;          /* Taille de la police */
-    -fx-padding: 0 20 0 20;       /* Espacement autour du texte */
-    -fx-background-radius: 5px;   /* Coins arrondis */
+#vetementsButton, #chaussuresButton {
+    -fx-background-color: transparent;  /* Couleur de fond des boutons */
+    -fx-text-fill: #333;         /* Couleur du texte des boutons */
+    -fx-font-size: 18px;          /* Taille de la police */ 
+    -fx-padding: 14 8 13 8;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0;
+    /*-fx-font-family: "Monospace"*/  
     /* -fx-border-color: #BDC3C7;    Bordure grise autour des boutons */
     /* -fx-border-width: 1px;        Épaisseur de la bordure */
 }
 
 /* Effet au survol des boutons */
-#vetementsButton:hover, #chaussuressButton:hover{
-    -fx-background-color: #ecf0f1; /* Légère couleur de fond au survol */
+#vetementsButton:hover, #chaussuresButton:hover{
+    -fx-background-color: #555; /* Couleur de fond au survol */
+    -fx-text-fill: white;
 }
 
 .menu:hover {
