@@ -2,16 +2,21 @@
 	-fx-font-family: "Arial";
     -fx-background-color: white;
 }
-/*	
-.menu .label {
-    -fx-text-fill: #f0f0f0;
+/* Style des boutons dans la barre */
+#vetementsButton, #chaussuressButton {
+    -fx-background-color: white;  /* Couleur de fond des boutons */
+    -fx-text-fill: black;         /* Couleur du texte des boutons */
+    -fx-font-size: 16px;          /* Taille de la police */
+    -fx-padding: 0 20 0 20;       /* Espacement autour du texte */
+    -fx-background-radius: 5px;   /* Coins arrondis */
+    /* -fx-border-color: #BDC3C7;    Bordure grise autour des boutons */
+    /* -fx-border-width: 1px;        Épaisseur de la bordure */
 }
 
-.menu-bar {
-    -fx-background-color: #554;
-    -fx-padding: 10;
+/* Effet au survol des boutons */
+#vetementsButton:hover, #chaussuressButton:hover{
+    -fx-background-color: #ecf0f1; /* Légère couleur de fond au survol */
 }
-*/
 
 .menu:hover {
     -fx-background-color: #555;
@@ -79,7 +84,7 @@
     -fx-padding: 10;
 }
 
-/* Filtres INNEFICACE*/
+/* Filtres INEFFICACE*/
 .vbox > .check-box {
     -fx-padding: 5px 0 5 0;
     -fx-font-size: 14px;

@@ -81,26 +81,22 @@ public class HeaderView{
     	cartButton.setOnMouseClicked(event -> new CartView(mainView));
                           
         // Barre de menu
-    	MenuBar menuBar = new MenuBar();
-        Menu menuVetements = new Menu("VETEMENTS");
-        Menu menuSacs = new Menu("SACS");
-        Menu menuChaussures = new Menu("CHAUSSURES");
         
-        MenuItem vetementsItem = new MenuItem("VETEMENTS");
-        MenuItem sacsItem = new MenuItem("SACS");
-        MenuItem chaussuresItem = new MenuItem("CHAUSSURES");
+        Button vetementsButton = new Button("VETEMENTS");
+        Button chaussuresButton = new Button("CHAUSSURES");
 
         // Associer un événement de clic pour chaque item de menu
-        vetementsItem.setOnAction(e -> mainView.showProductView(Vetement.class, null));
-        sacsItem.setOnAction(e -> mainView.showProductView(Sac.class, null));
-        chaussuresItem.setOnAction(e -> mainView.showProductView(Chaussures.class, null));
+        vetementsButton.setOnAction(e -> mainView.showProductView(Vetement.class, null));
+        chaussuresButton.setOnAction(e -> mainView.showProductView(Chaussures.class, null));
         
-        // Ajouter les items aux menus
-        menuVetements.getItems().add(vetementsItem);
-        menuSacs.getItems().add(sacsItem);
-        menuChaussures.getItems().add(chaussuresItem);
+        // Création d'une HBox pour aligner les boutons horizontalement
+        HBox menuBar = new HBox();
+        menuBar.getChildren().addAll(vetementsButton, chaussuresButton);
+        menuBar.setStyle("-fx-spacing: 20px; -fx-padding: 20px; -fx-background-color: #2C3E50;");
+        menuBar.setPrefHeight(30);
+        vetementsButton.setId("vetementsButton");
+        chaussuresButton.setId("chaussuresButton");
         
-        menuBar.getMenus().addAll(menuVetements, menuSacs, menuChaussures);
         
         // Ecouteur pour ajuster la largeur de wrap en fonction de la taille de la fenêtre
         mainView.getPrimaryStage().widthProperty().addListener((observable, oldValue, newValue) -> {
