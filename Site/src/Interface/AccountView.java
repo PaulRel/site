@@ -39,9 +39,9 @@ public class AccountView {
         mainView.getPrimaryStage().setScene(accountScene);
     }
     
-    public void createLeftMenu(MainView mainView) {
 
-        // Menu de gauche
+    // Menu de gauche avec les boutons Deconnexion, Mon tableau de Bord, Mes commandes, Supprimer le compte
+    public void createLeftMenu(MainView mainView) {
         VBox menuBox = new VBox(15);
         AnchorPane.setTopAnchor(menuBox, 116.0);
         menuBox.setPadding(new Insets(20));
@@ -307,10 +307,12 @@ public class AccountView {
         statusCol.setCellValueFactory(order -> new SimpleStringProperty(order.getValue().getStatus()));
         totalCol.setCellValueFactory(order -> new SimpleStringProperty(String.format("%.2f €", order.getValue().getTotalPrice())));
         actionCol.setCellFactory(order -> new TableCell<Order, Void>() {
-            private final Button viewButton = new Button("Facture");
-            private final Button finalizeButton = new Button("Finaliser");
+            private final Button viewButton = new Button("FACTURE");
+            private final Button finalizeButton = new Button("FINALISER");
 
             {
+            	viewButton.setStyle("-fx-font-size: 12px; -fx-text-fill: white ; -fx-background-color: BLUEVIOLET; -fx-background-radius: 20px; -fx-padding: 10 20 10 20; ");
+            	finalizeButton.setStyle("-fx-font-size: 12px; -fx-text-fill: white; -fx-background-color: royalblue; -fx-background-radius: 20px; -fx-padding: 10 20 10 20; ");
                 // Action pour le bouton "Visualiser"
                 viewButton.setOnAction(event -> {
                     InvoiceView invoiceView = new InvoiceView();
@@ -355,6 +357,10 @@ public class AccountView {
         
         OrderDAO orderDAO = new OrderDAO();
         List<Order> orders = orderDAO.getOrdersByCustomer(MainView.getCurrentCustomer());
+        
+        // Trier les commandes dans l'ordre inverse des IDs
+        orders.sort((o1, o2) -> Integer.compare(o2.getOrderId(), o1.getOrderId()));
+        
         ObservableList<Order> observableOrders = FXCollections.observableArrayList(orders);
         ordersTable.setItems(observableOrders);
 

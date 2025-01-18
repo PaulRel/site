@@ -59,7 +59,7 @@ public class OrderDAO {
                     String size = rs.getString("size");
                     int quantity = rs.getInt("quantity");
                     ProductDAO productDAO = new ProductDAO();
-                    Product product = productDAO.getProduitById(productId);
+                    Product product = productDAO.getProductById(productId);
                     order.addProduct(product, size, quantity);
                 }
             }

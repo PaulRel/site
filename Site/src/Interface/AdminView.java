@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import customer.CartItem;
 import customer.Customer;
@@ -107,7 +108,7 @@ public class AdminView {
 	                  button.setStyle("-fx-background-color: transparent; -fx-border-color: transparent");
 	              });
 	        }
-        
+		
 		statsButton.setOnAction(e -> showStats());
 		customersButton.setOnAction(e -> showClients());
 		stockManagementButton.setOnAction(e -> manageStocks());
@@ -247,9 +248,9 @@ public class AdminView {
 	
 	
 	private void manageStocks() {
-		Label OutOfStockProductsLabel = new Label("Produits en rupture de stock " + adminStatsDAO.getOutOfStockProducts());
 		VBox editProductsBox = editProducts();
-		mainContent.getChildren().setAll(editProductsBox, OutOfStockProductsLabel);
+		VBox outOfStockProductBox = getOutOfStockProductTable();
+		mainContent.getChildren().setAll(editProductsBox, outOfStockProductBox);
 	}
 	
 	private void manageInvoice() {
@@ -840,6 +841,49 @@ public class AdminView {
     	imageView.setFitWidth(90);  // Largeur fixe
         imageView.setFitHeight(90); // Hauteur fixe
         imageView.setPreserveRatio(true);       
+    }
+    
+    
+    private VBox  getOutOfStockProductTable() {
+    	VBox outOfStockBox = new VBox();
+    	outOfStockBox.setStyle("-fx-padding: 10;-fx-spacing:10;-fx-background-color: #FFFFFF; -fx-background-radius:10; -fx-max-width: 700px; -fx-max-height: 300px;");
+    	mainContent.setAlignment(Pos.CENTER);
+    	
+    	Label OutOfStockProductsLabel = new Label("Nombre de produits en rupture de stock : " + adminStatsDAO.getOutOfStockProducts());
+    	OutOfStockProductsLabel.setStyle("-fx-text-fill: red; fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 5);");
+    	
+    	// Récupérer les produits en rupture avec leur taille
+        Map<Product, List<String>> productIds = adminStatsDAO.getOutOfStockProductInfo();
+        
+        ObservableList<Map.Entry<Product, List<String>>> observableList = FXCollections.observableArrayList(productIds.entrySet());
+
+        TableView<Map.Entry<Product, List<String>>> tableView = new TableView<>();
+
+        TableColumn<Map.Entry<Product, List<String>>, Integer> colId = new TableColumn<>("ID Produit");
+        TableColumn<Map.Entry<Product, List<String>>, String> colSize = new TableColumn<>("Taille en Rupture");
+        TableColumn<Map.Entry<Product, List<String>>, String> colName = new TableColumn<>("Nom");
+        
+        colId.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getKey().getId()).asObject());
+        colSize.setCellValueFactory(cellData -> {
+            List<String> sizes = cellData.getValue().getValue();
+            return new SimpleStringProperty(String.join(", ", sizes)); // Convertir la liste de tailles en une chaîne de caractères séparée par des virgules
+        });
+        colName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getKey().getName()));
+ 
+        colId.setMaxWidth(90);
+        colSize.setMaxWidth(120);
+        colName.setMaxWidth(490);
+
+        tableView.getColumns().add(colId);
+        tableView.getColumns().add(colSize);
+        tableView.getColumns().add(colName);
+        tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        tableView.setItems(observableList);
+        tableView.setId("outofstockTable");
+        
+        outOfStockBox.getChildren().addAll(OutOfStockProductsLabel, tableView);
+        
+        return outOfStockBox;
     }
     
     

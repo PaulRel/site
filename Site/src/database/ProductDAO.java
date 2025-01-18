@@ -121,7 +121,7 @@ public class ProductDAO {
         return vetement;
     }
     
-    public Product getProduitById(int id) {
+    public Product getProductById(int id) {
         String query = "SELECT id, Nom, Description, Type, Marque, Prix, image_Path FROM produit WHERE id = ?";
         Product product = null;  // Initialiser à null pour l'instant, si aucun produit n'est trouvé
 

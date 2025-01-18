@@ -169,7 +169,7 @@ public class SearchAdvancedView {
             while (resultSet.next()) {
                 System.out.println("Produit trouvé : " + resultSet.getInt("Produit_id"));
                 ProductDAO productDAO = new ProductDAO();
-                Product produit = productDAO.getProduitById(resultSet.getInt("Produit_id"));
+                Product produit = productDAO.getProductById(resultSet.getInt("Produit_id"));
                 results.add(produit);
             }
 

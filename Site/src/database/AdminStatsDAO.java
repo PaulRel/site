@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,6 +19,7 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.PieChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Tooltip;
+import products.Product;
 
 public class AdminStatsDAO {
 	
@@ -82,7 +84,36 @@ public class AdminStatsDAO {
 		}
         return 0;
     }
+    
+    // Méthode pour récupérer l'ID du produit et les tailles en rupture
+    public Map<Product, List<String>> getOutOfStockProductInfo() {
+        String query = "SELECT DISTINCT produit_id, taille FROM taillestock WHERE qt_dispo = 0";
+        Map<Product, List<String>> outOfStockInfoMap = new HashMap<>();
 
+        try (PreparedStatement stmt = connection.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                int productId = rs.getInt("produit_id");
+                String size = rs.getString("taille");
+
+                ProductDAO productDAO = new ProductDAO();
+                Product product = productDAO.getProductById(productId);
+                if (product != null) {
+                    // Si l'ID du produit existe déjà dans la map, ajoutez la taille à la liste
+                    outOfStockInfoMap.computeIfAbsent(product, k -> new ArrayList<>()).add(size);
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return outOfStockInfoMap;
+    }
+    
+    
+    
     // 4. Nombre total de commandes
     public int getTotalOrders() {
         String query = "SELECT COUNT(*) AS total_commandes FROM Orders";
