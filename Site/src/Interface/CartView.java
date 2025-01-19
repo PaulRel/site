@@ -39,25 +39,26 @@ public class CartView {
     private Button continueButton, orderButton;
 	
 	public CartView(MainView mainView) {
+		
+		// Lorsque l'utilisateur clique sur le bouton Continuer vos achats, la vue des produits est affichée
 		continueButton = new Button("Continuer vos achats");
 		continueButton.setOnAction(e -> mainView.showProductView(Product.class, null));
+		
+		// Récupération du panier de l'utilisateur actuel, si un utilisateur est connecté
 		if (MainView.getCurrentCustomer() != null) {cart = MainView.getCurrentCustomer().getCart();}
+		
+		// Si le panier est vide ou inexistant, affichage Votre panier est vide
 		if (cart == null || cart.getItems().isEmpty()) {
 			Label emptyCartLabel = new Label("Votre panier est vide");
-				
-		// Mise en page principale
-        //VBox main = new VBox(emptyCartLabel, continueButton);
-        //main.setPadding(new Insets(10));
-        //main.setMaxSize(700, 400);
-        //main.setAlignment(Pos.CENTER);
-        //main.setStyle("-fx-background-color: white");
-		
 			root = new VBox(20, emptyCartLabel, continueButton);
-			AnchorPane.setTopAnchor(root, 116.0);
-		}
+			AnchorPane.setTopAnchor(root, 118.0);
+		}  
+		// Sinon, affiche les éléments du panier en utilisant la méthode displayCart
 		else {
 			displayCart(mainView);
 		}
+		
+		
 	    root.setPadding(new Insets(30));
 	    root.setPrefSize(1350, 550);
 	    root.setStyle("-fx-background-color: #EEEEEE");
@@ -70,17 +71,19 @@ public class CartView {
 	    rootPane.getChildren().addAll(v.getHeader(), root);
 	    
 	    Scene createAccountScene = new Scene(rootPane, 1350, 670);
-	    
-	    String css = this.getClass().getResource("/style.css").toExternalForm();
-	    createAccountScene.getStylesheets().add(css);
+	    createAccountScene.getStylesheets().add(this.getClass().getResource("/style.css").toExternalForm());
 	        
 	    mainView.getPrimaryStage().setScene(createAccountScene);
 	}
 	
+	/**
+	 * Affiche le panier dans une TableView avec le détail des articles et l'action supprimer
+	 * Ajoute les boutons "Continuer" et "Commander"
+	 * Met en page les composants dans la VBox root
+	 */
 	public void displayCart(MainView mainView) {
 		
-		if (cartTable.getColumns().isEmpty()) {
-			
+		if (cartTable.getColumns().isEmpty()) {			
 			// Ajouter une colonne pour l'image
 	        TableColumn<CartItem, ImageView> imageColumn = new TableColumn<>("Image");
 	        imageColumn.setCellValueFactory(cellData -> {
@@ -146,9 +149,17 @@ public class CartView {
 	    orderButton.setOnAction(e -> validateOrder(mainView));
 	    buttonsBox = new HBox(100, continueButton, orderButton);
 	    root = new VBox(30, cartTable, buttonsBox);
-		AnchorPane.setTopAnchor(root, 116.0);
+		AnchorPane.setTopAnchor(root, 118.0);
 	}
 	
+	/**
+	 * Valide la commande en cours pour l'utilisateur connecté.
+	 * Si aucun utilisateur n'est connecté, affiche un avertissement pour se connecter.
+	 * Sinon 
+	 * - Synchronise le panier de l'utilisateur avec la base de données.
+	 * - Crée une nouvelle commande et y associe les articles du panier.
+	 * - Insère la commande dans la base de données, décrémente les stocks des produits commandés et vide le panier.
+	 */
 	private void validateOrder(MainView mainView) {
 		if (MainView.getCurrentCustomer()==null) {
 			displayLoginWarning(mainView);
@@ -168,6 +179,7 @@ public class CartView {
 			new OrderView(mainView, order);
 		}
 	}
+	
 	
 	public void displayLoginWarning(MainView mainView) {
 		Alert alert = new Alert(Alert.AlertType.WARNING);
