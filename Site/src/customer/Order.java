@@ -27,8 +27,7 @@ import products.Product;
 	    }
 
 	    public void addProduct(Product product, String size, int quantity) {
-	        CartItem detail = new CartItem(product, size, quantity);
-	        products.add(detail);
+	        products.add(new CartItem(product, size, quantity));
 	        calculateTotalPrice();
 	    }
 
@@ -40,6 +39,11 @@ import products.Product;
 	    public void deliverOrder() {
 	        this.status = "Livrée";
 	        updateOrderStatusInDatabase();
+	    }
+	    
+	    public void cancelOrder() {
+	    	this.status = "Annulée";
+	    	updateOrderStatusInDatabase();
 	    }
 
 	    // Calcul du prix total des produits
@@ -56,6 +60,19 @@ import products.Product;
             pstmt.setInt(1, quantity);
             pstmt.setInt(2, productId);
             pstmt.setString(3, size);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public void incrementStock(CartItem cartItem) {
+        String query = "UPDATE taillestock SET qt_dispo = qt_dispo + ? WHERE produit_id = ? AND taille = ?";
+        try (Connection connection = DatabaseConnection.getConnection();
+        		PreparedStatement pstmt = connection.prepareStatement(query)) {
+            pstmt.setInt(1, cartItem.getQuantity());
+            pstmt.setInt(2, cartItem.getProduct().getId());
+            pstmt.setString(3, cartItem.getSize());
             pstmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();

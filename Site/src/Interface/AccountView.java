@@ -1,7 +1,9 @@
 package Interface;
 
+import java.time.LocalDate;
 import java.util.List;
 
+import customer.CartItem;
 import customer.Customer;
 import customer.Order;
 import database.CustomerDAO;
@@ -309,10 +311,12 @@ public class AccountView {
         actionCol.setCellFactory(order -> new TableCell<Order, Void>() {
             private final Button viewButton = new Button("FACTURE");
             private final Button finalizeButton = new Button("FINALISER");
+            private final Label canceledLabel = new Label("Annulée");
 
             {
             	viewButton.setStyle("-fx-font-size: 12px; -fx-text-fill: white ; -fx-background-color: BLUEVIOLET; -fx-background-radius: 20px; -fx-padding: 10 20 10 20; ");
             	finalizeButton.setStyle("-fx-font-size: 12px; -fx-text-fill: white; -fx-background-color: royalblue; -fx-background-radius: 20px; -fx-padding: 10 20 10 20; ");
+            	canceledLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: red; -fx-font-weight: bold;");
                 // Action pour le bouton "Visualiser"
                 viewButton.setOnAction(event -> {
                     InvoiceView invoiceView = new InvoiceView();
@@ -328,21 +332,28 @@ public class AccountView {
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
-                if (empty) {
+                if (empty || getTableRow() == null || getTableRow().getItem() == null) {
                     setGraphic(null);
                 } else {
                 	Order currentOrder = getTableRow().getItem();
 
-                    if ("En cours".equals(currentOrder.getStatus())) {
-                        // Afficher le bouton "Finaliser" si le statut est "En cours"
+                	switch (currentOrder.getStatus()) {
+                    case "En cours":
                         setGraphic(finalizeButton);
-                    } else {
-                        // Sinon, afficher le bouton "Visualiser"
+                        break;
+                    case "Validée":
                         setGraphic(viewButton);
-                    }
+                        break;
+                    case "Annulée":
+                        setGraphic(canceledLabel);
+                        break;
+                    default:
+                        setGraphic(null); // Aucun graphique pour les autres statuts
+                        break;
                 }
             }
-        });
+        }
+    });
 
         // Ajouter les colonnes à la table
         ordersTable.getColumns().add(orderNumberCol);
@@ -357,6 +368,15 @@ public class AccountView {
         
         OrderDAO orderDAO = new OrderDAO();
         List<Order> orders = orderDAO.getOrdersByCustomer(MainView.getCurrentCustomer());
+        
+        // Si la commande n'a pas été finalisé et qu'elle date d'il y a + de 2 jours
+        // alors elle est annulée et les produits sont remis en vente
+        for (Order order: orders) {
+        	if (order.getStatus().equals("En cours") && order.getOrderDate().isBefore(LocalDate.now().minusDays(2))) {
+                order.cancelOrder();
+                order.getProducts().forEach(order::incrementStock);
+            }
+        }
         
         // Trier les commandes dans l'ordre inverse des IDs
         orders.sort((o1, o2) -> Integer.compare(o2.getOrderId(), o1.getOrderId()));

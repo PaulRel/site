@@ -76,6 +76,7 @@ public class OrderView {
 	}
 	
 	private void goBack(MainView mainView) {
+		MainView.showAlert("Commande en cours", "Vaous avez 2 jours pour finaliser votre commande.", "Votre commande sera ANNULEE dans 2 jours et les produits choisis seront remis en vente", AlertType.INFORMATION);
 		new AccountView(mainView);
 	}
 	
