@@ -76,15 +76,19 @@ public class OrderView {
 	}
 	
 	private void goBack(MainView mainView) {
-		MainView.showAlert("Commande en cours", "Vaous avez 2 jours pour finaliser votre commande.", "Votre commande sera ANNULEE dans 2 jours et les produits choisis seront remis en vente", AlertType.INFORMATION);
+		MainView.showAlert("Commande en cours", "Vous avez 2 jours pour finaliser votre commande.", "Votre commande sera ANNULEE dans 2 jours et les produits choisis seront remis en vente", AlertType.INFORMATION);
 		new AccountView(mainView);
 	}
 	
 	private void continueProcess(MainView mainView, Order order) {
+		if (!isOrderValid()) {
+			MainView.showAlert("Erreur", null, "Veuillez remplir tous les champs", AlertType.ERROR);
+		} else {
 		order.validateOrder();
 		MainView.showAlert("Commande", null, "Commande validée", AlertType.INFORMATION);
 		createInvoice(order);
 		new AccountView(mainView);
+		}
 	}
 	
 	private ScrollPane createInfoBar(Order order) {
@@ -201,11 +205,11 @@ public class OrderView {
 	    
         String billingAddress = billingField.getText();
         String shippingAddress = deliveryField.getText();
-        RadioButton selectedShippingOption = (RadioButton) shippingGroup.getSelectedToggle();
-        RadioButton selectedPaymentOption = (RadioButton) paymentGroup.getSelectedToggle();
-
-        String shippingMethod = selectedShippingOption != null ? selectedShippingOption.getText() : "";
-        String paymentMethod = selectedPaymentOption != null ? selectedPaymentOption.getText() : "";
+        String shippingMethod = ((RadioButton) shippingGroup.getSelectedToggle()).getText();
+        String paymentMethod = ((RadioButton) paymentGroup.getSelectedToggle()).getText();
+        
+        //RadioButton selectedShippingOption = (RadioButton) shippingGroup.getSelectedToggle();
+        //RadioButton selectedPaymentOption = (RadioButton) paymentGroup.getSelectedToggle();
         
         // Crée la facture
         Invoice invoice = new Invoice(order);
@@ -219,6 +223,18 @@ public class OrderView {
         InvoiceDAO invoiceDAO = new InvoiceDAO();
         invoiceDAO.insertInvoice(invoice);
     }
+	
+	private boolean isOrderValid() {
+		TextField billingField = (TextField) ((VBox) orderBox.getChildren().get(0)).getChildren().get(2);
+	    TextField deliveryField = (TextField) ((VBox) orderBox.getChildren().get(1)).getChildren().get(2);
+	    ToggleGroup shippingGroup = ((RadioButton) ((VBox) orderBox.getChildren().get(2)).getChildren().get(2)).getToggleGroup();
+	    ToggleGroup paymentGroup = ((RadioButton) ((VBox) orderBox.getChildren().get(3)).getChildren().get(2)).getToggleGroup();
+	    
+	    if(billingField.getText().isEmpty() || deliveryField.getText().isEmpty() || shippingGroup.getSelectedToggle() == null || paymentGroup.getSelectedToggle() == null) {
+	    		return false;
+	    }
+	return true;
+	}
 	
 	
 	// RECAP ZONE
