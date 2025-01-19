@@ -7,22 +7,27 @@
     -fx-background-color: transparent;  /* Couleur de fond des boutons */
     -fx-text-fill: #333;         /* Couleur du texte des boutons */
     -fx-font-size: 18px;          /* Taille de la police */ 
-    -fx-padding: 14 8 13 8;
+    -fx-padding: 13 8 12 8;
     -fx-background-radius: 0;
-    -fx-background-insets: 0;
-    /*-fx-font-family: "Monospace"*/  
-    /* -fx-border-color: #BDC3C7;    Bordure grise autour des boutons */
-    /* -fx-border-width: 1px;        Épaisseur de la bordure */
+    -fx-background-insets: 0;  
+    -fx-border-color: transparent;    /*Bordure grise autour des boutons */
+    -fx-border-width: 0px 0px 3px 0px;        /*Épaisseur de la bordure */
 }
 
 /* Effet au survol des boutons */
 #vetementsButton:hover, #chaussuresButton:hover{
-    -fx-background-color: #555; /* Couleur de fond au survol */
-    -fx-text-fill: white;
+    -fx-background-color: #dedede; /* Couleur de fond au survol*/
+    -fx-border-color:#2ca772;
+    -fx-border-width: 0px 0px 3px 0px;
 }
 
-.menu:hover {
-    -fx-background-color: #555;
+ #menuBar{
+ 	-fx-spacing: 2px; 
+ 	-fx-padding: 0 8 0 20; 
+ 	-fx-background-color: linear-gradient(to bottom, derive(#ececec,75%) 0%, -fx-outer-border 90%), linear-gradient(to bottom, derive(#ececec,46.9%) 2%, derive(#ececec,-2.1%) 95%);
+ 	-fx-background-insets: 0 0 0 0, 1 0 1 0; 
+ 	-fx-background-radius: 0, 0;
+ 	-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 5, 0.3, 0, 2);
 }
 
 /* Section des produits */

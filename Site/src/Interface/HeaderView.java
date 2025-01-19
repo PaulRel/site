@@ -31,13 +31,11 @@ public class HeaderView{
         createHeader(mainView);
     }
 
-    private void createHeader(MainView mainView) {   	
-    	HBox topBar = new HBox();
-        topBar.setPrefHeight(50);
-        topBar.setAlignment(Pos.CENTER);
-
+    private void createHeader(MainView mainView) {
         header = new VBox();
-        header.setPrefHeight(100);
+        
+        HBox topBar = new HBox();
+        topBar.setStyle("-fx-pref-height: 50; -fx-alignment: center; -fx-padding: 0 0 0 20;");
 
         // Logo du magasin
         ImageView logo = new ImageView(new Image(getClass().getResource("/Image/logo.jpg").toExternalForm()));
@@ -46,7 +44,7 @@ public class HeaderView{
 
         // Nom du magasin
         Label shopName = new Label("TennisShop");
-        shopName.setStyle("-fx-text-fill: #333; -fx-font-size: 30px; -fx-font-weight: bold;");
+        shopName.setStyle("-fx-text-fill: #333; -fx-font-size: 30px; -fx-font-weight: bold; -fx-cursor: hand;");
         shopName.setOnMouseClicked(e -> mainView.showProductView(Product.class, null));
         
         // Bouton du compte
@@ -79,25 +77,6 @@ public class HeaderView{
         
         // Gestion du clic pour afficher CartView
     	cartButton.setOnMouseClicked(event -> new CartView(mainView));
-                          
-        // Barre de menu
-        
-        Button vetementsButton = new Button("VETEMENTS");
-        Button chaussuresButton = new Button("CHAUSSURES");
-
-        // Associer un événement de clic pour chaque item de menu
-        vetementsButton.setOnAction(e -> mainView.showProductView(Vetement.class, null));
-        chaussuresButton.setOnAction(e -> mainView.showProductView(Chaussures.class, null));
-        
-        // Création d'une HBox pour aligner les boutons horizontalement
-        HBox menuBar = new HBox();
-        menuBar.getChildren().addAll(vetementsButton, chaussuresButton);
-        menuBar.setStyle("-fx-spacing: 2px; -fx-padding: 0 8 0 8; -fx-background-color: linear-gradient(to bottom, derive(#ececec,75%) 0%, -fx-outer-border 90%),"
-        		+ " linear-gradient(to bottom, derive(#ececec,46.9%) 2%, derive(#ececec,-2.1%) 95%); -fx-background-insets: 0 0 0 0, 1 0 1 0; -fx-background-radius: 0, 0 ; ");
-        menuBar.setPrefHeight(36);
-        vetementsButton.setId("vetementsButton");
-        chaussuresButton.setId("chaussuresButton");
-        
         
         // Ecouteur pour ajuster la largeur de wrap en fonction de la taille de la fenêtre
         mainView.getPrimaryStage().widthProperty().addListener((observable, oldValue, newValue) -> {
@@ -126,11 +105,37 @@ public class HeaderView{
         hyperlink.setOnAction(event -> new SearchAdvancedView(mainView));
 
         topBar.getChildren().addAll(logo, shopName, leftSpacer, searchField, searchButton, hyperlink, rightSpacer, accountButton, cartButton);
+        
+        
+        // Barre de menu
+        HBox menuBar = new HBox();
+        menuBar.setId("menuBar");
+        
+        Button vetementsButton = new Button("VETEMENTS");
+        Button chaussuresButton = new Button("CHAUSSURES");
+
+        // Associer un événement de clic pour chaque item de menu
+        vetementsButton.setOnAction(e ->{ 
+        	mainView.showProductView(Vetement.class, null); 
+        	vetementsButton.setStyle("-fx-border-color: #00ffe8;; -fx-background-color: #dedede; -fx-border-color: #00ffe8; -fx-border-width: 0px 0px 3px 0px;");
+        	chaussuresButton.setStyle("-fx-border-width: 0px 0px 3px 0px; -fx-border-width: 0px 0px 0px 0px;");
+        });
+        
+        chaussuresButton.setOnAction(e -> {
+        	chaussuresButton.setStyle("-fx-border-color: #00ffe8;; -fx-background-color: #dedede; -fx-border-color: #00ffe8; -fx-border-width: 0px 0px 3px 0px;");
+        	vetementsButton.setStyle("-fx-border-width: 0px 0px 3px 0px; -fx-border-width: 0px 0px 0px 0px;");
+        	mainView.showProductView(Chaussures.class, null);
+        });
+        
+        vetementsButton.setId("vetementsButton");
+        chaussuresButton.setId("chaussuresButton");
+        
+        menuBar.getChildren().addAll(vetementsButton, chaussuresButton);
+        
         header.getChildren().addAll(topBar, menuBar);
         header.setPrefWidth(mainView.getPrimaryStage().getWidth() - 20);
         
         AnchorPane.setTopAnchor(header, 10.0);
-        AnchorPane.setLeftAnchor(header, 10.0);
     }
     
     private void performSearch(String searchTerm, MainView mainView) {
