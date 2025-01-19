@@ -99,7 +99,6 @@ public class AdminView {
 		
 		for (Button button : new Button[]{statsButton, customersButton, stockManagementButton, editInvoiceButton}) {
 	              button.setStyle("-fx-background-color: transparent; -fx-font-size: 16px; -text-fill:#fff; -fx-padding: 10; -fx-border-color: transparent");
-	              //-fx-alignment: CENTER_LEFT;
 	        	  button.setPrefWidth(220.0);
 	        	  button.setOnMouseEntered(event -> {
 	                  button.setStyle("-fx-background-color: #3A7F9C; -fx-border-color: WHITE");
@@ -336,43 +335,33 @@ public class AdminView {
 	    tableView.setId("customerTable");
 	    tableView.setMaxHeight(300);
 
-	    // Colonne pour CustomerID
 	    TableColumn<Customer, Integer> colCustomerId = new TableColumn<>("ID");
 	    colCustomerId.setCellValueFactory(new PropertyValueFactory<>("id"));
 
-	    // Colonne pour FirstName
 	    TableColumn<Customer, String> colFirstName = new TableColumn<>("Prénom");
 	    colFirstName.setCellValueFactory(new PropertyValueFactory<>("firstName"));
 
-	    // Colonne pour LastName
 	    TableColumn<Customer, String> colLastName = new TableColumn<>("Nom");
 	    colLastName.setCellValueFactory(new PropertyValueFactory<>("lastName"));
 
-	    // Colonne pour Civility
 	    TableColumn<Customer, String> colCivility = new TableColumn<>("Civilité");
 	    colCivility.setCellValueFactory(new PropertyValueFactory<>("civility"));
 
-	    // Colonne pour Email
 	    TableColumn<Customer, String> colEmail = new TableColumn<>("Email");
 	    colEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
 
-	    // Colonne pour PhoneNumber
 	    TableColumn<Customer, String> colPhoneNumber = new TableColumn<>("Téléphone");
 	    colPhoneNumber.setCellValueFactory(new PropertyValueFactory<>("phoneNumber"));
 
-	    // Colonne pour Password
 	    TableColumn<Customer, String> colPassword = new TableColumn<>("Mot de passe");
 	    colPassword.setCellValueFactory(new PropertyValueFactory<>("password"));
 
-	    // Colonne pour Role
 	    TableColumn<Customer, String> colRole = new TableColumn<>("Rôle");
 	    colRole.setCellValueFactory(new PropertyValueFactory<>("role"));
 
-	    // Colonne pour Address
 	    TableColumn<Customer, String> colAddress = new TableColumn<>("Adresse");
 	    colAddress.setCellValueFactory(new PropertyValueFactory<>("address"));
 
-	    // Colonne pour Actions (si nécessaire)
 	    TableColumn<Customer, Void> actionColumn = new TableColumn<>("Action");
 	    actionColumn.setCellFactory(param -> new TableCell<>() {
 	        private final Button deleteCustomerButton = new Button();
@@ -776,12 +765,6 @@ public class AdminView {
 
         TableColumn<Product, Double> colPrice = new TableColumn<>("Prix");
         colPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
-
-        //TableColumn<Product, Integer> colQtDispo = new TableColumn<>("Quantité");
-        //colQtDispo.setCellValueFactory(new PropertyValueFactory<>("qtDispo"));
-        
-        // Créer une colonne pour le bouton d'action
-        TableColumn<Product, Void> actionColumn = new TableColumn<>("Action");
         
         tableView.getColumns().add(colId);
         tableView.getColumns().add(colName);
@@ -789,8 +772,6 @@ public class AdminView {
         tableView.getColumns().add(colType);
         tableView.getColumns().add(colBrand);
         tableView.getColumns().add(colPrice);
-        //tableView.getColumns().add(colQtDispo);
-        tableView.getColumns().add(actionColumn);
         tableView.setItems(productsList);
         
         tableView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
