@@ -50,6 +50,7 @@ public class ProductDAO {
             }
 
         } catch (SQLException e) {
+        	MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);
             e.printStackTrace();
         }
         return products;
@@ -73,6 +74,7 @@ public class ProductDAO {
     	    }
 
     	} catch (SQLException e) {
+    		MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);
     	    e.printStackTrace();
     	}
     	return chaussure;
@@ -116,6 +118,7 @@ public class ProductDAO {
                  }
 
         } catch (SQLException e) {
+        	MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);
             e.printStackTrace();
         }
         return vetement;
@@ -148,6 +151,7 @@ public class ProductDAO {
                 }
             }
         } catch (SQLException e) {
+        	MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);
             e.printStackTrace();
         }
         return product;
@@ -183,7 +187,8 @@ public class ProductDAO {
                    }
                }
            } catch (SQLException e) {
-           	e.printStackTrace();
+        	   MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);
+           		e.printStackTrace();
            }
     	return 0;
     }
@@ -204,6 +209,7 @@ public class ProductDAO {
             
             MainView.showAlert("Information Message", "ID : "+ id, "Chaussures ajoutées avec succès", AlertType.INFORMATION);
         } catch (SQLException e) {
+        	MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);
             e.printStackTrace();
     	}
     }
@@ -225,6 +231,7 @@ public class ProductDAO {
             
             MainView.showAlert("Information Message", null, "Vetement ajouté avec succès", AlertType.INFORMATION);
         } catch (SQLException e) {
+        	MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);
             e.printStackTrace();
     	}
     }
@@ -240,6 +247,7 @@ public class ProductDAO {
             // Exécuter la requête
             pstmt.executeUpdate();
         } catch (SQLException e) {
+        	MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);
             e.printStackTrace();
     	}
     }
@@ -261,7 +269,7 @@ public class ProductDAO {
                 if (rowsAffected > 0) {
                 	MainView.showAlert("Information Message", null, "Modifier avec succès", AlertType.INFORMATION);                    
                 }
-          	}catch(Exception e){e.printStackTrace();}
+          	}catch(Exception e){e.printStackTrace(); MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);}
     }
     
     public void updateChaussures(int id, String surface, String gender, String color, String size, int qt) {
@@ -278,7 +286,7 @@ public class ProductDAO {
                 if (rowsAffected > 0) {
                 	MainView.showAlert("Information Message", null, "Modifier avec succès", AlertType.INFORMATION);                    
                 }
-          	}catch(Exception e){e.printStackTrace();}
+          	}catch(Exception e){e.printStackTrace(); MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);}
     }
     
     public void updateVetement(int id, String type, String gender, String color, String size, int qt) {
@@ -295,7 +303,7 @@ public class ProductDAO {
                 if (rowsAffected > 0) {
                 	MainView.showAlert("Information Message", null, "Modifier avec succès", AlertType.INFORMATION);                   
                 }
-          	}catch(Exception e){e.printStackTrace();}
+          	}catch(Exception e){e.printStackTrace(); MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);}
     }
     
     private void updateSizeStock(int id, String size, int qt) {
@@ -310,6 +318,7 @@ public class ProductDAO {
     		updateStmt.executeUpdate();
     		MainView.showAlert("Information Message", null, "Modifier avec succès", AlertType.INFORMATION);
         } catch (SQLException e) {
+        	MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);
             e.printStackTrace();
     	}
     }
@@ -326,6 +335,7 @@ public class ProductDAO {
                 if (rowsAffected > 0) {MainView.showAlert("Succès", null, "Votre produit a été supprimé avec succès.", AlertType.INFORMATION);}
     	}catch (SQLException e) {
              MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);
+             e.printStackTrace();
     	}
     }
 }

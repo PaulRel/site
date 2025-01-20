@@ -10,9 +10,11 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import Interface.MainView;
 import customer.CartItem;
 import customer.Customer;
 import customer.Order;
+import javafx.scene.control.Alert.AlertType;
 import products.Product;
 
 public class OrderDAO {
@@ -43,6 +45,7 @@ public class OrderDAO {
             	}
             }
         } catch (SQLException e) {
+        	MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);
         	e.printStackTrace();
         }
         return orders;
@@ -64,6 +67,7 @@ public class OrderDAO {
                 }
             }
         } catch (SQLException e) {
+        	MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);
         	e.printStackTrace();
         }
     }
@@ -85,6 +89,7 @@ public class OrderDAO {
                 insertOrderDetails(conn, orderId, order.getProducts());
             }
         } catch (SQLException e) {
+        	MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);
             e.printStackTrace();
         }
     }
@@ -128,6 +133,7 @@ public class OrderDAO {
             	}
             }
         } catch (SQLException e) {
+        	MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);
         	e.printStackTrace();
         }
         return order;

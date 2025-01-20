@@ -7,7 +7,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import Interface.MainView;
 import database.DatabaseConnection;
+import javafx.scene.control.Alert.AlertType;
 import products.Product;
 
 	public class Order {
@@ -63,6 +65,7 @@ import products.Product;
             pstmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
+            MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);
         }
     }
     
@@ -75,6 +78,7 @@ import products.Product;
             pstmt.setString(3, cartItem.getSize());
             pstmt.executeUpdate();
         } catch (SQLException e) {
+        	MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);
             e.printStackTrace();
         }
     }
@@ -87,6 +91,7 @@ import products.Product;
             pstmt.setInt(2, this.orderId); // Identifiant de la commande
             pstmt.executeUpdate();
         } catch (SQLException e) {
+        	MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);
             e.printStackTrace();
         }
     }

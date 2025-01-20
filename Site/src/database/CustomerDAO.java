@@ -43,6 +43,7 @@ public class CustomerDAO {
 	        }
 
 	    } catch (SQLException e) {
+	    	MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);
 	        e.printStackTrace();
 	    }
 	    return customers;
@@ -78,6 +79,7 @@ public class CustomerDAO {
                 }
             }
         } catch (SQLException e) {
+        	MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);
         	e.printStackTrace();
         }
     }
@@ -198,6 +200,7 @@ public class CustomerDAO {
                 }
             }
         } catch (SQLException e) {
+        	MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);
             e.printStackTrace();
         }
         return customer;

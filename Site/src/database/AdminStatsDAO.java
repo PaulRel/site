@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import Interface.MainView;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.chart.BarChart;
@@ -19,6 +20,7 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.PieChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Tooltip;
+import javafx.scene.control.Alert.AlertType;
 import products.Product;
 
 public class AdminStatsDAO {
@@ -29,6 +31,7 @@ public class AdminStatsDAO {
         try {
 			this.connection = DatabaseConnection.getConnection();
 		} catch (SQLException e) {
+			MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);
 			e.printStackTrace();
 		}
     }
@@ -42,6 +45,7 @@ public class AdminStatsDAO {
                 return rs.getInt("total_produits");
             }
         } catch (SQLException e) {
+        	MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);
 			e.printStackTrace();
 		}
         return 0;
@@ -66,6 +70,7 @@ public class AdminStatsDAO {
                 }
             }
         } catch (SQLException e) {
+        	MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);
 			e.printStackTrace();
 		}
         return topProducts;
@@ -80,6 +85,7 @@ public class AdminStatsDAO {
                 return rs.getInt("produits_en_rupture");
             }
         } catch (SQLException e) {
+        	MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);
 			e.printStackTrace();
 		}
         return 0;
@@ -106,6 +112,7 @@ public class AdminStatsDAO {
             }
 
         } catch (SQLException e) {
+        	MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);
             e.printStackTrace();
         }
 
@@ -123,6 +130,7 @@ public class AdminStatsDAO {
                 return rs.getInt("total_commandes");
             }
         } catch (SQLException e) {
+        	MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);
 			e.printStackTrace();
 		}
         return 0;
@@ -137,6 +145,7 @@ public class AdminStatsDAO {
                 return rs.getInt("commandes_en_cours");
             }
         } catch (SQLException e) {
+        	MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);
 			e.printStackTrace();
 		}
         return 0;
@@ -151,6 +160,7 @@ public class AdminStatsDAO {
                 return rs.getInt("commandes_livrées");
             }
         } catch (SQLException e) {
+        	MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);
 			e.printStackTrace();
 		}
         return 0;
@@ -168,6 +178,7 @@ public class AdminStatsDAO {
                 return rs.getDouble("chiffre_affaires");
             }
         } catch (SQLException e) {
+        	MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);
 			e.printStackTrace();
 		}
         return 0.0;
@@ -182,6 +193,7 @@ public class AdminStatsDAO {
                 return rs.getInt("total_utilisateurs");
             }
         } catch (SQLException e) {
+        	MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);
 			e.printStackTrace();
 		}
         return 0;
@@ -197,6 +209,7 @@ public class AdminStatsDAO {
                 return rs.getInt("utilisateurs_actifs");
             }
         } catch (SQLException e) {
+        	MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);
 			e.printStackTrace();
 		}
         return 0;
@@ -221,7 +234,8 @@ public class AdminStatsDAO {
                  pieChart.setLegendVisible(false);
              }
         } catch (SQLException e) {
-    			e.printStackTrace();
+        	MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);
+        	e.printStackTrace();
     	}
     	return pieChart;
     }
@@ -243,6 +257,7 @@ public class AdminStatsDAO {
                 return rs.getDouble("panier_moyen");
             }
         } catch (SQLException e) {
+        	MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);
 			e.printStackTrace();
 		}
         return 0.0;
@@ -281,6 +296,7 @@ public class AdminStatsDAO {
                         series.getData().add(new XYChart.Data<>(mois, ventes));
                     }
             } catch (SQLException e) {
+            	MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);
     			e.printStackTrace();
     		}
             //for (XYChart.Data<String, Number> data : series.getData()) {
@@ -325,6 +341,7 @@ public class AdminStatsDAO {
                         series.getData().add(new XYChart.Data<>(mois, ventes));
                     }
             } catch (SQLException e) {
+            	MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);
     			e.printStackTrace();
     		}
             //for (XYChart.Data<String, Number> data : series.getData()) {
@@ -378,6 +395,7 @@ public class AdminStatsDAO {
                     seriesProduits.getData().add(new XYChart.Data<>(marque, produitsVendus));
                 }
         } catch (SQLException e) {
+        	MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);
 			e.printStackTrace();
 		}
         barChart.getData().add(seriesVentes);

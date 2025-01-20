@@ -7,6 +7,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import Interface.MainView;
+import javafx.scene.control.Alert.AlertType;
 import products.Product;
 
 public class SearchDAO {
@@ -51,6 +53,7 @@ public class SearchDAO {
 	            }
 	        }
 	    } catch (SQLException e) {
+	    	MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);
             e.printStackTrace();
 	    }
         return results;

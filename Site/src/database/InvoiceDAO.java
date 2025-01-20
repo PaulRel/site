@@ -52,6 +52,7 @@ public class InvoiceDAO {
                 invoices.add(invoice);
             }
         } catch (SQLException e) {
+        	MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);
             e.printStackTrace();
         }
         return invoices;
