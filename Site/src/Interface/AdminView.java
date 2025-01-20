@@ -560,8 +560,7 @@ public class AdminView {
         gridPane.add(typeVComboBox, 6, 0);
         gridPane.add(genderField, 6, 1);
         gridPane.add(colorField, 6, 2);
-        
-                
+                      
         return gridPane;
 	}
 	
@@ -744,35 +743,37 @@ public class AdminView {
     }
     
     
-    public TableView<Product> getProductTableView(){
-    	ObservableList<Product> productsList = FXCollections.observableArrayList(productDAO.getAllProduits());
-    	TableView<Product> tableView = new TableView<>();
-        
-        TableColumn<Product, Integer> colId = new TableColumn<>("ID");
-        colId.setCellValueFactory(new PropertyValueFactory<>("id"));
-
-        TableColumn<Product, String> colName = new TableColumn<>("Nom");
-        colName.setCellValueFactory(new PropertyValueFactory<>("name"));
-
-        TableColumn<Product, String> colDescription = new TableColumn<>("Description");
-        colDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
-
-        TableColumn<Product, String> colType = new TableColumn<>("Type");
-        colType.setCellValueFactory(new PropertyValueFactory<>("type"));
-
-        TableColumn<Product, String> colBrand = new TableColumn<>("Marque");
-        colBrand.setCellValueFactory(new PropertyValueFactory<>("brand"));
-
-        TableColumn<Product, Double> colPrice = new TableColumn<>("Prix");
-        colPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
-        
-        tableView.getColumns().add(colId);
-        tableView.getColumns().add(colName);
-        tableView.getColumns().add(colDescription);
-        tableView.getColumns().add(colType);
-        tableView.getColumns().add(colBrand);
-        tableView.getColumns().add(colPrice);
-        tableView.setItems(productsList);
+	    public TableView<Product> getProductTableView(){
+	    	ObservableList<Product> productsList = FXCollections.observableArrayList(productDAO.getAllProduits());
+	    	TableView<Product> tableView = new TableView<>();
+	        
+	        TableColumn<Product, Integer> colId = new TableColumn<>("ID");
+	        colId.setCellValueFactory(new PropertyValueFactory<>("id"));
+	
+	        TableColumn<Product, String> colName = new TableColumn<>("Nom");
+	        colName.setCellValueFactory(new PropertyValueFactory<>("name"));
+	        colName.setStyle("-fx-alignment: CENTER-LEFT;");
+	
+	        TableColumn<Product, String> colType = new TableColumn<>("Type");
+	        colType.setCellValueFactory(new PropertyValueFactory<>("type"));
+	
+	        TableColumn<Product, String> colBrand = new TableColumn<>("Marque");
+	        colBrand.setCellValueFactory(new PropertyValueFactory<>("brand"));
+	
+	        TableColumn<Product, Double> colPrice = new TableColumn<>("Prix");
+	        colPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
+	        
+	        TableColumn<Product, String> colDescription = new TableColumn<>("Description");
+	        colDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
+	        colDescription.setStyle("-fx-alignment: CENTER-LEFT;");
+	        
+	        tableView.getColumns().add(colId);
+	        tableView.getColumns().add(colName);
+	        tableView.getColumns().add(colType);
+	        tableView.getColumns().add(colBrand);
+	        tableView.getColumns().add(colPrice);
+	        tableView.getColumns().add(colDescription);
+	        tableView.setItems(productsList);
         
         tableView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) { // Vérifie qu'une ligne est sélectionnée
