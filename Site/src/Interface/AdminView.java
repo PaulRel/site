@@ -731,9 +731,8 @@ public class AdminView {
                 Image image = new Image(destFile.toURI().toString());
                 imageView.setImage(image);
 
-                // 4. Mettre à jour le chemin de l'image si nécessaire
-                System.out.println("Image importée et enregistrée à : " + destFile.getAbsolutePath());
-
+                // 4. Afficher une confirmation et le chemin de l'image
+                MainView.showAlert("Information Message", null, "Image importée et enregistrée à : " + destFile.getAbsolutePath(), AlertType.INFORMATION);
             } catch (IOException e) {
                 e.printStackTrace();
                 MainView.showAlert("Erreur", "Impossible d'importer l'image", e.getMessage(), AlertType.ERROR);

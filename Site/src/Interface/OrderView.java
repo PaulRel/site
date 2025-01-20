@@ -45,9 +45,8 @@ public class OrderView {
         
         Scene orderScene = new Scene(rootPane, 1350, 670);
         HeaderView v = new HeaderView(mainView);
-        rootPane.getChildren().addAll(v.getHeader(), mainBox);
-        String css = this.getClass().getResource("/style.css").toExternalForm();        
-        orderScene.getStylesheets().add(css);
+        rootPane.getChildren().addAll(v.getHeader(), mainBox);       
+        orderScene.getStylesheets().add(this.getClass().getResource("/style.css").toExternalForm());
         mainView.getPrimaryStage().setScene(orderScene);
 	}
 	
@@ -248,7 +247,6 @@ public class OrderView {
 		List<CartItem> products = currentOrder.getProducts();
 		
 		for (CartItem item : products) {
-			System.out.println("Chaque produit de la liste : "+ item);
             Product product = item.getProduct();
             Label nameLabel = new Label(product.getName());
             nameLabel.setWrapText(true);

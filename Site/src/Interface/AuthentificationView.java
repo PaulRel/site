@@ -26,9 +26,8 @@ public class AuthentificationView {
         Scene authScene = new Scene(rootPane, 1350, 670);
         
         HeaderView v=new HeaderView(mainView);      
-        rootPane.getChildren().addAll(v.getHeader());
-        String css = this.getClass().getResource("/style.css").toExternalForm();        
-        authScene.getStylesheets().add(css);
+        rootPane.getChildren().addAll(v.getHeader()); 
+        authScene.getStylesheets().add(this.getClass().getResource("/style.css").toExternalForm());
         mainView.getPrimaryStage().setScene(authScene);
     }
 
@@ -155,7 +154,7 @@ public class AuthentificationView {
         	// Clear the temporary cart
         	CartManager.clearTempCart();
         } else {
-        	System.out.println("No user is authenticated.");
+        	MainView.showAlert("Echec", null, "Utilisateur non reconnu", AlertType.ERROR);;
         }
     }
 }

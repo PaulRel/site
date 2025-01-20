@@ -67,14 +67,11 @@ public class CustomerDAO {
 
             int rowsInserted = statement.executeUpdate();
             if (rowsInserted > 0) {
-                System.out.println("Le client a été ajouté avec succès !");
-
                 // Récupérer l'ID généré automatiquement
                 try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
                     if (generatedKeys.next()) {
                         int generatedId = generatedKeys.getInt(1); // Récupérer l'ID généré
                         customer.setId(generatedId); // Assigner l'ID généré à l'objet Customer
-                        System.out.println("ID du nouveau client : " + generatedId);
                     } else {
                         throw new SQLException("Échec de récupération de l'ID généré.");
                     }

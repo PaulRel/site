@@ -30,10 +30,7 @@ public class MainView extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
     	this.primaryStage=primaryStage;
-    	css = this.getClass().getResource("/style.css").toExternalForm();
-    	//root = new AnchorPane();
-    	
-       	headerView = new HeaderView(this); //utile ?
+       	headerView = new HeaderView(this);
         
         showProductView(Product.class, null);
         
@@ -62,7 +59,7 @@ public class MainView extends Application {
     	AnchorPane root = productSection.getRoot();
     	root.getChildren().add(headerView.getHeader()); // Ajouter l'en-tête
     	Scene productScene = new Scene(root, 1350, 670);
-    	productScene.getStylesheets().add(css);
+    	productScene.getStylesheets().add(this.getClass().getResource("/style.css").toExternalForm());
     	primaryStage.setScene(productScene);          
     }
     

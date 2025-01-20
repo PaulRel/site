@@ -36,8 +36,7 @@ public class SearchAdvancedView {
         
         HeaderView v = new HeaderView(mainView);      
         rootPane.getChildren().addAll(v.getHeader());
-        String css = this.getClass().getResource("/style.css").toExternalForm();        
-        accountScene.getStylesheets().add(css);
+        accountScene.getStylesheets().add(this.getClass().getResource("/style.css").toExternalForm());
         mainView.getPrimaryStage().setScene(accountScene);	
 	}
 	
@@ -155,8 +154,8 @@ public class SearchAdvancedView {
             }
         }
 
-        System.out.println("Requête SQL générée : " + query);
-        System.out.println("Paramètres : " + parameters);
+        //System.out.println("Requête SQL générée : " + query);
+        //System.out.println("Paramètres : " + parameters);
 
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query.toString())) {
@@ -167,7 +166,6 @@ public class SearchAdvancedView {
 
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                System.out.println("Produit trouvé : " + resultSet.getInt("Produit_id"));
                 ProductDAO productDAO = new ProductDAO();
                 Product produit = productDAO.getProductById(resultSet.getInt("Produit_id"));
                 results.add(produit);

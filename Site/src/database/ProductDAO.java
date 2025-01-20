@@ -171,14 +171,11 @@ public class ProductDAO {
 
                int rowsInserted = statement.executeUpdate();
                if (rowsInserted > 0) {
-                   System.out.println("Le produit a été ajouté avec succès !");
-
                    // Récupérer l'ID généré automatiquement
                    try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
                        if (generatedKeys.next()) {
                            int generatedId = generatedKeys.getInt(1); // Récupérer l'ID généré
                            product.setId(generatedId); // Assigner l'ID généré à l'objet Product
-                           System.out.println("ID du nouveau produit : " + generatedId);
                            return generatedId;
                        } else {
                            throw new SQLException("Échec de récupération de l'ID généré.");
@@ -205,7 +202,7 @@ public class ProductDAO {
             
             insertSizeStock(id, size, qt);
             
-            MainView.showAlert("Information Message", null, "Chaussures ajoutées avec succès", AlertType.INFORMATION);
+            MainView.showAlert("Information Message", "ID : "+ id, "Chaussures ajoutées avec succès", AlertType.INFORMATION);
         } catch (SQLException e) {
             e.printStackTrace();
     	}
@@ -242,7 +239,6 @@ public class ProductDAO {
 
             // Exécuter la requête
             pstmt.executeUpdate();
-            System.out.println("Taille et quantité insérées avec succès !");
         } catch (SQLException e) {
             e.printStackTrace();
     	}
@@ -312,7 +308,7 @@ public class ProductDAO {
 
             // Exécuter la requête
     		updateStmt.executeUpdate();
-            System.out.println("Taille et quantité insérées avec succès !");
+    		MainView.showAlert("Information Message", null, "Modifier avec succès", AlertType.INFORMATION);
         } catch (SQLException e) {
             e.printStackTrace();
     	}

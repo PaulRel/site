@@ -64,7 +64,6 @@ public class ProductDetailsView {
         if (product instanceof ProductWithSize) {
         	ProductWithSize productWithSize = (ProductWithSize) product;
         	HashMap<String, Integer> sizesStock = productWithSize.getTailleStock();
-        	//System.out.println("Map " + sizesStock);
         	
         	 // Ajouter les éléments formatés dans la ComboBox
         	sizeChoiceBox.getItems().clear();

@@ -35,9 +35,8 @@ public class AccountView {
         Scene accountScene = new Scene(rootPane, 1350, 670);
         
         HeaderView v = new HeaderView(mainView);      
-        rootPane.getChildren().addAll(v.getHeader());
-        String css = this.getClass().getResource("/style.css").toExternalForm();        
-        accountScene.getStylesheets().add(css);
+        rootPane.getChildren().addAll(v.getHeader());    
+        accountScene.getStylesheets().add(this.getClass().getResource("/style.css").toExternalForm());
         mainView.getPrimaryStage().setScene(accountScene);
     }
     

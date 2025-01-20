@@ -35,7 +35,7 @@ public class InvoiceView {
 
 	    // Si la facture est introuvable, afficher une erreur
 	    if (invoice == null) {
-	        System.out.println("Facture introuvable pour la commande : " + order.getOrderId());
+	    	MainView.showAlert("Échec", null, "Facture introuvable pour la commande : " + order.getOrderId(), AlertType.ERROR);
 	        return;
 	    }
 
@@ -135,7 +135,7 @@ public class InvoiceView {
 
         // Récupère la liste des produits
         List<CartItem> products = order.getProducts();
-
+        
         // Parcourt les produits pour remplir la table
         for (CartItem item : products) {
             Product product = item.getProduct();
@@ -217,10 +217,10 @@ public class InvoiceView {
 	            java.awt.Desktop.getDesktop().open(pdfFile);
 	        } catch (IOException e) {
 	            // Gestion d'erreur si le PDF ne peut pas être ouvert
-	            System.out.println("Erreur lors de l'ouverture du fichier PDF: " + e.getMessage());
+	        	MainView.showAlert("Échec", null, "Erreur lors de l'ouverture du fichier PDF: " + e.getMessage(), AlertType.ERROR);
 	        }
 	    } else {
-	        System.out.println("Le fichier PDF de la facture n'existe pas.");
+	    	MainView.showAlert("Échec", null, "Le fichier PDF de la facture n'existe pas.", AlertType.ERROR);
 	    }
 	}
 
