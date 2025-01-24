@@ -137,7 +137,7 @@ public class ProductView {
        Label genderFilterLabel = new Label("Genre");
        male = new CheckBox("Homme");
        female = new CheckBox("Femme");
-       filterBox.getChildren().addAll(genderFilterLabel, male, female);
+       filterBox.getChildren().addAll(filters, genderFilterLabel, male, female);
        
        Label brandFilterLabel = new Label("Marques");
        asicsBrand = new CheckBox("Asics");
@@ -156,7 +156,7 @@ public class ProductView {
        size39 = new CheckBox("39");
        size40 = new CheckBox("40");
        size41 = new CheckBox("41");
-       filterBox.getChildren().addAll(filters, sizeFilterLabel, sizeXS, sizeS, sizeM, sizeL, size36, size37, size38, size39, size40, size41);
+       filterBox.getChildren().addAll(sizeFilterLabel, sizeXS, sizeS, sizeM, sizeL, size36, size37, size38, size39, size40, size41);
        
        Label clothingTypeFilterLabel = new Label("Types");
        tankTop = new CheckBox("Debardeur");
