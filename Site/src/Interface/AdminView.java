@@ -292,17 +292,19 @@ public class AdminView {
 	// GESTION DES CLIENTS
 	
 	private HBox getStatsUsersBox() {
-		Label totalUsers = new Label("Nombre total d'utilisateurs " );	
+		Label totalUsers = new Label("Nombre total de clients " );	
 		Label total = new Label(""+ adminStatsDAO.getTotalUsers());
 		VBox totalUsersBox = new VBox();
-		totalUsersBox.setStyle("-fx-alignment: center;-fx-padding: 10;-fx-spacing:10;-fx-background-color: #FFFFFF; -fx-background-radius:10;");
+		total.setStyle("-fx-font-size: 32px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 5);");
+		totalUsersBox.setStyle("-fx-alignment: center;-fx-padding: 10;-fx-spacing: 10;-fx-background-color: #FFFFFF; -fx-background-radius:10;");
 		//h.setPrefSize(250, 100);
 		totalUsersBox.getChildren().addAll(total, totalUsers);
 		
-		Label activeUsers = new Label("                   Utilisateurs actifs\n(ayant commandé dans les 30 derniers jours)");	
+		Label activeUsers = new Label("                          Clients actifs\n(ayant commandé dans les 30 derniers jours)");	
 		Label totalActive = new Label("" + adminStatsDAO.getTotalActiveUsers());
 		VBox activeUsersBox = new VBox();
-		activeUsersBox.setStyle("-fx-alignment: center;-fx-padding: 10;-fx-spacing:10;-fx-background-color: #FFFFFF; -fx-background-radius:10;");
+		totalActive.setStyle("-fx-font-size: 32px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 5); -fx-padding: 10 0 5 0;");
+		activeUsersBox.setStyle("-fx-alignment: center;-fx-padding: 10 10 0 10;-fx-spacing: 1; -fx-background-color: #FFFFFF; -fx-background-radius:10;");
 		//h.setPrefSize(250, 100);
 		activeUsersBox.getChildren().addAll(totalActive, activeUsers);
 		
@@ -474,6 +476,9 @@ public class AdminView {
     	
     	// ImageView
     	imageView = new ImageView();
+    	imageView.setFitWidth(90);  // Largeur fixe
+        imageView.setFitHeight(90); // Hauteur fixe
+        imageView.setPreserveRatio(true);    
     	
     	//VBox qui permet de réserver un espace pour l'imageView
         a = new VBox();
@@ -628,28 +633,33 @@ public class AdminView {
         	// Ajouter le produit à la bdd
         	if(!checkIfEmpty() && checkIfValid()) {
         		getTextFieldValues();
-        		Product product = new Product(0, name, description, type, brand, price, imagePath);
-        		int id = productDAO.insertProduct(product);
+        		boolean hasError = false;
         		
         		if (type == "chaussures") {
-        			if (surfaceComboBox.getSelectionModel().getSelectedItem() == null || genderField.getText().isEmpty() || genderField.getText().matches("^(Homme|Femme)$") || colorField.getText().isEmpty() || !colorField.getText().matches("[a-zA-Z\\s'-]+") ||  sizeComboBox.getSelectionModel().getSelectedItem() == null) {
-        				MainView.showAlert("Erreur", null, "Merci de remplir tous les champs ", AlertType.ERROR);
+        			if (surfaceComboBox.getSelectionModel().getSelectedItem() == null || genderField.getText().isEmpty() || !genderField.getText().matches("^(Homme|Femme)$") || colorField.getText().isEmpty() || !colorField.getText().matches("[a-zA-Z\\s'-]+") ||  sizeComboBox.getSelectionModel().getSelectedItem() == null) {
+        				MainView.showAlert("Erreur", null, "Merci de remplir tous les champs avec des valeurs valides pour le genre (Homme, Femme) et la couleur.", AlertType.ERROR);
+        				hasError = true;
         			}
         			else {
+        				Product product = new Product(0, name, description, type, brand, price, imagePath);
+                		int id = productDAO.insertProduct(product);
         				productDAO.insertChaussures(id, surfaceComboBox.getValue(), genderField.getText(), colorField.getText(), sizeComboBox.getValue(), qtDispo);
         			}
         		}
         		
         		else if (type == "vetement"){
-        			if (genderField.getText().isEmpty() || genderField.getText().matches("^(Homme|Femme)$")  || colorField.getText().isEmpty() || !colorField.getText().matches("[a-zA-Z\\s'-]+") || typeVComboBox.getSelectionModel().getSelectedItem() == null || sizeComboBox.getSelectionModel().getSelectedItem() == null) {
-        				MainView.showAlert("Erreur", null, "Merci de remplir tous les champs ", AlertType.ERROR);
+        			if (genderField.getText().isEmpty() || !genderField.getText().matches("^(Homme|Femme)$")  || colorField.getText().isEmpty() || !colorField.getText().matches("[a-zA-Z\\s'-]+") || typeVComboBox.getSelectionModel().getSelectedItem() == null || sizeComboBox.getSelectionModel().getSelectedItem() == null) {
+        				MainView.showAlert("Erreur", null, "Merci de remplir tous les champs avec des valeurs valides pour le genre (Homme, Femme) et la couleur. ", AlertType.ERROR);
+        				hasError = true;
         			}
         			else {
+        				Product product = new Product(0, name, description, type, brand, price, imagePath);
+                		int id = productDAO.insertProduct(product);
         				productDAO.insertVetement(id, typeVComboBox.getValue(), genderField.getText(), colorField.getText(), sizeComboBox.getValue(), qtDispo);
         			}
         			
         		}
-                
+        		if (!hasError) {
         		// Afficher l'affichage par défaut pour manageProduct
         		productGridPane.getChildren().removeAll(addProductButton);
         		deleteButton.setVisible(true);
@@ -659,6 +669,7 @@ public class AdminView {
         		
         		// Mettre à jour la table
         		productTableView.setItems(FXCollections.observableArrayList(productDAO.getAllProduits()));
+        		}
         	}
         });
     }
@@ -668,23 +679,25 @@ public class AdminView {
     	if(!idField.getText().isEmpty() && idField.getText().matches("\\d+") && !checkIfEmpty() && checkIfValid()) {
     		int id = Integer.parseInt(idField.getText());
     		getTextFieldValues();
-    		Product product = new Product(id, name, description, type, brand, price, imagePath);
-    		productDAO.updateProduct(product);
     		
     		if (type == "chaussures") {
-        		if (surfaceComboBox.getSelectionModel().getSelectedItem() == null || genderField.getText().isEmpty() || genderField.getText().matches("^(Homme|Femme)$") || colorField.getText().isEmpty() || !colorField.getText().matches("[a-zA-Z\\s'-]+") || sizeComboBox.getSelectionModel().getSelectedItem() == null) {
-        			MainView.showAlert("Erreur", null, "Merci de remplir tous les champs ", AlertType.ERROR);
+        		if (surfaceComboBox.getSelectionModel().getSelectedItem() == null || genderField.getText().isEmpty() || !genderField.getText().matches("^(Homme|Femme)$") || colorField.getText().isEmpty() || !colorField.getText().matches("[a-zA-Z\\s'-,]+") || sizeComboBox.getSelectionModel().getSelectedItem() == null) {
+        			MainView.showAlert("Erreur", null, "Merci de remplir tous les champs avec des valeurs valides.", AlertType.ERROR);
         		}
         		else{
+            		Product product = new Product(id, name, description, type, brand, price, imagePath);
+            		productDAO.updateProduct(product);
         			productDAO.updateChaussures(id, surfaceComboBox.getValue(), genderField.getText(), colorField.getText(), sizeComboBox.getValue(), qtDispo);
         		}
     		}
     		
     		else if (type == "vetement"){
-    			if (genderField.getText().isEmpty() || genderField.getText().matches("^(Homme|Femme)$") || colorField.getText().isEmpty() || !colorField.getText().matches("[a-zA-Z\\s'-]+")|| typeVComboBox.getSelectionModel().getSelectedItem() == null || sizeComboBox.getSelectionModel().getSelectedItem() == null) {
-    				MainView.showAlert("Erreur", null, "Merci de remplir tous les champs ", AlertType.ERROR);
+    			if (genderField.getText().isEmpty() || !genderField.getText().matches("^(Homme|Femme)$") || colorField.getText().isEmpty() || !colorField.getText().matches("[a-zA-Z\\s'-,]+")|| typeVComboBox.getSelectionModel().getSelectedItem() == null || sizeComboBox.getSelectionModel().getSelectedItem() == null) {
+    				MainView.showAlert("Erreur", null, "Merci de remplir tous les champs avec des valeurs valides.", AlertType.ERROR);
     			}
     			else {
+    	    		Product product = new Product(id, name, description, type, brand, price, imagePath);
+    	    		productDAO.updateProduct(product);
     				productDAO.updateVetement(id, typeVComboBox.getValue(), genderField.getText(), colorField.getText(), sizeComboBox.getValue(), qtDispo);
     			}
     		}
@@ -692,7 +705,6 @@ public class AdminView {
             clearField();
             productTableView.setItems(FXCollections.observableArrayList(productDAO.getAllProduits()));
         }
-    	else {MainView.showAlert("Erreur", null, "Merci d'ajouter l'identifiant du produit à supprimer", AlertType.ERROR);}
     }
     
     
@@ -818,14 +830,11 @@ public class AdminView {
         }
         
         imagePath = product.getImagePath();
-        imageView.setImage(new Image(getClass().getResource(imagePath).toExternalForm()));
-    	imageView.setFitWidth(90);  // Largeur fixe
-        imageView.setFitHeight(90); // Hauteur fixe
-        imageView.setPreserveRatio(true);       
+        imageView.setImage(new Image(getClass().getResource(imagePath).toExternalForm()));   
     }
     
     
-    private VBox  getOutOfStockProductTable() {
+    private VBox getOutOfStockProductTable() {
     	VBox outOfStockBox = new VBox();
     	outOfStockBox.setStyle("-fx-padding: 10;-fx-spacing:10;-fx-background-color: #FFFFFF; -fx-background-radius:10; -fx-max-width: 700px; -fx-max-height: 300px;");
     	mainContent.setAlignment(Pos.CENTER);
@@ -908,22 +917,23 @@ public class AdminView {
                  || priceField.getText().isEmpty()
                  || qtDispoField.getText().isEmpty()
                  || imagePath == null || imagePath == ""){
-         	MainView.showAlert("Erreur", null, "Merci de remplir tous les champs ", AlertType.ERROR);
+         	MainView.showAlert("Erreur", null, "Merci de remplir tous les champs", AlertType.ERROR);
     	 	return true;
     	 }
     	 return false;	
     }
     
     private boolean checkIfValid() {
-    	if (nameField.getText().matches("[a-zA-Z\\s'-]+") // Vérifie que le nom contient des lettres, des espaces, des apostrophes ou des tirets
-    		    || brandField.getText().matches("[a-zA-Z\\s'-]+") // Vérifie que la marque contient des lettres, des espaces, des apostrophes ou des tirets
-    		    || !priceField.getText().matches("\\d+(\\.\\d{1,2})?") // Vérifie que le prix est un nombre avec une ou deux décimales
-    		    || !qtDispoField.getText().matches("\\d+")) { // Vérifie que la quantité est un nombre entier
-    		    MainView.showAlert("Erreur", null, "Merci de remplir tous les champs avec des valeurs valides.", AlertType.ERROR);
+    	if (nameField.getText().matches("[a-zA-Z0-9\\s'-]+") // Vérifie que le nom contient des lettres, des espaces, des apostrophes ou des tirets
+    			&& brandField.getText().matches("[a-zA-Z\\s'-]+") // Vérifie que la marque contient seulement des lettres, des espaces, des apostrophes ou des tirets
+    			&& priceField.getText().matches("\\d+(\\.\\d{1,2})?") // Vérifie que le prix est un nombre avec une ou deux décimales
+    			&& qtDispoField.getText().matches("\\d+")) { // Vérifie que la quantité est un nombre entier
     		    return true;
     		}
+		MainView.showAlert("Erreur", null, "Merci de remplir tous les champs avec des valeurs valides.", AlertType.ERROR);
     	return false;
    }
+
     
     private void showShoesComponents() {
     	surfaceLabel.setVisible(true);
