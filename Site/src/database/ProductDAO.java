@@ -161,7 +161,7 @@ public class ProductDAO {
     // INSERTION
     
     public int insertProduct(Product product) {
-    	String query = "INSERT INTO Produit (Nom, Description, Type, Marque, Prix, image_path) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    	String query = "INSERT INTO Produit (Nom, Description, Type, Marque, Prix, image_path) VALUES (?, ?, ?, ?, ?, ?)";
     	try (Connection conn = DatabaseConnection.getConnection();
                PreparedStatement statement = conn.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS)) {
 
@@ -188,7 +188,7 @@ public class ProductDAO {
                }
            } catch (SQLException e) {
         	   MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);
-           		e.printStackTrace();
+        	   e.printStackTrace();
            }
     	return 0;
     }
@@ -265,10 +265,10 @@ public class ProductDAO {
                 updateStmt.setDouble(5, product.getPrice());
                 updateStmt.setString(6, product.getImagePath());
                 updateStmt.setInt(7, product.getId());
-                int rowsAffected = updateStmt.executeUpdate();
-                if (rowsAffected > 0) {
-                	MainView.showAlert("Information Message", null, "Modifier avec succès", AlertType.INFORMATION);                    
-                }
+                updateStmt.executeUpdate();
+                //if (rowsAffected > 0) {
+                	//MainView.showAlert("Information Message", null, "Modifier avec succès", AlertType.INFORMATION);                    
+                //}
           	}catch(Exception e){e.printStackTrace(); MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);}
     }
     
@@ -316,7 +316,7 @@ public class ProductDAO {
 
             // Exécuter la requête
     		updateStmt.executeUpdate();
-    		MainView.showAlert("Information Message", null, "Modifier avec succès", AlertType.INFORMATION);
+    		//MainView.showAlert("Information Message", null, "Modifier avec succès", AlertType.INFORMATION);
         } catch (SQLException e) {
         	MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);
             e.printStackTrace();

@@ -25,7 +25,7 @@ public class Product {
 	
 	@Override
 	public String toString() {
-		return name;
+		return "Nom : " + name + "\nType : " + type + "\nMarque : " + brand +"\nPrix : " + price;
 	}
 
 	public String getDescription() {
