@@ -141,10 +141,19 @@ public class CartView {
 	        cartTable.getColumns().add(priceColumn);
 	        cartTable.getColumns().add(quantityColumn);
 	        cartTable.getColumns().add(actionColumn);
+	        
+	        imageColumn.setMinWidth(100);
+	        productColumn.setMinWidth(450);
+	        sizeColumn.setMinWidth(100);
+	        priceColumn.setMinWidth(100);
+	        quantityColumn.setMinWidth(100);
+	        actionColumn.setMinWidth(100);
+	        
 	    }
 	
 		ObservableList<CartItem> observableItems = FXCollections.observableArrayList(cart.getItems());
 	    cartTable.setItems(observableItems);
+	    cartTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 	    orderButton = new Button("Commander");
 	    orderButton.setOnAction(e -> validateOrder(mainView));
 	    buttonsBox = new HBox(100, continueButton, orderButton);
