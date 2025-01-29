@@ -240,7 +240,7 @@ public class AccountView {
     	        MainView.showAlert("Erreur", null, "Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre, et un caractère spécial", Alert.AlertType.ERROR);
     	    }
     		
-    		
+            else {
     	    // Mise à jour de la BDD
     	    Customer newCustomer = new Customer(customer.getId(), newLastName, newFirstName, customer.getCivility(), newEmail, newPhone, customer.getPassword(), customer.getRole(), newAddress);
     	    new CustomerDAO().updateCustomer(newCustomer);
@@ -251,7 +251,7 @@ public class AccountView {
         	customer.setEmail(newEmail);
         	customer.setPhoneNumber(newPhone);
         	customer.setAddress(newAddress);
-    		
+            }	
     	});
 
     	// Disposition du formulaire
