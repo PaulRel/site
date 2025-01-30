@@ -20,7 +20,6 @@ public class MainView extends Application {
 
 	private Stage primaryStage;
 	private HeaderView headerView;
-	private String css;
 	private static Customer currentCustomer;
 
     public static void main(String[] args) {
@@ -30,6 +29,8 @@ public class MainView extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
     	this.primaryStage=primaryStage;
+    	primaryStage.setMaximized(true);
+
        	headerView = new HeaderView(this);
         
         showProductView(Product.class, null);
@@ -58,7 +59,7 @@ public class MainView extends Application {
     	ProductView productSection = new ProductView(this, typeProduct, products);
     	AnchorPane root = productSection.getRoot();
     	root.getChildren().add(headerView.getHeader()); // Ajouter l'en-tête
-    	Scene productScene = new Scene(root, 1350, 670);
+    	Scene productScene = new Scene(root);
     	productScene.getStylesheets().add(this.getClass().getResource("/style.css").toExternalForm());
     	primaryStage.setScene(productScene);          
     }

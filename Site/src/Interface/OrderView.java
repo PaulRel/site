@@ -37,13 +37,13 @@ public class OrderView {
         HBox mainBox = new HBox();
         mainBox.setPadding(new Insets(20)); // Espace  Haut, Droite>, Bas, Gauche<  de l'AnchorPane
         mainBox.setSpacing(20); // Espacement entre mainBox et Panier
-        mainBox.setPrefSize(1350, 570);
+        //mainBox.setPrefSize(1350, 570);
         mainBox.setStyle("-fx-background-color: #EEEEEE");
         mainBox.getChildren().addAll(MainView.createScrollPane(createOrderZone(mainView, order)), createInfoBar(order));
         
         AnchorPane.setTopAnchor(mainBox, 116.0);
         
-        Scene orderScene = new Scene(rootPane, 1350, 670);
+        Scene orderScene = new Scene(rootPane);
         HeaderView v = new HeaderView(mainView);
         rootPane.getChildren().addAll(v.getHeader(), mainBox);       
         orderScene.getStylesheets().add(this.getClass().getResource("/style.css").toExternalForm());

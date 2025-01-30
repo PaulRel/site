@@ -20,28 +20,27 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import products.Product;
 
 public class SearchAdvancedView {
 	
-	private AnchorPane rootPane;
 	private VBox criteriaContainer;
 	
 	public SearchAdvancedView(MainView mainView) {
-		rootPane = new AnchorPane();
+		AnchorPane rootPane = new AnchorPane();
+        HeaderView v = new HeaderView(mainView); 
         
-        Scene accountScene = new Scene(rootPane, 1350, 670);
-        createAdvancedSearchSection(mainView);
+        rootPane.getChildren().addAll(v.getHeader(), createAdvancedSearchSection(mainView));
         
-        HeaderView v = new HeaderView(mainView);      
-        rootPane.getChildren().addAll(v.getHeader());
+        Scene accountScene = new Scene(rootPane);
         accountScene.getStylesheets().add(this.getClass().getResource("/style.css").toExternalForm());
         mainView.getPrimaryStage().setScene(accountScene);	
 	}
 	
-	private void createAdvancedSearchSection(MainView mainView) {
+	private VBox createAdvancedSearchSection(MainView mainView) {
 		
 		Label mainLabel = new Label("Recherche Avancée");
 
@@ -78,11 +77,14 @@ public class SearchAdvancedView {
         scrollPane.setPrefViewportHeight(0);
         
         VBox root = new VBox(20, scrollPane);
-        AnchorPane.setTopAnchor(root, 116.0);
-        root.setPrefSize(1350, 550);
         root.setStyle("-fx-background-color: derive(#ececec,26.4%)");
         root.setAlignment(Pos.CENTER); //Centrer verticalement
-        rootPane.getChildren().addAll(root);
+        root.prefWidthProperty().bind(mainView.getPrimaryStage().widthProperty());
+        root.prefHeightProperty().bind(mainView.getPrimaryStage().heightProperty().subtract(118));
+        AnchorPane.setTopAnchor(root, 118.0);
+        AnchorPane.setBottomAnchor(root, 0.0);
+
+        return root;
     }
 
     private void addSearchCriterion() {

@@ -39,13 +39,7 @@ public class ProductView {
 		root = new AnchorPane();
         root.getChildren().addAll(MainView.createScrollPane(createFilterBox(mainView)), displayProducts(mainView, productType, products));
 	}
-	
-	/**
-    * Affiche une grille de produits dans une interface utilisateur de type GridPane.
-    * 
-    * @param primaryStage La scène principale de l'application.
-    * @return Le GridPane contenant tous les produits.
-    */
+
    public ScrollPane displayProducts(MainView mainView, Class<? extends Product> typeProduit, List<Product> products) {
 	   if (produitsGrid == null) {
 		   produitsGrid = new FlowPane();
@@ -75,19 +69,17 @@ public class ProductView {
        ScrollPane scrollPane = MainView.createScrollPane(produitsGrid);
        AnchorPane.setLeftAnchor(scrollPane, 250.0);
        AnchorPane.setRightAnchor(scrollPane, 0.0); // S'assurer qu'il occupe tout l'espace horizontal
-       //AnchorPane.setTopAnchor(scrollPane, 116.0);
        return scrollPane;
    }   
    
    /**
     * Crée un conteneur VBox pour afficher chaque produit avec ses informations.
     * 
-    * @param primaryStage La scène principale de l'application.
     * @param product      Le produit à afficher.
     * @return Un VBox contenant l'image, le nom et le prix du produit.
     */
    private VBox createProductBox(MainView mainView, Product product) {
-   	// Création des composants pour chaque produit
+   		// Création des composants pour chaque produit
        ImageView imageView = new ImageView();
        imageView.setFitHeight(150);
        imageView.setFitWidth(150);

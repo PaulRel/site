@@ -135,7 +135,7 @@ public class ProductDetailsView {
         rootPane.getChildren().addAll(v.getHeader(), detailsBox);
         
         // Nouvelle scène pour les détails
-        Scene detailScene = new Scene(rootPane, 1350, 670);
+        Scene detailScene = new Scene(rootPane);
         detailScene.getStylesheets().add(this.getClass().getResource("/style.css").toExternalForm());
         mainView.getPrimaryStage().setScene(detailScene);
     }

@@ -32,7 +32,7 @@ public class AccountView {
         createLeftMenu(mainView);
         this.mainView = mainView;
      
-        Scene accountScene = new Scene(rootPane, 1350, 670);
+        Scene accountScene = new Scene(rootPane);
         
         HeaderView v = new HeaderView(mainView);      
         rootPane.getChildren().addAll(v.getHeader());    
@@ -108,8 +108,8 @@ public class AccountView {
 
         AnchorPane.setLeftAnchor(scrollPane, 280.0);
         AnchorPane.setTopAnchor(scrollPane, 116.0);
-        AnchorPane.setRightAnchor(scrollPane, 10.0); // S'assurer qu'il occupe tout l'espace horizontal
-        AnchorPane.setBottomAnchor(scrollPane, 10.0); // S'assurer qu'il occupe tout l'espace vertical
+        AnchorPane.setRightAnchor(scrollPane, 10.0);
+        AnchorPane.setBottomAnchor(scrollPane, 10.0);
         rootPane.getChildren().add(scrollPane);
     }
     

@@ -23,7 +23,7 @@ public class AuthentificationView {
     	rootPane = new AnchorPane();
         createBox(mainView);
         
-        Scene authScene = new Scene(rootPane, 1350, 670);
+        Scene authScene = new Scene(rootPane);
         
         HeaderView v=new HeaderView(mainView);      
         rootPane.getChildren().addAll(v.getHeader()); 
@@ -111,16 +111,10 @@ public class AuthentificationView {
         VBox root = new VBox(40, mainLabel, mainBox);
         root.setPadding(new Insets(50));
         AnchorPane.setTopAnchor(root, 116.0);
-        root.setPrefSize(1350, 670);
         root.setStyle("-fx-background-color: #EEEEEE");
         
-        mainView.getPrimaryStage().widthProperty().addListener((observable, oldValue, newValue) -> {
-            root.setPrefWidth(newValue.doubleValue()); // Ajuste la largeur
-        });
-
-        mainView.getPrimaryStage().heightProperty().addListener((observable, oldValue, newValue) -> {
-            root.setPrefHeight(newValue.doubleValue()); // Ajuste la hauteur
-        });
+        root.prefWidthProperty().bind(mainView.getPrimaryStage().widthProperty());
+        root.prefHeightProperty().bind(mainView.getPrimaryStage().heightProperty().subtract(118));
         
         rootPane.getChildren().addAll(root);
     }

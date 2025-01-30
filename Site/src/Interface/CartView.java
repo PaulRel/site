@@ -60,7 +60,6 @@ public class CartView {
 		
 		
 	    root.setPadding(new Insets(30));
-	    root.setPrefSize(1350, 550);
 	    root.setStyle("-fx-background-color: #EEEEEE");
 	    root.setAlignment(Pos.TOP_CENTER);
 	    mainView.getPrimaryStage().widthProperty().addListener((observable, oldValue, newValue) -> {root.setPrefWidth(newValue.doubleValue());}); // Ajuste la largeur
@@ -70,7 +69,7 @@ public class CartView {
 	    HeaderView v = new HeaderView(mainView);
 	    rootPane.getChildren().addAll(v.getHeader(), root);
 	    
-	    Scene createAccountScene = new Scene(rootPane, 1350, 670);
+	    Scene createAccountScene = new Scene(rootPane);
 	    createAccountScene.getStylesheets().add(this.getClass().getResource("/style.css").toExternalForm());
 	        
 	    mainView.getPrimaryStage().setScene(createAccountScene);

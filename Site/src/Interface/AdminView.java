@@ -75,7 +75,7 @@ public class AdminView {
         
         rootPane.getChildren().addAll(v.getHeader(), createLeftMenu(), createMainSection());
         
-        Scene adminScene = new Scene(rootPane, 1350, 670);
+        Scene adminScene = new Scene(rootPane);
         adminScene.getStylesheets().add(this.getClass().getResource("/style.css").toExternalForm());
         mainView.getPrimaryStage().setScene(adminScene);
         this.mainView = mainView;
