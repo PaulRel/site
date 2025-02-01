@@ -39,11 +39,11 @@ public class Vetement extends Product implements ProductWithSize{
 	}
 
 	@Override
-	public HashMap<String, Integer> getTailleStock() {
+	public HashMap<String, Integer> getSizeStock() {
 		return tailleStock;
 	}
 
-	public void setTailleStock(HashMap<String, Integer> tailleStock) {
+	public void setSizeStock(HashMap<String, Integer> tailleStock) {
 		this.tailleStock = tailleStock;
 	}
 

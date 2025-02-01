@@ -51,7 +51,7 @@ public class ProductView {
        
        if (products == null) {
     	   productDAO = new ProductDAO();  // Récupérer les produits depuis la base de données
-    	   products = productDAO.getAllProduits();
+    	   products = productDAO.getAllProducts();
        }
        
        actualProducts = new ArrayList<Product>();
@@ -256,7 +256,7 @@ public class ProductView {
 	}
 
    private boolean filterByAttributes(Product product) {
-	    boolean matchSize = sizeSelected.isEmpty() || ((ProductWithSize) product).getTailleStock().keySet().stream().anyMatch(sizeSelected::contains);
+	    boolean matchSize = sizeSelected.isEmpty() || ((ProductWithSize) product).getSizeStock().keySet().stream().anyMatch(sizeSelected::contains);
 	    boolean matchGender = genderSelected.isEmpty() || genderSelected.contains(((ProductWithSize) product).getGender());
 	    boolean matchBrand = brandSelected.isEmpty() || brandSelected.contains(product.getBrand());
 	    boolean matchClothingType = true;

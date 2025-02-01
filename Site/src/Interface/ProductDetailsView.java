@@ -63,7 +63,7 @@ public class ProductDetailsView {
         // ComboBox pour afficher les tailles et quantités disponibles
         if (product instanceof ProductWithSize) {
         	ProductWithSize productWithSize = (ProductWithSize) product;
-        	HashMap<String, Integer> sizesStock = productWithSize.getTailleStock();
+        	HashMap<String, Integer> sizesStock = productWithSize.getSizeStock();
         	
         	 // Ajouter les éléments formatés dans la ComboBox
         	sizeChoiceBox.getItems().clear();

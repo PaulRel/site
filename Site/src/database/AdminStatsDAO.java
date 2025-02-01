@@ -38,7 +38,7 @@ public class AdminStatsDAO {
 
     // 1. Nombre total de produits
     public int getTotalProducts() {
-        String query = "SELECT COUNT(*) AS total_produits FROM Produit";
+        String query = "SELECT COUNT(*) AS total_produits FROM Product";
         try (PreparedStatement stmt = connection.prepareStatement(query);){
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
@@ -55,16 +55,16 @@ public class AdminStatsDAO {
     public ObservableList<Map.Entry<String, Integer>> getTopSellingProducts() {
     	ObservableList<Map.Entry<String, Integer>> topProducts = FXCollections.observableArrayList();
         String query = """
-            SELECT p.Nom, SUM(od.quantity) AS total_vendus
+            SELECT p.name, SUM(od.quantity) AS total_vendus
             FROM Orderdetails od
-            JOIN Produit p ON od.product_id = p.ID
-            GROUP BY p.ID, p.Nom
+            JOIN Product p ON od.product_id = p.ID
+            GROUP BY p.ID, p.name
             ORDER BY total_vendus DESC
             """;
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                	String productName = rs.getString("Nom");
+                	String productName = rs.getString("name");
                     int totalSold = rs.getInt("total_vendus");
                     topProducts.add(new AbstractMap.SimpleEntry<>(productName, totalSold));
                 }
@@ -78,7 +78,7 @@ public class AdminStatsDAO {
 
     // 3. Produits en rupture de stock
     public int getOutOfStockProducts() {
-        String query = "SELECT COUNT(*) AS produits_en_rupture FROM taillestock WHERE qt_dispo = 0";
+        String query = "SELECT COUNT(*) AS produits_en_rupture FROM sizestock WHERE stock = 0";
         try (PreparedStatement stmt = connection.prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {
             if (rs.next()) {
@@ -93,15 +93,15 @@ public class AdminStatsDAO {
     
     // Méthode pour récupérer l'ID du produit et les tailles en rupture
     public Map<Product, List<String>> getOutOfStockProductInfo() {
-        String query = "SELECT DISTINCT produit_id, taille FROM taillestock WHERE qt_dispo = 0";
+        String query = "SELECT DISTINCT product_id, size FROM sizestock WHERE stock = 0";
         Map<Product, List<String>> outOfStockInfoMap = new HashMap<>();
 
         try (PreparedStatement stmt = connection.prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
-                int productId = rs.getInt("produit_id");
-                String size = rs.getString("taille");
+                int productId = rs.getInt("product_id");
+                String size = rs.getString("size");
 
                 ProductDAO productDAO = new ProductDAO();
                 Product product = productDAO.getProductById(productId);
@@ -169,9 +169,9 @@ public class AdminStatsDAO {
     // 7. Chiffre d'affaires généré
     public double getTotalRevenue() {
         String query = """
-            SELECT SUM(od.quantity * p.Prix) AS chiffre_affaires
+            SELECT SUM(od.quantity * p.price) AS chiffre_affaires
             FROM Orderdetails od
-            JOIN Produit p ON od.product_id = p.ID""";
+            JOIN Product p ON od.product_id = p.ID""";
         try (PreparedStatement stmt = connection.prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {
             if (rs.next()) {
@@ -222,15 +222,15 @@ public class AdminStatsDAO {
     	PieChart pieChart = new PieChart();
         //pieChart.setTitle("Répartition des produits vendus par catégories");
     	String query = """
-                SELECT p.Type, SUM(od.quantity) AS total_vendus 
+                SELECT p.type, SUM(od.quantity) AS total_vendus 
     			FROM Orderdetails od
-    			JOIN Produit p ON od.product_id = p.ID
-    			GROUP BY p.Type
+    			JOIN Product p ON od.product_id = p.ID
+    			GROUP BY p.type
     			""";
     	try (PreparedStatement stmt = connection.prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {
              while (rs.next()) {
-            	 String type = rs.getString("Type");
+            	 String type = rs.getString("type");
                  int totalVendus = rs.getInt("total_vendus");
                  pieChart.getData().add(new PieChart.Data(type, totalVendus));
                  pieChart.setLegendVisible(false);
@@ -247,10 +247,10 @@ public class AdminStatsDAO {
         String query = """
             SELECT AVG(total_panier) AS panier_moyen
             FROM (
-                SELECT o.order_id, SUM(od.quantity * p.Prix) AS total_panier
+                SELECT o.order_id, SUM(od.quantity * p.price) AS total_panier
                 FROM Orders o
                 JOIN Orderdetails od ON o.order_id = od.order_id
-                JOIN Produit p ON od.product_id = p.ID
+                JOIN Product p ON od.product_id = p.ID
                 GROUP BY o.order_id
             ) AS panier_totaux""";
         try (PreparedStatement stmt = connection.prepareStatement(query);
@@ -284,10 +284,10 @@ public class AdminStatsDAO {
 
     	String query = """
                 SELECT DATE_FORMAT(o.order_date, '%Y-%m') AS mois, 
-    			SUM(od.quantity * p.Prix) AS ventes
+    			SUM(od.quantity * p.price) AS ventes
     			FROM Orderdetails od
     			JOIN Orders o ON od.order_id = o.order_id
-    			JOIN Produit p ON od.product_id = p.ID
+    			JOIN Product p ON od.product_id = p.ID
     			GROUP BY DATE_FORMAT(o.order_date, '%Y-%m')
     			ORDER BY mois;""";
             try (PreparedStatement stmt = connection.prepareStatement(query);
@@ -332,7 +332,7 @@ public class AdminStatsDAO {
     			SUM(od.quantity) AS ventes
     			FROM Orderdetails od
     			JOIN Orders o ON od.order_id = o.order_id
-    			JOIN Produit p ON od.product_id = p.ID
+    			JOIN Product p ON od.product_id = p.ID
     			GROUP BY DATE_FORMAT(o.order_date, '%Y-%m')
     			ORDER BY mois;""";
             try (PreparedStatement stmt = connection.prepareStatement(query);
@@ -378,19 +378,19 @@ public class AdminStatsDAO {
         // Charger les données depuis la base de données
         String query = """
             SELECT 
-                p.Marque, 
-                SUM(od.quantity * p.Prix) AS ventes_euros,
+                p.brand, 
+                SUM(od.quantity * p.price) AS ventes_euros,
                 SUM(od.quantity) AS produits_vendus
             FROM Orderdetails od
-            JOIN Produit p ON od.product_id = p.ID
-            GROUP BY p.Marque
+            JOIN Product p ON od.product_id = p.ID
+            GROUP BY p.brand
             ORDER BY ventes_euros DESC
         """;
         
         try (PreparedStatement stmt = connection.prepareStatement(query);
         		ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                	String marque = rs.getString("Marque"); // Nom de la marque
+                	String marque = rs.getString("brand"); // Nom de la marque
                     double ventes = rs.getDouble("ventes_euros") / 10;  // Ventes en euros
                     int produitsVendus = rs.getInt("produits_vendus"); // Nombre de produits vendus
                     seriesVentes.getData().add(new XYChart.Data<>(marque, ventes));

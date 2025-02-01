@@ -17,14 +17,14 @@ import products.Vetement;
 import products.Vetement.TypeVetement;
 
 public class ProductDAO {
-	private String type, nom, description, marque, imagePath;
-	double prix;
+	private String type, name, description, brand, imagePath;
+	double price;
 	
 	// RECUPERATION DE TOUS LES PRODUITS
 
-    public List<Product> getAllProduits() {
+    public List<Product> getAllProducts() {
         List<Product> products = new ArrayList<>();
-        String query = "SELECT id, Nom, Description, Type, Marque, Prix, image_Path FROM produit";
+        String query = "SELECT id, name, Description, Type, brand, price, image_Path FROM product";
 
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query);
@@ -33,16 +33,16 @@ public class ProductDAO {
             // Parcourir les résultats et créer des objets Produit
             while (resultSet.next()) {
             	int id = resultSet.getInt("id");
-                nom = resultSet.getString("Nom");
+                name = resultSet.getString("name");
                 description = resultSet.getString("Description");
                 type = resultSet.getString("Type");
-                marque = resultSet.getString("Marque");
-                prix = resultSet.getDouble("Prix");
+                brand = resultSet.getString("brand");
+                price = resultSet.getDouble("price");
                 imagePath = resultSet.getString("image_Path");
 
-                Product product = new Product(id, nom, description, type, marque, prix, imagePath);
+                Product product = new Product(id, name, description, type, brand, price, imagePath);
                 if (type.equalsIgnoreCase("chaussures")) {
-                    product = getChaussuresDetails(id);
+                    product = getShoesDetails(id);
                 } else if (type.equalsIgnoreCase("vetement")) {
                     product = getVetementsDetails(id);
                 }
@@ -56,9 +56,9 @@ public class ProductDAO {
         return products;
     }
     
-    public Chaussures getChaussuresDetails(int id){
-    	Chaussures chaussure = null;
-    	String query = "SELECT * FROM Chaussures WHERE produit_id = ?";
+    public Chaussures getShoesDetails(int id){
+    	Chaussures shoes = null;
+    	String query = "SELECT * FROM Shoes WHERE product_id = ?";
 
     	try (Connection connection = DatabaseConnection.getConnection();
     	    PreparedStatement statement = connection.prepareStatement(query)) {
@@ -67,40 +67,40 @@ public class ProductDAO {
     	    
     	    if (resultSet.next()) {
     	        String surface = resultSet.getString("surface");
-    	        String genre = resultSet.getString("genre");
-    	        String couleur = resultSet.getString("couleur");
-                chaussure = new Chaussures(id, nom, description, type, marque, prix, imagePath, surface, genre, couleur);
-                chaussure.setTailleStock(getTaillesStock(id));
+    	        String gender = resultSet.getString("gender");
+    	        String color = resultSet.getString("color");
+                shoes = new Chaussures(id, name, description, type, brand, price, imagePath, surface, gender, color);
+                shoes.setSizeStock(getSizeStock(id));
     	    }
 
     	} catch (SQLException e) {
     		MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);
     	    e.printStackTrace();
     	}
-    	return chaussure;
+    	return shoes;
     }
 
     
-    private HashMap<String, Integer> getTaillesStock(int produitId) throws SQLException {
-        HashMap<String, Integer> taillesStock = new HashMap<>();
-        String queryTailleStock = "SELECT * FROM Taillestock WHERE produit_id = ?";
+    private HashMap<String, Integer> getSizeStock(int productId) throws SQLException {
+        HashMap<String, Integer> sizeStock = new HashMap<>();
+        String querySizeStock = "SELECT * FROM size_stock WHERE product_id = ?";
 
         try (Connection connection = DatabaseConnection.getConnection();
-        	PreparedStatement ps = connection.prepareStatement(queryTailleStock)) {
-        	ps.setInt(1, produitId);
+        	PreparedStatement ps = connection.prepareStatement(querySizeStock)) {
+        	ps.setInt(1, productId);
         	ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                String taille = rs.getString("taille");
-                int qtDispo = rs.getInt("qt_dispo");
-                taillesStock.put(taille, qtDispo); // Ajouter la taille et quantité dans la HashMap
+                String size = rs.getString("size");
+                int qtDispo = rs.getInt("stock");
+                sizeStock.put(size, qtDispo); // Ajouter la taille et quantité dans la HashMap
             }
         }
-        return taillesStock;
+        return sizeStock;
     }
     
     public Vetement getVetementsDetails(int id){
     	Vetement vetement = null;
-    	String query = "SELECT * FROM Vetement WHERE produit_id = ?";
+    	String query = "SELECT * FROM Clothing WHERE product_id = ?";
 
     	try (Connection connection = DatabaseConnection.getConnection();
         	    PreparedStatement statement = connection.prepareStatement(query)) {
@@ -108,13 +108,13 @@ public class ProductDAO {
         	    ResultSet resultSet = statement.executeQuery();
         	    
         	    if (resultSet.next()) {
-                     String genre = resultSet.getString("Genre");
-                     String couleur = resultSet.getString("Couleur"); 
+                     String gender = resultSet.getString("gender");
+                     String color = resultSet.getString("color"); 
                      String stringTypeVetement = resultSet.getString("type"); 
                      TypeVetement typeVetement = TypeVetement.valueOf(stringTypeVetement.toUpperCase());
                      
-                     vetement = new Vetement(id, nom, description, type, marque, prix, imagePath, typeVetement, genre, couleur);
-                     vetement.setTailleStock(getTaillesStock(id));
+                     vetement = new Vetement(id, name, description, type, brand, price, imagePath, typeVetement, gender, color);
+                     vetement.setSizeStock(getSizeStock(id));
                  }
 
         } catch (SQLException e) {
@@ -125,7 +125,7 @@ public class ProductDAO {
     }
     
     public Product getProductById(int id) {
-        String query = "SELECT id, Nom, Description, Type, Marque, Prix, image_Path FROM produit WHERE id = ?";
+        String query = "SELECT id, name, Description, Type, brand, price, image_Path FROM product WHERE id = ?";
         Product product = null;  // Initialiser à null pour l'instant, si aucun produit n'est trouvé
 
         try (Connection connection = DatabaseConnection.getConnection();
@@ -135,16 +135,16 @@ public class ProductDAO {
 
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    nom = resultSet.getString("Nom");
+                    name = resultSet.getString("name");
                     description = resultSet.getString("Description");
                     type = resultSet.getString("Type");
-                    marque = resultSet.getString("Marque");
-                    prix = resultSet.getDouble("Prix");
+                    brand = resultSet.getString("brand");
+                    price = resultSet.getDouble("price");
                     imagePath = resultSet.getString("image_Path");
 
-                    product = new Product(id, nom, description, type, marque, prix, imagePath);
-                    if (type.equalsIgnoreCase("chaussures")) {
-                        product = getChaussuresDetails(id);
+                    product = new Product(id, name, description, type, brand, price, imagePath);
+                    if (type.equalsIgnoreCase("Shoes")) {
+                        product = getShoesDetails(id);
                     } else if (type.equalsIgnoreCase("vetement")) {
                         product = getVetementsDetails(id);
                     }
@@ -161,7 +161,7 @@ public class ProductDAO {
     // INSERTION
     
     public int insertProduct(Product product) {
-    	String query = "INSERT INTO Produit (Nom, Description, Type, Marque, Prix, image_path) VALUES (?, ?, ?, ?, ?, ?)";
+    	String query = "INSERT INTO product (name, Description, Type, brand, price, image_path) VALUES (?, ?, ?, ?, ?, ?)";
     	try (Connection conn = DatabaseConnection.getConnection();
                PreparedStatement statement = conn.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS)) {
 
@@ -193,8 +193,8 @@ public class ProductDAO {
     	return 0;
     }
     
-    public void insertChaussures(int id, String surface, String gender, String color, String size, int qt) {
-    	String query = "INSERT INTO Chaussures (produit_id, surface, genre, couleur) VALUES (?, ?, ?, ?)";
+    public void insertShoes(int id, String surface, String gender, String color, String size, int qt) {
+    	String query = "INSERT INTO Shoes (product_id, surface, gender, color) VALUES (?, ?, ?, ?)";
     	try (Connection conn = DatabaseConnection.getConnection();
     			PreparedStatement pstmt = conn.prepareStatement(query)) {
     		pstmt.setInt(1, id);
@@ -216,7 +216,7 @@ public class ProductDAO {
     
     
     public void insertVetement(int id, String type, String gender, String color, String size, int qt) {
-    	String query = "INSERT INTO Vetement (produit_id, type, genre, couleur) VALUES (?, ?, ?, ?)";
+    	String query = "INSERT INTO Clothing (product_id, type, gender, color) VALUES (?, ?, ?, ?)";
     	try (Connection conn = DatabaseConnection.getConnection();
     			PreparedStatement pstmt = conn.prepareStatement(query)) {
     		pstmt.setInt(1, id);
@@ -237,7 +237,7 @@ public class ProductDAO {
     }
     
     private void insertSizeStock(int id, String size, int qt) {
-    	String query = "INSERT INTO TailleStock (produit_id, taille, qt_dispo) VALUES (?, ?, ?)";
+    	String query = "INSERT INTO size_stock (product_id, size, qt_dispo) VALUES (?, ?, ?)";
     	try (Connection conn = DatabaseConnection.getConnection();
     			PreparedStatement pstmt = conn.prepareStatement(query)) {
     		pstmt.setInt(1, id);
@@ -254,7 +254,7 @@ public class ProductDAO {
     
     // UPDATE
     public void updateProduct(Product product) {
-    	String sql = "UPDATE Produit SET Nom = ?, Description = ?, Type = ?, Marque = ?, Prix = ?, image_path = ? WHERE id = ?";
+    	String sql = "UPDATE product SET name = ?, Description = ?, Type = ?, brand = ?, price = ?, image_path = ? WHERE id = ?";
         
         try(Connection conn = DatabaseConnection.getConnection();
         	PreparedStatement updateStmt = conn.prepareStatement(sql)){
@@ -272,8 +272,8 @@ public class ProductDAO {
           	}catch(Exception e){e.printStackTrace(); MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);}
     }
     
-    public void updateChaussures(int id, String surface, String gender, String color, String size, int qt) {
-    	String sql = "UPDATE Chaussures SET Surface = ?, Genre = ?, Couleur = ? WHERE Produit_ID = ?";
+    public void updateShoes(int id, String surface, String gender, String color, String size, int qt) {
+    	String sql = "UPDATE Shoes SET Surface = ?, gender = ?, color = ? WHERE product_ID = ?";
         
         try(Connection conn = DatabaseConnection.getConnection();
         	PreparedStatement updateStmt = conn.prepareStatement(sql)){
@@ -290,7 +290,7 @@ public class ProductDAO {
     }
     
     public void updateVetement(int id, String type, String gender, String color, String size, int qt) {
-    	String sql = "UPDATE Vetement SET Type = ?, Genre = ?, Couleur = ? WHERE Produit_ID = ?";
+    	String sql = "UPDATE Clothing SET Type = ?, gender = ?, color = ? WHERE product_ID = ?";
         
         try(Connection conn = DatabaseConnection.getConnection();
         	PreparedStatement updateStmt = conn.prepareStatement(sql)){
@@ -307,7 +307,7 @@ public class ProductDAO {
     }
     
     private void updateSizeStock(int id, String size, int qt) {
-    	String sql = "UPDATE taillestock SET qt_dispo = ? WHERE Produit_ID = ? AND taille = ?";
+    	String sql = "UPDATE size_stock SET qt_dispo = ? WHERE product_ID = ? AND size = ?";
     	try (Connection conn = DatabaseConnection.getConnection();
     			PreparedStatement updateStmt = conn.prepareStatement(sql)) {		
     		updateStmt.setInt(1, qt);
@@ -328,7 +328,7 @@ public class ProductDAO {
     // SUPPRESSION
     
     public void deleteProduct(int id) {
-    	String sql = "DELETE FROM Produit WHERE id = '"+ id+"'";
+    	String sql = "DELETE FROM product WHERE id = '"+ id+"'";
     	try (Connection conn = DatabaseConnection.getConnection();
     			PreparedStatement statement = conn.prepareStatement(sql)) {
                 int rowsAffected = statement.executeUpdate();

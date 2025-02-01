@@ -643,7 +643,7 @@ public class AdminView {
         			else {
         				Product product = new Product(0, name, description, type, brand, price, imagePath);
                 		int id = productDAO.insertProduct(product);
-        				productDAO.insertChaussures(id, surfaceComboBox.getValue(), genderField.getText(), colorField.getText(), sizeComboBox.getValue(), qtDispo);
+        				productDAO.insertShoes(id, surfaceComboBox.getValue(), genderField.getText(), colorField.getText(), sizeComboBox.getValue(), qtDispo);
         			}
         		}
         		
@@ -668,7 +668,7 @@ public class AdminView {
         		clearField();
         		
         		// Mettre à jour la table
-        		productTableView.setItems(FXCollections.observableArrayList(productDAO.getAllProduits()));
+        		productTableView.setItems(FXCollections.observableArrayList(productDAO.getAllProducts()));
         		}
         	}
         });
@@ -687,7 +687,7 @@ public class AdminView {
         		else{
             		Product product = new Product(id, name, description, type, brand, price, imagePath);
             		productDAO.updateProduct(product);
-        			productDAO.updateChaussures(id, surfaceComboBox.getValue(), genderField.getText(), colorField.getText(), sizeComboBox.getValue(), qtDispo);
+        			productDAO.updateShoes(id, surfaceComboBox.getValue(), genderField.getText(), colorField.getText(), sizeComboBox.getValue(), qtDispo);
         		}
     		}
     		
@@ -703,7 +703,7 @@ public class AdminView {
     		}
     		
             clearField();
-            productTableView.setItems(FXCollections.observableArrayList(productDAO.getAllProduits()));
+            productTableView.setItems(FXCollections.observableArrayList(productDAO.getAllProducts()));
         }
     }
     
@@ -711,7 +711,7 @@ public class AdminView {
     public void deleteProduct(){ 
     	if(!checkIfEmpty()) {
         	productDAO.deleteProduct(Integer.parseInt(idField.getText()));
-        	productTableView.setItems(FXCollections.observableArrayList(productDAO.getAllProduits()));
+        	productTableView.setItems(FXCollections.observableArrayList(productDAO.getAllProducts()));
         	clearField();      
         }
     }
@@ -755,7 +755,7 @@ public class AdminView {
     
     
 	    public TableView<Product> getProductTableView(){
-	    	ObservableList<Product> productsList = FXCollections.observableArrayList(productDAO.getAllProduits());
+	    	ObservableList<Product> productsList = FXCollections.observableArrayList(productDAO.getAllProducts());
 	    	TableView<Product> tableView = new TableView<>();
 	        
 	        TableColumn<Product, Integer> colId = new TableColumn<>("ID");
@@ -810,7 +810,7 @@ public class AdminView {
         
         if (product instanceof ProductWithSize) {
         	ProductWithSize productWithSize = (ProductWithSize) product;
-        	sizesStock = productWithSize.getTailleStock();
+        	sizesStock = productWithSize.getSizeStock();
         }
         
         if (product instanceof Chaussures) {

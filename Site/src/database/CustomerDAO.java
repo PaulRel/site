@@ -28,14 +28,14 @@ public class CustomerDAO {
 	        // Parcourir les résultats et créer des objets Customer
 	        while (resultSet.next()) {
 	            int customerID = resultSet.getInt("CustomerID");
-	            String firstName = resultSet.getString("FirstName");
-	            String lastName = resultSet.getString("LastName");
-	            Civility civility = Civility.valueOf(resultSet.getString("Civility"));
-	            String email = resultSet.getString("Email");
-	            String phoneNumber = resultSet.getString("PhoneNumber");
-	            String password = resultSet.getString("Password");
-	            Role role = Role.valueOf(resultSet.getString("Role").toUpperCase());
-	            String address = resultSet.getString("Address");
+	            String firstName = resultSet.getString("first_name");
+	            String lastName = resultSet.getString("last_name");
+	            Civility civility = Civility.valueOf(resultSet.getString("civility"));
+	            String email = resultSet.getString("email");
+	            String phoneNumber = resultSet.getString("phone_number");
+	            String password = resultSet.getString("password");
+	            Role role = Role.valueOf(resultSet.getString("role").toUpperCase());
+	            String address = resultSet.getString("address");
 
 	            // Créer un objet Customer et l'ajouter à la liste
 	            Customer customer = new Customer(customerID, firstName, lastName, civility, email, phoneNumber, password, role, address);
@@ -53,7 +53,7 @@ public class CustomerDAO {
     // INSERTION
 	
 	public void signUpCustomer(Customer customer) {
-        String query = "INSERT INTO Customer (FirstName, LastName, Civility, Email, Password, Address) VALUES (?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO Customer (first_name, last_name, civility, email, password, address) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement statement = conn.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS)) {
@@ -113,7 +113,7 @@ public class CustomerDAO {
 	
 	public void updateCustomer(Customer customer) {
 		try (Connection conn = DatabaseConnection.getConnection()){
-	        String updateQuery = "UPDATE Customer SET FirstName = ?, LastName = ?, Email = ?, PhoneNumber = ?, Address = ? WHERE CustomerID = ?";
+	        String updateQuery = "UPDATE Customer SET first_name = ?, last_name = ?, email = ?, phone_number = ?, address = ? WHERE CustomerID = ?";
 	        PreparedStatement updateStmt = conn.prepareStatement(updateQuery);
 	        updateStmt.setString(1, customer.getFirstName());
 	        updateStmt.setString(2, customer.getLastName());
@@ -136,7 +136,7 @@ public class CustomerDAO {
 	// RECUPERATION D'UN CLIENT A PARTIR DE SON ADRESSSE MAIL
 
 	public Customer authenticate(String email, String password) {
-        String query = "SELECT * FROM Customer WHERE Email = ?";
+        String query = "SELECT * FROM Customer WHERE email = ?";
         
         try (Connection conn = DatabaseConnection.getConnection();
             PreparedStatement statement = conn.prepareStatement(query)) {       	
@@ -145,16 +145,16 @@ public class CustomerDAO {
                        
         	// Check if a user exists with this email
             while (rs.next()) {
-            	String storedPassword = rs.getString("Password");
+            	String storedPassword = rs.getString("password");
                 if (password.equals(storedPassword))  {
                 	 // Create and return a Customer object
                 	int id = rs.getInt("CustomerID");
-                    String firstName = rs.getString("FirstName");
-                    String lastName = rs.getString("LastName");
-                    String phoneNumber = rs.getString("PhoneNumber");
-                    String address = rs.getString("Address");
-                    String civilityString = rs.getString("Civility");
-                    String roleString = rs.getString("Role");
+                    String firstName = rs.getString("first_name");
+                    String lastName = rs.getString("last_name");
+                    String phoneNumber = rs.getString("phone_number");
+                    String address = rs.getString("address");
+                    String civilityString = rs.getString("civility");
+                    String roleString = rs.getString("role");
                     
                     // Map civility and role enums
                     Customer.Civility civility = Customer.Civility.valueOf(civilityString);
@@ -185,16 +185,16 @@ public class CustomerDAO {
 
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                	String firstName = resultSet.getString("FirstName");
-                	String lastName = resultSet.getString("LastName");
-                	Civility civility = Civility.valueOf(resultSet.getString("Civility"));
+                	String firstName = resultSet.getString("first_name");
+                	String lastName = resultSet.getString("last_name");
+                	Civility civility = Civility.valueOf(resultSet.getString("civility"));
                 	
-                	String email = resultSet.getString("Email");
-                	String phoneNumber = resultSet.getString("PhoneNumber");
+                	String email = resultSet.getString("email");
+                	String phoneNumber = resultSet.getString("phone_number");
 
-                	String password = resultSet.getString("Password");
-                	Role role = Role.valueOf(resultSet.getString("Role").toUpperCase());
-                	String address = resultSet.getString("Address");
+                	String password = resultSet.getString("password");
+                	Role role = Role.valueOf(resultSet.getString("role").toUpperCase());
+                	String address = resultSet.getString("address");
 
                     customer = new Customer(id, firstName, lastName, civility, email, phoneNumber, password, role, address);       
                 }
