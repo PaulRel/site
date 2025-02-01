@@ -121,9 +121,9 @@ public class AdminStatsDAO {
     
     
     
-    // 4. Nombre total de commandes
+    // 4. Nombre total de commandes (sauf les commandes avec le statut Annulée)
     public int getTotalOrders() {
-        String query = "SELECT COUNT(*) AS total_commandes FROM Orders";
+        String query = "SELECT COUNT(*) AS total_commandes FROM Orders WHERE status IN ('En cours', 'Validée', 'Livrée');";
         try (PreparedStatement stmt = connection.prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {
             if (rs.next()) {
