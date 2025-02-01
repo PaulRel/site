@@ -136,7 +136,7 @@ public class AdminStatsDAO {
         return 0;
     }
 
-    // 5. Nombre de commandes en cours NON UTILISE
+    // 5. Nombre de commandes en cours PAS UTILISE dans le projet
     public int getPendingOrders() {
         String query = "SELECT COUNT(*) AS commandes_en_cours FROM Orders WHERE status = 'En cours'";
         try (PreparedStatement stmt = connection.prepareStatement(query);
@@ -153,7 +153,7 @@ public class AdminStatsDAO {
     
     // 6. Nombre de commandes livrées NON UTILISE
     public int getDeliveredOrders() {
-        String query = "SELECT COUNT(*) AS commandes_livrées FROM Orders WHERE status = 'Délivrée	'";
+        String query = "SELECT COUNT(*) AS commandes_livrées FROM Orders WHERE status = 'Délivrée'";
         try (PreparedStatement stmt = connection.prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {
             if (rs.next()) {
@@ -186,7 +186,8 @@ public class AdminStatsDAO {
 
     // 8. Nombre total d'utilisateurs
     public int getTotalUsers() {
-        String query = "SELECT COUNT(*) AS total_utilisateurs FROM Customer";
+        String query = "SELECT COUNT(*) AS total_utilisateurs FROM Customer"
+        		+ "AND customer_id NOT IN (SELECT CustomerID FROM Customer WHERE role = 'Admin');";
         try (PreparedStatement stmt = connection.prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {
             if (rs.next()) {
@@ -199,10 +200,11 @@ public class AdminStatsDAO {
         return 0;
     }
     
-    // 9. Utilisateurs actifs ayant commandé dans les 30 derniers jours
+    // 9. Clients actifs ayant commandé dans les 30 derniers jours
     public int getTotalActiveUsers() {
         String query = "SELECT COUNT(DISTINCT customer_id) AS utilisateurs_actifs FROM Orders "
-        		+ "WHERE order_date >= DATE_SUB(CURDATE(), INTERVAL 30 DAY);";
+        		+ "WHERE order_date >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)"
+        		+ "AND customer_id NOT IN (SELECT CustomerID FROM Customer WHERE role = 'Admin');";
         try (PreparedStatement stmt = connection.prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {
             if (rs.next()) {
