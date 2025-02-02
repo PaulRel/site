@@ -38,11 +38,11 @@ public class AdminStatsDAO {
 
     // 1. Nombre total de produits
     public int getTotalProducts() {
-        String query = "SELECT COUNT(*) AS total_produits FROM Product";
+        String query = "SELECT COUNT(*) AS total_products FROM Product";
         try (PreparedStatement stmt = connection.prepareStatement(query);){
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                return rs.getInt("total_produits");
+                return rs.getInt("total_products");
             }
         } catch (SQLException e) {
         	MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);
@@ -78,11 +78,11 @@ public class AdminStatsDAO {
 
     // 3. Produits en rupture de stock
     public int getOutOfStockProducts() {
-        String query = "SELECT COUNT(*) AS produits_en_rupture FROM sizestock WHERE stock = 0";
+        String query = "SELECT COUNT(*) AS out_of_stock_products FROM sizestock WHERE stock = 0";
         try (PreparedStatement stmt = connection.prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {
             if (rs.next()) {
-                return rs.getInt("produits_en_rupture");
+                return rs.getInt("out_of_stock_products");
             }
         } catch (SQLException e) {
         	MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);

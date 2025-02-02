@@ -19,15 +19,15 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
-import products.Chaussures;
+import products.Shoes;
 import products.Product;
-import products.Vetement;
+import products.Clothing;
 import products.ProductWithSize;
 
 public class ProductView {
 	
 	private AnchorPane root;
-	private FlowPane produitsGrid;
+	private FlowPane productsGrid;
 	private ProductDAO productDAO;
 	List<Product> actualProducts;
 	private ComboBox<String> sortComboBox;
@@ -40,13 +40,13 @@ public class ProductView {
         root.getChildren().addAll(MainView.createScrollPane(createFilterBox(mainView)), displayProducts(mainView, productType, products));
 	}
 
-   public ScrollPane displayProducts(MainView mainView, Class<? extends Product> typeProduit, List<Product> products) {
-	   if (produitsGrid == null) {
-		   produitsGrid = new FlowPane();
-		   produitsGrid.setPadding(new Insets(20));
-		   produitsGrid.setHgap(10); //espace horizontal entre les produits
-		   produitsGrid.setVgap(10);
-		   produitsGrid.setPrefSize(900, 800);
+   public ScrollPane displayProducts(MainView mainView, Class<? extends Product> typeProduct, List<Product> products) {
+	   if (productsGrid == null) {
+		   productsGrid = new FlowPane();
+		   productsGrid.setPadding(new Insets(20));
+		   productsGrid.setHgap(10); //espace horizontal entre les produits
+		   productsGrid.setVgap(10);
+		   productsGrid.setPrefSize(900, 800);
 	   }
        
        if (products == null) {
@@ -55,18 +55,18 @@ public class ProductView {
        }
        
        actualProducts = new ArrayList<Product>();
-       if (produitsGrid.getChildren().isEmpty()) {
+       if (productsGrid.getChildren().isEmpty()) {
     	   products.stream()
-    	   .filter(typeProduit::isInstance) // Filtrer les produits par type
-    	   .forEach(produit -> {
-    		   actualProducts.add(produit);
-    		   VBox produitBox = createProductBox(mainView, produit);
-    		   produitsGrid.getChildren().add(produitBox);
+    	   .filter(typeProduct::isInstance) // Filtrer les produits par type
+    	   .forEach(product -> {
+    		   actualProducts.add(product);
+    		   VBox productBox = createProductBox(mainView, product);
+    		   productsGrid.getChildren().add(productBox);
     	   });
        }
   
        // Encapsuler le FlowPane dans un ScrollPane
-       ScrollPane scrollPane = MainView.createScrollPane(produitsGrid);
+       ScrollPane scrollPane = MainView.createScrollPane(productsGrid);
        AnchorPane.setLeftAnchor(scrollPane, 250.0);
        AnchorPane.setRightAnchor(scrollPane, 0.0); // S'assurer qu'il occupe tout l'espace horizontal
        return scrollPane;
@@ -95,19 +95,19 @@ public class ProductView {
        new Thread(loadImageTask).start();
        
 
-       Label nomProduit = new Label(product.getName());
-       nomProduit.getStyleClass().add("nom-produit"); // Appliquer la classe CSS
-       Label prixProduit = new Label("Prix : " + product.getPrice() + "€");
-       prixProduit.getStyleClass().add("prix-produit"); // Appliquer la classe CSS
+       Label nameProduct = new Label(product.getName());
+       nameProduct.getStyleClass().add("name-product"); // Appliquer la classe CSS
+       Label priceProduct = new Label("Prix : " + product.getPrice() + "€");
+       priceProduct.getStyleClass().add("price-product"); // Appliquer la classe CSS
 
-       VBox produitBox = new VBox();
-       produitBox.getStyleClass().add("produit-box"); // Appliquer la classe CSS
-       produitBox.getChildren().addAll(imageView, nomProduit, prixProduit);
+       VBox productBox = new VBox();
+       productBox.getStyleClass().add("product-box"); // Appliquer la classe CSS
+       productBox.getChildren().addAll(imageView, nameProduct, priceProduct);
        
        // Gestion du clic sur le produit pour afficher les détails
-       produitBox.setOnMouseClicked(event -> new ProductDetailsView(mainView, product));
+       productBox.setOnMouseClicked(event -> new ProductDetailsView(mainView, product));
        
-       return produitBox;
+       return productBox;
     }
    
    /**
@@ -260,12 +260,12 @@ public class ProductView {
 	    boolean matchGender = genderSelected.isEmpty() || genderSelected.contains(((ProductWithSize) product).getGender());
 	    boolean matchBrand = brandSelected.isEmpty() || brandSelected.contains(product.getBrand());
 	    boolean matchClothingType = true;
-		if (product instanceof Vetement) {
+		if (product instanceof Clothing) {
 			matchClothingType = clothingTypeSelected.isEmpty() || clothingTypeSelected.stream()
-		            .anyMatch(type -> type.equalsIgnoreCase(((Vetement) product).getTypeVetement().toString()));
+		            .anyMatch(type -> type.equalsIgnoreCase(((Clothing) product).getTypeVetement().toString()));
 		}
 		boolean isClothingSelected = !clothingTypeSelected.isEmpty();
-	    if (isClothingSelected && product instanceof Chaussures) {
+	    if (isClothingSelected && product instanceof Shoes) {
 	        return false;  // Exclure les produits de type Chaussures
 	    }
 	    return matchSize && matchGender && matchBrand && matchClothingType;
@@ -277,14 +277,14 @@ public class ProductView {
 
    
    private void updateProductDisplay(MainView mainView) {
-	    produitsGrid.getChildren().clear(); // Nettoie l'affichage actuel
+	    productsGrid.getChildren().clear(); // Nettoie l'affichage actuel
 	    actualProducts.stream()
 	    .sorted(sort())
 	    .filter(this::filterByAttributes)
 	    .filter(this::filterByPrice)
-	    .forEach(produit -> {
-	    	VBox produitBox = createProductBox(mainView, produit); // Crée une box pour chaque produit
-	    	produitsGrid.getChildren().add(produitBox); // Ajoute la box au GridPane
+	    .forEach(product -> {
+	    	VBox productBox = createProductBox(mainView, product); // Crée une box pour chaque produit
+	    	productsGrid.getChildren().add(productBox); // Ajoute la box au GridPane
 	    });
 	}
 

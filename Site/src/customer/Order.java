@@ -56,7 +56,7 @@ import products.Product;
 	    }
     
     public void decrementStock(int productId, String size, int quantity) {
-        String query = "UPDATE taillestock SET qt_dispo = qt_dispo - ? WHERE produit_id = ? AND taille = ?";
+        String query = "UPDATE size_stock SET stock = stock - ? WHERE product_id = ? AND size = ?";
         try (Connection connection = DatabaseConnection.getConnection();
         		PreparedStatement pstmt = connection.prepareStatement(query)) {
             pstmt.setInt(1, quantity);
@@ -70,7 +70,7 @@ import products.Product;
     }
     
     public void incrementStock(CartItem cartItem) {
-        String query = "UPDATE taillestock SET qt_dispo = qt_dispo + ? WHERE produit_id = ? AND taille = ?";
+        String query = "UPDATE size_stock SET stock = stock + ? WHERE product_id = ? AND size = ?";
         try (Connection connection = DatabaseConnection.getConnection();
         		PreparedStatement pstmt = connection.prepareStatement(query)) {
             pstmt.setInt(1, cartItem.getQuantity());

@@ -58,10 +58,10 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
-import products.Chaussures;
+import products.Shoes;
 import products.Product;
 import products.ProductWithSize;
-import products.Vetement;
+import products.Clothing;
 
 public class AdminView {
 	
@@ -341,10 +341,10 @@ public class AdminView {
 	    colCustomerId.setCellValueFactory(new PropertyValueFactory<>("id"));
 
 	    TableColumn<Customer, String> colFirstName = new TableColumn<>("Prénom");
-	    colFirstName.setCellValueFactory(new PropertyValueFactory<>("firstName"));
+	    colFirstName.setCellValueFactory(new PropertyValueFactory<>("first_name"));
 
 	    TableColumn<Customer, String> colLastName = new TableColumn<>("Nom");
-	    colLastName.setCellValueFactory(new PropertyValueFactory<>("lastName"));
+	    colLastName.setCellValueFactory(new PropertyValueFactory<>("last_name"));
 
 	    TableColumn<Customer, String> colCivility = new TableColumn<>("Civilité");
 	    colCivility.setCellValueFactory(new PropertyValueFactory<>("civility"));
@@ -353,7 +353,7 @@ public class AdminView {
 	    colEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
 
 	    TableColumn<Customer, String> colPhoneNumber = new TableColumn<>("Téléphone");
-	    colPhoneNumber.setCellValueFactory(new PropertyValueFactory<>("phoneNumber"));
+	    colPhoneNumber.setCellValueFactory(new PropertyValueFactory<>("phone_number"));
 
 	    TableColumn<Customer, String> colPassword = new TableColumn<>("Mot de passe");
 	    colPassword.setCellValueFactory(new PropertyValueFactory<>("password"));
@@ -435,12 +435,12 @@ public class AdminView {
 	
 	// MODIFIER PRODUITS et STOCKS
 	
-	private TextField idField, nameField, descriptionField, brandField, priceField, qtDispoField, genderField, colorField;
+	private TextField idField, nameField, descriptionField, brandField, priceField, qtyField, genderField, colorField;
 	private String name, description, type, brand, imagePath;
 	private Button addButton, deleteButton, clearButton,updateButton, importButton;
 	private double price;
-	private Label idLabel, typeLabel, sizeLabel, qtDispoLabel, surfaceLabel, genderLabel, colorLabel, typeVLabel;
-	private int qtDispo;
+	private Label idLabel, typeLabel, sizeLabel, qtyLabel, surfaceLabel, genderLabel, colorLabel, typeVLabel;
+	private int qty;
     private ImageView imageView;
     private VBox a;
 	private ComboBox<String> typeComboBox, sizeComboBox, surfaceComboBox, typeVComboBox;
@@ -460,7 +460,7 @@ public class AdminView {
     	typeComboBox =  getComboBox();
     	brandField = new TextField();
     	priceField = new TextField();
-    	qtDispoField = new TextField();
+    	qtyField = new TextField();
     	
     	// Specifique à un type de produit
     	surfaceComboBox = new ComboBox<String>();
@@ -470,7 +470,7 @@ public class AdminView {
     	typeVComboBox = new ComboBox<String>();
     	typeVComboBox.getItems().addAll("Short","Sweat","Debardeur","Tshirt","Robe","Veste");
     	
-    	for (TextField txt : new TextField[]{idField, nameField, descriptionField, brandField, priceField, qtDispoField, genderField, colorField}) {
+    	for (TextField txt : new TextField[]{idField, nameField, descriptionField, brandField, priceField, qtyField, genderField, colorField}) {
             txt.setStyle("-fx-pref-height: 30px;");
 		}
     	
@@ -526,13 +526,13 @@ public class AdminView {
         Label brandLabel = new Label("Marque");
         Label priceLabel = new Label("Prix");
         sizeLabel = new Label("Taille");
-        qtDispoLabel = new Label("Quantité");
+        qtyLabel = new Label("Quantité");
         
         sizeLabel.setVisible(false);
         sizeComboBox.setVisible(false);        
         
         gridPane.addRow(0, idLabel, idField, priceLabel, priceField);
-        gridPane.addRow(1, nameLabel, nameField, qtDispoLabel, qtDispoField);
+        gridPane.addRow(1, nameLabel, nameField, qtyLabel, qtyField);
         gridPane.addRow(2, descriptionLabel);
         gridPane.add(descriptionField, 1, 2, 3, 1); //colonne, ligne, nb col occupe
         gridPane.addRow(3, typeLabel, typeComboBox, sizeLabel, sizeComboBox);
@@ -583,9 +583,9 @@ public class AdminView {
             sizeLabel.setVisible(true);
             sizeComboBox.getItems().clear();
             sizeComboBox.setVisible(true);
-            productGridPane.getChildren().removeAll(qtDispoLabel, qtDispoField);
-            productGridPane.add(qtDispoLabel, 2, 4); // Nouvelle position pour quantité
-            productGridPane.add(qtDispoField, 3, 4);
+            productGridPane.getChildren().removeAll(qtyLabel, qtyField);
+            productGridPane.add(qtyLabel, 2, 4); // Nouvelle position pour quantité
+            productGridPane.add(qtyField, 3, 4);
 
             if ("chaussures".equals(selectedCategory)) {
                 sizeComboBox.getItems().addAll("36", "37", "38", "39");
@@ -604,7 +604,7 @@ public class AdminView {
         	if (sizesStock != null) {
         	for (Map.Entry<String, Integer> entry : sizesStock.entrySet()) {
         		if (entry.getKey().equals(selectedSize)) {
-                    qtDispoField.setText(String.valueOf(entry.getValue()));
+                    qtyField.setText(String.valueOf(entry.getValue()));
         		}
         	}       
         	}	
@@ -643,7 +643,7 @@ public class AdminView {
         			else {
         				Product product = new Product(0, name, description, type, brand, price, imagePath);
                 		int id = productDAO.insertProduct(product);
-        				productDAO.insertShoes(id, surfaceComboBox.getValue(), genderField.getText(), colorField.getText(), sizeComboBox.getValue(), qtDispo);
+        				productDAO.insertShoes(id, surfaceComboBox.getValue(), genderField.getText(), colorField.getText(), sizeComboBox.getValue(), qty);
         			}
         		}
         		
@@ -655,7 +655,7 @@ public class AdminView {
         			else {
         				Product product = new Product(0, name, description, type, brand, price, imagePath);
                 		int id = productDAO.insertProduct(product);
-        				productDAO.insertVetement(id, typeVComboBox.getValue(), genderField.getText(), colorField.getText(), sizeComboBox.getValue(), qtDispo);
+        				productDAO.insertVetement(id, typeVComboBox.getValue(), genderField.getText(), colorField.getText(), sizeComboBox.getValue(), qty);
         			}
         			
         		}
@@ -687,7 +687,7 @@ public class AdminView {
         		else{
             		Product product = new Product(id, name, description, type, brand, price, imagePath);
             		productDAO.updateProduct(product);
-        			productDAO.updateShoes(id, surfaceComboBox.getValue(), genderField.getText(), colorField.getText(), sizeComboBox.getValue(), qtDispo);
+        			productDAO.updateShoes(id, surfaceComboBox.getValue(), genderField.getText(), colorField.getText(), sizeComboBox.getValue(), qty);
         		}
     		}
     		
@@ -698,7 +698,7 @@ public class AdminView {
     			else {
     	    		Product product = new Product(id, name, description, type, brand, price, imagePath);
     	    		productDAO.updateProduct(product);
-    				productDAO.updateVetement(id, typeVComboBox.getValue(), genderField.getText(), colorField.getText(), sizeComboBox.getValue(), qtDispo);
+    				productDAO.updateVetement(id, typeVComboBox.getValue(), genderField.getText(), colorField.getText(), sizeComboBox.getValue(), qty);
     			}
     		}
     		
@@ -805,7 +805,7 @@ public class AdminView {
         typeComboBox.setValue(product.getType());
         brandField.setText(product.getBrand());
         priceField.setText(String.valueOf(product.getPrice()));
-        qtDispoField.setText("");
+        qtyField.setText("");
         sizeComboBox.getSelectionModel().clearSelection();
         
         if (product instanceof ProductWithSize) {
@@ -813,20 +813,20 @@ public class AdminView {
         	sizesStock = productWithSize.getSizeStock();
         }
         
-        if (product instanceof Chaussures) {
+        if (product instanceof Shoes) {
         	hideClothesComponents();
         	showShoesComponents();;
-        	surfaceComboBox.setValue(((Chaussures)product).getSurface());
-            genderField.setText(((Chaussures)product).getGender());
-            colorField.setText(((Chaussures)product).getColor());
+        	surfaceComboBox.setValue(((Shoes)product).getSurface());
+            genderField.setText(((Shoes)product).getGender());
+            colorField.setText(((Shoes)product).getColor());
         }
         
-        if (product instanceof Vetement) {
+        if (product instanceof Clothing) {
         	hideShoesComponents();
         	showClothesComponents();
-        	typeVComboBox.setValue(((Vetement)product).getTypeVetement().toString());
-            genderField.setText(((Vetement)product).getGender());
-            colorField.setText(((Vetement)product).getCouleur());
+        	typeVComboBox.setValue(((Clothing)product).getTypeVetement().toString());
+            genderField.setText(((Clothing)product).getGender());
+            colorField.setText(((Clothing)product).getColor());
         }
         
         imagePath = product.getImagePath();
@@ -884,7 +884,7 @@ public class AdminView {
         typeComboBox.getSelectionModel().clearSelection();
         brandField.setText("");
         priceField.setText("");
-        qtDispoField.setText("");
+        qtyField.setText("");
         imageView.setImage(null);
         imagePath = "";
         sizesStock = null;
@@ -894,9 +894,9 @@ public class AdminView {
         sizeLabel.setVisible(false);
         sizeComboBox.getItems().clear();
         sizeComboBox.setVisible(false);
-        productGridPane.getChildren().removeAll(qtDispoLabel, qtDispoField);
-        productGridPane.add(qtDispoLabel, 2, 1); // Nouvelle position pour quantité
-        productGridPane.add(qtDispoField, 3, 1);
+        productGridPane.getChildren().removeAll(qtyLabel, qtyField);
+        productGridPane.add(qtyLabel, 2, 1); // Nouvelle position pour quantité
+        productGridPane.add(qtyField, 3, 1);
     }
     
     
@@ -906,7 +906,7 @@ public class AdminView {
     	type = typeComboBox.getValue();
     	brand = brandField.getText();
     	price = Double.parseDouble(priceField.getText());
-    	qtDispo = Integer.parseInt(qtDispoField.getText()); 	
+    	qty = Integer.parseInt(qtyField.getText()); 	
     }
     
     private boolean checkIfEmpty() {
@@ -915,7 +915,7 @@ public class AdminView {
                  || typeComboBox.getSelectionModel().getSelectedItem() == null
                  || brandField.getText().isEmpty()
                  || priceField.getText().isEmpty()
-                 || qtDispoField.getText().isEmpty()
+                 || qtyField.getText().isEmpty()
                  || imagePath == null || imagePath == ""){
          	MainView.showAlert("Erreur", null, "Merci de remplir tous les champs", AlertType.ERROR);
     	 	return true;
@@ -927,7 +927,7 @@ public class AdminView {
     	if (nameField.getText().matches("[a-zA-Z0-9\\s'-]+") // Vérifie que le nom contient des lettres, des espaces, des apostrophes ou des tirets
     			&& brandField.getText().matches("[a-zA-Z\\s'-]+") // Vérifie que la marque contient seulement des lettres, des espaces, des apostrophes ou des tirets
     			&& priceField.getText().matches("\\d+(\\.\\d{1,2})?") // Vérifie que le prix est un nombre avec une ou deux décimales
-    			&& qtDispoField.getText().matches("\\d+")) { // Vérifie que la quantité est un nombre entier
+    			&& qtyField.getText().matches("\\d+")) { // Vérifie que la quantité est un nombre entier
     		    return true;
     		}
 		MainView.showAlert("Erreur", null, "Merci de remplir tous les champs avec des valeurs valides.", AlertType.ERROR);

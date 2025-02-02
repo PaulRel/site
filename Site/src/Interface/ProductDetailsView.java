@@ -69,13 +69,13 @@ public class ProductDetailsView {
         	sizeChoiceBox.getItems().clear();
             for (Map.Entry<String, Integer> entry : sizesStock.entrySet()) {
                 String size = entry.getKey();
-                int qtDispo = entry.getValue();
+                int qty = entry.getValue();
                 String text;
-                if (qtDispo == 0) {
+                if (qty == 0) {
                 	text = "En rupture de stock";
                 } 
-                else if (qtDispo <= 5) {
-                    text = "Plus que " + qtDispo + " en stock";
+                else if (qty <= 5) {
+                    text = "Plus que " + qty + " en stock";
                 } else {
                     text = "Stock 5+";
                 }	

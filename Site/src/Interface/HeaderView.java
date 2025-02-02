@@ -19,10 +19,10 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-import products.Chaussures;
+import products.Shoes;
 import products.Product;
-import products.Sac;
-import products.Vetement;
+import products.Bag;
+import products.Clothing;
 
 public class HeaderView{
     private VBox header;
@@ -111,26 +111,26 @@ public class HeaderView{
         HBox menuBar = new HBox();
         menuBar.setId("menuBar");
         
-        Button vetementsButton = new Button("VETEMENTS");
-        Button chaussuresButton = new Button("CHAUSSURES");
+        Button clothingButton = new Button("VETEMENTS");
+        Button shoesButton = new Button("CHAUSSURES");
 
         // Associer un événement de clic pour chaque item de menu
-        vetementsButton.setOnAction(e ->{ 
-        	mainView.showProductView(Vetement.class, null); 
-        	vetementsButton.setStyle("-fx-border-color: #00ffe8;; -fx-background-color: #dedede; -fx-border-color: #00ffe8; -fx-border-width: 0px 0px 3px 0px;");
-        	chaussuresButton.setStyle("-fx-border-width: 0px 0px 3px 0px; -fx-border-width: 0px 0px 0px 0px;");
+        clothingButton.setOnAction(e ->{ 
+        	mainView.showProductView(Clothing.class, null); 
+        	clothingButton.setStyle("-fx-border-color: #00ffe8;; -fx-background-color: #dedede; -fx-border-color: #00ffe8; -fx-border-width: 0px 0px 3px 0px;");
+        	shoesButton.setStyle("-fx-border-width: 0px 0px 3px 0px; -fx-border-width: 0px 0px 0px 0px;");
         });
         
-        chaussuresButton.setOnAction(e -> {
-        	chaussuresButton.setStyle("-fx-border-color: #00ffe8;; -fx-background-color: #dedede; -fx-border-color: #00ffe8; -fx-border-width: 0px 0px 3px 0px;");
-        	vetementsButton.setStyle("-fx-border-width: 0px 0px 3px 0px; -fx-border-width: 0px 0px 0px 0px;");
-        	mainView.showProductView(Chaussures.class, null);
+        shoesButton.setOnAction(e -> {
+        	shoesButton.setStyle("-fx-border-color: #00ffe8;; -fx-background-color: #dedede; -fx-border-color: #00ffe8; -fx-border-width: 0px 0px 3px 0px;");
+        	clothingButton.setStyle("-fx-border-width: 0px 0px 3px 0px; -fx-border-width: 0px 0px 0px 0px;");
+        	mainView.showProductView(Shoes.class, null);
         });
         
-        vetementsButton.setId("vetementsButton");
-        chaussuresButton.setId("chaussuresButton");
+        clothingButton.setId("clothingButton");
+        shoesButton.setId("shoesButton");
         
-        menuBar.getChildren().addAll(vetementsButton, chaussuresButton);
+        menuBar.getChildren().addAll(clothingButton, shoesButton);
         
         header.getChildren().addAll(topBar, menuBar);
         header.setPrefWidth(mainView.getPrimaryStage().getWidth() - 20);

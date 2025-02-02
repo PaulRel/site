@@ -124,7 +124,7 @@ public class SearchAdvancedView {
     
     @SuppressWarnings("unchecked")
 	private List<Product> executeSearch() {
-        StringBuilder query = new StringBuilder("SELECT Produit_id FROM vueproduits WHERE ");
+        StringBuilder query = new StringBuilder("SELECT product_id FROM vueproduits WHERE ");
         List<String> parameters = new ArrayList<>();
         List<Product> results = new ArrayList<>();
 
@@ -144,8 +144,8 @@ public class SearchAdvancedView {
                 }
 
                 if ("Tous critères".equals(selectedCriteria)) {
-                    query.append("(LOWER(Nom) LIKE ? OR LOWER(Description) LIKE ? OR LOWER(Type) LIKE ? OR LOWER(Marque) LIKE ? "
-                    		+ "OR LOWER(Couleur) LIKE ? OR LOWER(Surface) LIKE ? OR LOWER(Genre) LIKE ? OR LOWER(TypeVetements) LIKE ?)");
+                    query.append("(LOWER(name) LIKE ? OR LOWER(description) LIKE ? OR LOWER(type) LIKE ? OR LOWER(brand) LIKE ? "
+                    		+ "OR LOWER(color) LIKE ? OR LOWER(surface) LIKE ? OR LOWER(gender) LIKE ? OR LOWER(TypeVetements) LIKE ?)");
                     
                     for (int j = 0; j < 8; j++) {
                         parameters.add("%" + searchValue.toLowerCase() + "%");
@@ -170,8 +170,8 @@ public class SearchAdvancedView {
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 ProductDAO productDAO = new ProductDAO();
-                Product produit = productDAO.getProductById(resultSet.getInt("Produit_id"));
-                results.add(produit);
+                Product product = productDAO.getProductById(resultSet.getInt("Product_id"));
+                results.add(product);
             }
 
         } catch (SQLException e) {

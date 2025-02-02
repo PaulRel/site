@@ -3,7 +3,7 @@
     -fx-background-color: white;
 }
 /* Style des boutons dans la barre */
-#vetementsButton, #chaussuresButton {
+#clothingButton, #shoesButton {
     -fx-background-color: transparent;  /* Couleur de fond des boutons */
     -fx-text-fill: #333;         /* Couleur du texte des boutons */
     -fx-font-size: 18px;          /* Taille de la police */ 
@@ -15,7 +15,7 @@
 }
 
 /* Effet au survol des boutons */
-#vetementsButton:hover, #chaussuresButton:hover{
+#clothingButton:hover, #shoesButton:hover{
     -fx-background-color: #dedede; /* Couleur de fond au survol*/
     -fx-border-color:#2ca772;
     -fx-border-width: 0px 0px 3px 0px;
@@ -45,7 +45,7 @@
 }
 
 /* Style pour chaque produit dans la grille */
-.produit-box { 				/* Vbox */
+.product-box { 				/* Vbox */
     -fx-pref-width: 160px;  /* Largeur fixe de la cellule */
     -fx-pref-height: 230px; /* Hauteur fixe de la cellule */
     -fx-alignment: center;  /* Alignement centré */
@@ -56,13 +56,13 @@
 }
 
 /* Ombre lors du survol de la cellule */
-.produit-box:hover {
+.product-box:hover {
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 5, 0.5, 0, 0); /* Ombre grise légère */
     -fx-background-color: #f9f9f9; /* Optionnel : légère couleur de fond pour l'effet de survol */
 }
 
 /* Style pour le label du nom du produit */
-.nom-produit {
+.name-product {
 	-fx-font-size: 12px;
     -fx-wrap-text: true;    /* Activer le retour à la ligne */
     -fx-max-width: 140px;   /* Largeur maximale pour contrôler le retour à la ligne */
@@ -70,7 +70,7 @@
 }
 
 /* Style pour le label du prix du produit */
-.prix-produit {
+.price-product {
 	-fx-font-size: 12px;
     -fx-wrap-text: true;
     -fx-max-width: 140px;
@@ -79,7 +79,7 @@
 }
 
 /* Style pour le changement de curseur */
-.produit-box:hover {
+.product-box:hover {
     -fx-cursor: hand;
 }
 

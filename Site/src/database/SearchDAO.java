@@ -15,16 +15,16 @@ public class SearchDAO {
 	
 	public String buildMultiKeywordQuery(String[] keywords) {
 	    StringBuilder query = new StringBuilder(
-	        "SELECT p.id FROM produit p " +
-	        "LEFT JOIN vetement v ON p.ID = v.Produit_ID " +
-	        "LEFT JOIN chaussures c ON p.ID = c.Produit_ID WHERE "
+	        "SELECT p.id FROM Product p " +
+	        "LEFT JOIN CLothing v ON p.ID = v.product_ID " +
+	        "LEFT JOIN Shoes c ON p.ID = c.product_ID WHERE "
 	    );
 
 	    // Ajouter des conditions LIKE pour chaque mot-clé
 	    for (int i = 0; i < keywords.length; i++) {
 	        if (i > 0) query.append(" AND "); // Ajouter AND entre chaque groupe de conditions
-	        query.append("(LOWER(p.Nom) LIKE ? OR LOWER(p.Description) LIKE ? OR LOWER(p.Type) OR LOWER(p.Marque) LIKE ? ");
-	        query.append("OR LOWER(v.Couleur) LIKE ? OR LOWER(c.Surface) LIKE ? OR LOWER(c.Couleur) LIKE ?)");
+	        query.append("(LOWER(p.name) LIKE ? OR LOWER(p.description) LIKE ? OR LOWER(p.type) OR LOWER(p.brand) LIKE ? ");
+	        query.append("OR LOWER(v.color) LIKE ? OR LOWER(c.surface) LIKE ? OR LOWER(c.color) LIKE ?)");
 	    }
 	    return query.toString();
 	}
@@ -48,8 +48,8 @@ public class SearchDAO {
 	        try (ResultSet rs = stmt.executeQuery()) {
 	            while (rs.next()) {
 	            	ProductDAO productDAO = new ProductDAO();
-	                Product produit = productDAO.getProductById(rs.getInt("id"));
-	                results.add(produit);
+	                Product product = productDAO.getProductById(rs.getInt("id"));
+	                results.add(product);
 	            }
 	        }
 	    } catch (SQLException e) {

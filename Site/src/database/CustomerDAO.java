@@ -19,7 +19,7 @@ public class CustomerDAO {
 
 	public List<Customer> getAllCustomers() {
 	    List<Customer> customers = new ArrayList<>();
-	    String query = "SELECT * FROM customer";
+	    String query = "SELECT * FROM Customer";
 
 	    try (Connection connection = DatabaseConnection.getConnection();
 	         PreparedStatement statement = connection.prepareStatement(query);
