@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import Interface.MainView;
-import javafx.collections.FXCollections;
 import javafx.scene.control.Alert.AlertType;
 import products.Shoes;
 import products.Product;
@@ -20,7 +19,7 @@ public class ProductDAO {
 	private String type, name, description, brand, imagePath;
 	double price;
 	
-	// RECUPERATION DE TOUS LES PRODUITS imagePath
+	// RECUPERATION DE TOUS LES PRODUITS
 
     public List<Product> getAllProducts() {
         List<Product> products = new ArrayList<>();

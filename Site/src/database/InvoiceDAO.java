@@ -13,9 +13,7 @@ import java.util.List;
 import Interface.MainView;
 import customer.Invoice;
 import customer.Order;
-import javafx.collections.FXCollections;
 import javafx.scene.control.Alert.AlertType;
-import products.Product;
 
 public class InvoiceDAO {
 	

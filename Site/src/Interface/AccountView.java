@@ -3,7 +3,6 @@ package Interface;
 import java.time.LocalDate;
 import java.util.List;
 
-import customer.CartItem;
 import customer.Customer;
 import customer.Order;
 import database.CustomerDAO;
