@@ -78,7 +78,7 @@ public class AdminStatsDAO {
 
     // 3. Produits en rupture de stock
     public int getOutOfStockProducts() {
-        String query = "SELECT COUNT(*) AS out_of_stock_products FROM sizestock WHERE stock = 0";
+        String query = "SELECT COUNT(*) AS out_of_stock_products FROM size_stock WHERE stock = 0";
         try (PreparedStatement stmt = connection.prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {
             if (rs.next()) {
@@ -93,7 +93,7 @@ public class AdminStatsDAO {
     
     // Méthode pour récupérer l'ID du produit et les tailles en rupture
     public Map<Product, List<String>> getOutOfStockProductInfo() {
-        String query = "SELECT DISTINCT product_id, size FROM sizestock WHERE stock = 0";
+        String query = "SELECT DISTINCT product_id, size FROM size_stock WHERE stock = 0";
         Map<Product, List<String>> outOfStockInfoMap = new HashMap<>();
 
         try (PreparedStatement stmt = connection.prepareStatement(query);
@@ -123,7 +123,7 @@ public class AdminStatsDAO {
     
     // 4. Nombre total de commandes (sauf les commandes avec le statut Annulée)
     public int getTotalOrders() {
-        String query = "SELECT COUNT(*) AS total_commandes FROM Orders WHERE status IN ('En cours', 'Validée', 'Livrée');";
+        String query = "SELECT COUNT(*) AS total_commandes FROM `Order` WHERE status IN ('En cours', 'Validée', 'Livrée');";
         try (PreparedStatement stmt = connection.prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {
             if (rs.next()) {
@@ -138,7 +138,7 @@ public class AdminStatsDAO {
 
     // 5. Nombre de commandes en cours PAS UTILISE dans le projet
     public int getPendingOrders() {
-        String query = "SELECT COUNT(*) AS commandes_en_cours FROM Orders WHERE status = 'En cours'";
+        String query = "SELECT COUNT(*) AS commandes_en_cours FROM `Order` WHERE status = 'En cours'";
         try (PreparedStatement stmt = connection.prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {
             if (rs.next()) {
@@ -153,7 +153,7 @@ public class AdminStatsDAO {
     
     // 6. Nombre de commandes livrées NON UTILISE
     public int getDeliveredOrders() {
-        String query = "SELECT COUNT(*) AS commandes_livrées FROM Orders WHERE status = 'Délivrée'";
+        String query = "SELECT COUNT(*) AS commandes_livrées FROM `Order` WHERE status = 'Délivrée'";
         try (PreparedStatement stmt = connection.prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {
             if (rs.next()) {
@@ -187,7 +187,7 @@ public class AdminStatsDAO {
     // 8. Nombre total d'utilisateurs
     public int getTotalUsers() {
         String query = "SELECT COUNT(*) AS total_utilisateurs FROM Customer"
-        		+ "AND customer_id NOT IN (SELECT CustomerID FROM Customer WHERE role = 'Admin');";
+        		+ " WHERE CustomerID NOT IN (SELECT CustomerID FROM Customer WHERE role = 'Admin');";
         try (PreparedStatement stmt = connection.prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {
             if (rs.next()) {
@@ -202,7 +202,7 @@ public class AdminStatsDAO {
     
     // 9. Clients actifs ayant commandé dans les 30 derniers jours
     public int getTotalActiveUsers() {
-        String query = "SELECT COUNT(DISTINCT customer_id) AS utilisateurs_actifs FROM Orders "
+        String query = "SELECT COUNT(DISTINCT customer_id) AS utilisateurs_actifs FROM `Order` "
         		+ "WHERE order_date >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)"
         		+ "AND customer_id NOT IN (SELECT CustomerID FROM Customer WHERE role = 'Admin');";
         try (PreparedStatement stmt = connection.prepareStatement(query);
@@ -248,7 +248,7 @@ public class AdminStatsDAO {
             SELECT AVG(total_panier) AS panier_moyen
             FROM (
                 SELECT o.order_id, SUM(od.quantity * p.price) AS total_panier
-                FROM Orders o
+                FROM `Order` o
                 JOIN Orderdetails od ON o.order_id = od.order_id
                 JOIN Product p ON od.product_id = p.ID
                 GROUP BY o.order_id
@@ -286,7 +286,7 @@ public class AdminStatsDAO {
                 SELECT DATE_FORMAT(o.order_date, '%Y-%m') AS mois, 
     			SUM(od.quantity * p.price) AS ventes
     			FROM Orderdetails od
-    			JOIN Orders o ON od.order_id = o.order_id
+    			JOIN `Order` o ON od.order_id = o.order_id
     			JOIN Product p ON od.product_id = p.ID
     			GROUP BY DATE_FORMAT(o.order_date, '%Y-%m')
     			ORDER BY mois;""";
@@ -331,7 +331,7 @@ public class AdminStatsDAO {
                 SELECT DATE_FORMAT(o.order_date, '%Y-%m') AS mois, 
     			SUM(od.quantity) AS ventes
     			FROM Orderdetails od
-    			JOIN Orders o ON od.order_id = o.order_id
+    			JOIN `Order` o ON od.order_id = o.order_id
     			JOIN Product p ON od.product_id = p.ID
     			GROUP BY DATE_FORMAT(o.order_date, '%Y-%m')
     			ORDER BY mois;""";

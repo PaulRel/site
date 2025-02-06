@@ -129,6 +129,8 @@ public class ProductDetailsView {
         
         // Ajouter les éléments à la boîte de détails
         detailsBox.getChildren().addAll(imageView, descriptionBox);
+        detailsBox.prefWidthProperty().bind(mainView.getPrimaryStage().widthProperty());
+        detailsBox.prefHeightProperty().bind(mainView.getPrimaryStage().heightProperty().subtract(118));
         
         HeaderView v=new HeaderView(mainView);
         AnchorPane rootPane = new AnchorPane();

@@ -59,13 +59,13 @@ public class AdminView {
 	public AdminView(MainView mainView) {        
         AnchorPane rootPane = new AnchorPane();     
         HeaderView v = new HeaderView(mainView);
+        this.mainView = mainView;
         
         rootPane.getChildren().addAll(v.getHeader(), createLeftMenu(), createMainSection());
         
-        Scene adminScene = new Scene(rootPane);
+        Scene adminScene = new Scene(rootPane, mainView.getPrimaryStage().getWidth(), mainView.getPrimaryStage().getHeight());
         adminScene.getStylesheets().add(this.getClass().getResource("/style.css").toExternalForm());
         mainView.getPrimaryStage().setScene(adminScene);
-        this.mainView = mainView;
     }
 	
 	public VBox createLeftMenu() {
@@ -328,10 +328,10 @@ public class AdminView {
 	    colCustomerId.setCellValueFactory(new PropertyValueFactory<>("id"));
 
 	    TableColumn<Customer, String> colFirstName = new TableColumn<>("Prénom");
-	    colFirstName.setCellValueFactory(new PropertyValueFactory<>("first_name"));
+	    colFirstName.setCellValueFactory(new PropertyValueFactory<>("firstName"));
 
 	    TableColumn<Customer, String> colLastName = new TableColumn<>("Nom");
-	    colLastName.setCellValueFactory(new PropertyValueFactory<>("last_name"));
+	    colLastName.setCellValueFactory(new PropertyValueFactory<>("lastName"));
 
 	    TableColumn<Customer, String> colCivility = new TableColumn<>("Civilité");
 	    colCivility.setCellValueFactory(new PropertyValueFactory<>("civility"));
@@ -340,7 +340,7 @@ public class AdminView {
 	    colEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
 
 	    TableColumn<Customer, String> colPhoneNumber = new TableColumn<>("Téléphone");
-	    colPhoneNumber.setCellValueFactory(new PropertyValueFactory<>("phone_number"));
+	    colPhoneNumber.setCellValueFactory(new PropertyValueFactory<>("phoneNumber"));
 
 	    TableColumn<Customer, String> colPassword = new TableColumn<>("Mot de passe");
 	    colPassword.setCellValueFactory(new PropertyValueFactory<>("password"));

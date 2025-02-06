@@ -38,6 +38,8 @@ public class ProductView {
 	public ProductView(MainView mainView, Class<? extends Product> productType, List<Product> products) {
 		root = new AnchorPane();
         root.getChildren().addAll(MainView.createScrollPane(createFilterBox(mainView)), displayProducts(mainView, productType, products));
+        root.prefWidthProperty().bind(mainView.getPrimaryStage().widthProperty());
+        root.prefHeightProperty().bind(mainView.getPrimaryStage().heightProperty());
 	}
 
    public ScrollPane displayProducts(MainView mainView, Class<? extends Product> typeProduct, List<Product> products) {

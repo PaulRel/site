@@ -7,6 +7,7 @@ import customer.Customer;
 import customer.Order;
 import database.CustomerDAO;
 import database.OrderDAO;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -27,16 +28,28 @@ public class AccountView {
 
     public AccountView(MainView mainView) {      
         rootPane = new AnchorPane();
-        createMainSection();
-        createLeftMenu(mainView);
+        
         this.mainView = mainView;
+        
+        createLeftMenu(mainView);
+        createMainSection();
      
         Scene accountScene = new Scene(rootPane);
         
-        HeaderView v = new HeaderView(mainView);      
+        HeaderView v = new HeaderView(mainView);
         rootPane.getChildren().addAll(v.getHeader());    
         accountScene.getStylesheets().add(this.getClass().getResource("/style.css").toExternalForm());
+        
+        // Sauvegarde la taille actuelle avant de changer de scène
+        double currentWidth = mainView.getPrimaryStage().getWidth();
+        double currentHeight = mainView.getPrimaryStage().getHeight();
+
+        // Appliquer la nouvelle scène
         mainView.getPrimaryStage().setScene(accountScene);
+
+        // Réappliquer la taille après le changement de scène
+        mainView.getPrimaryStage().setWidth(currentWidth);
+        mainView.getPrimaryStage().setHeight(currentHeight);
     }
     
 
@@ -96,19 +109,20 @@ public class AccountView {
         mainContent.setSpacing(10);
         mainContent.setPadding(new Insets(20));
         mainContent.setStyle("-fx-background-color: #FFFFFF;");
-        
-        ScrollPane scrollPane = new ScrollPane(mainContent);
-        scrollPane.setFitToWidth(true);
-        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER); // Pas de scroll horizontal
-        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED); // Scroll vertical au besoin
-        scrollPane.setPadding(new Insets(20));
 
         showDashboard();
+        
+        ScrollPane scrollPane = new ScrollPane(mainContent);
+        
+        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER); // Pas de scroll horizontal
+        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED); // Scroll vertical au besoin
+        scrollPane.setPadding(new Insets(20));    
 
         AnchorPane.setLeftAnchor(scrollPane, 280.0);
-        AnchorPane.setTopAnchor(scrollPane, 116.0);
-        AnchorPane.setRightAnchor(scrollPane, 10.0);
+        AnchorPane.setTopAnchor(scrollPane, 119.0);
         AnchorPane.setBottomAnchor(scrollPane, 10.0);
+        AnchorPane.setRightAnchor(scrollPane, 10.0);
+
         rootPane.getChildren().add(scrollPane);
     }
     

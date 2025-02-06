@@ -62,8 +62,9 @@ public class CartView {
 	    root.setPadding(new Insets(30));
 	    root.setStyle("-fx-background-color: #EEEEEE");
 	    root.setAlignment(Pos.TOP_CENTER);
-	    mainView.getPrimaryStage().widthProperty().addListener((observable, oldValue, newValue) -> {root.setPrefWidth(newValue.doubleValue());}); // Ajuste la largeur
-	    mainView.getPrimaryStage().heightProperty().addListener((observable, oldValue, newValue) -> {root.setPrefHeight(newValue.doubleValue()-116);}); // Ajuste la hauteur
+	    
+	    root.prefWidthProperty().bind(mainView.getPrimaryStage().widthProperty());
+        root.prefHeightProperty().bind(mainView.getPrimaryStage().heightProperty().subtract(118));
 	    
 	    AnchorPane rootPane = new AnchorPane();
 	    HeaderView v = new HeaderView(mainView);

@@ -84,7 +84,7 @@ import products.Product;
     }
     
     private void updateOrderStatusInDatabase(){
-        String query = "UPDATE Orders SET status = ? WHERE order_id = ?";
+        String query = "UPDATE `Order` SET status = ? WHERE order_id = ?";
         try (Connection connection = DatabaseConnection.getConnection();
         		PreparedStatement pstmt = connection.prepareStatement(query)) {
             pstmt.setString(1, this.status); // Mise à jour avec le statut actuel

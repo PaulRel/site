@@ -28,8 +28,8 @@ public class MainView extends Application {
     
     @Override
     public void start(Stage primaryStage) throws Exception {
-    	this.primaryStage=primaryStage;
     	primaryStage.setMaximized(true);
+    	this.primaryStage=primaryStage;
 
        	headerView = new HeaderView(this);
         

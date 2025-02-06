@@ -22,7 +22,7 @@ public class OrderDAO {
 	public List<Order> getOrdersByCustomer(Customer customer) {
         List<Order> orders = new ArrayList<>();
         
-        String query = "SELECT * FROM Orders WHERE customer_id = ?";
+        String query = "SELECT * FROM `Order` WHERE customer_id = ?";
         
         try (Connection connection = DatabaseConnection.getConnection();
         		PreparedStatement statement = connection.prepareStatement(query);){
@@ -74,7 +74,7 @@ public class OrderDAO {
 	
     public void insertOrder(Order order) {
         try (Connection conn = DatabaseConnection.getConnection()) {
-            String sqlOrder = "INSERT INTO Orders (customer_id, order_date, status) VALUES (?, ?, ?)";
+            String sqlOrder = "INSERT INTO `Order` (customer_id, order_date, status) VALUES (?, ?, ?)";
             PreparedStatement psOrder = conn.prepareStatement(sqlOrder, Statement.RETURN_GENERATED_KEYS);
 
             psOrder.setInt(1, order.getCustomer().getId());
@@ -109,7 +109,7 @@ public class OrderDAO {
     }
     
     public Order getOrderById(int id) {
-        String query = "SELECT * FROM Orders WHERE order_id = ?";
+        String query = "SELECT * FROM `Order` WHERE order_id = ?";
         Order order = null;
         
         try (Connection connection = DatabaseConnection.getConnection();

@@ -150,6 +150,8 @@ public class SignUpView {
         mainView.getPrimaryStage().heightProperty().addListener((observable, oldValue, newValue) -> {
             root.setPrefHeight(newValue.doubleValue()-116); // Ajuste la hauteur
         });
+        root.prefWidthProperty().bind(mainView.getPrimaryStage().widthProperty());
+        root.prefHeightProperty().bind(mainView.getPrimaryStage().heightProperty().subtract(118));
         
         HeaderView v = new HeaderView(mainView);
 
