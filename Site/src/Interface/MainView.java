@@ -28,14 +28,10 @@ public class MainView extends Application {
     
     @Override
     public void start(Stage primaryStage) throws Exception {
-    	primaryStage.setMaximized(true);
     	this.primaryStage=primaryStage;
-
-       	headerView = new HeaderView(this);
-        
+       	headerView = new HeaderView(this);   
         showProductView(Product.class, null);
-        
-        setupStage(primaryStage);
+        setupStage();
         primaryStage.show();
     }
     
@@ -45,7 +41,7 @@ public class MainView extends Application {
      * @param primaryStage La scène principale de l'application.
      * @throws IOException En cas d'erreur de chargement des ressources.
      */
-    public void setupStage(Stage primaryStage) throws IOException{      
+    public void setupStage() throws IOException{      
         Image icon = new Image (getClass().getResource("/Image/logo.jpg").toExternalForm());
         primaryStage.getIcons().add(icon);
         primaryStage.setTitle("Magasin de tennis");
