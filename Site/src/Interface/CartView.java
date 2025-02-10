@@ -60,12 +60,10 @@ public class CartView {
 		
 		
 	    root.setPadding(new Insets(30));
+	    root.setPrefSize(1368, 690);
 	    root.setStyle("-fx-background-color: #EEEEEE");
 	    root.setAlignment(Pos.TOP_CENTER);
-	    
-	    root.prefWidthProperty().bind(mainView.getPrimaryStage().widthProperty());
-        root.prefHeightProperty().bind(mainView.getPrimaryStage().heightProperty().subtract(118));
-	    
+
 	    AnchorPane rootPane = new AnchorPane();
 	    HeaderView v = new HeaderView(mainView);
 	    rootPane.getChildren().addAll(v.getHeader(), root);

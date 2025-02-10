@@ -78,8 +78,6 @@ public class SearchAdvancedView {
         VBox root = new VBox(20, scrollPane);
         root.setStyle("-fx-background-color: derive(#ececec,26.4%)");
         root.setAlignment(Pos.CENTER); //Centrer verticalement
-        root.prefWidthProperty().bind(mainView.getPrimaryStage().widthProperty());
-        root.prefHeightProperty().bind(mainView.getPrimaryStage().heightProperty().subtract(118));
         AnchorPane.setTopAnchor(root, 118.0);
         AnchorPane.setBottomAnchor(root, 0.0);
 

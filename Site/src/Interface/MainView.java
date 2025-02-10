@@ -55,7 +55,7 @@ public class MainView extends Application {
     	ProductView productSection = new ProductView(this, typeProduct, products);
     	AnchorPane root = productSection.getRoot();
     	root.getChildren().add(headerView.getHeader()); // Ajouter l'en-tête
-    	Scene productScene = new Scene(root);
+    	Scene productScene = new Scene(root, 1368, 690);
     	productScene.getStylesheets().add(this.getClass().getResource("/style.css").toExternalForm());
     	primaryStage.setScene(productScene);          
     }
