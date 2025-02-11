@@ -1021,7 +1021,7 @@ public class AdminView {
     	Label paymentMethodLabel = new Label("Méthode de paiement");
         
     	updateInvoiceButton = new Button("Mettre à jour");
-    	updateInvoiceButton.setOnAction(event -> updateInvoice());   	
+    	updateInvoiceButton.setOnAction(event -> updateInvoice());  	
     	
     	billingAddressField = new TextField();
     	shippingAddressField = new TextField();
