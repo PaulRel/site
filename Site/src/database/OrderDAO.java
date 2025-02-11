@@ -39,7 +39,7 @@ public class OrderDAO {
             		order.setOrderDate(orderDate);
             		order.setStatus(status);
 
-            		addOrderDetails(order, connection);
+            		getOrderDetails(order, connection);
                     
             		orders.add(order);
             	}
@@ -51,7 +51,7 @@ public class OrderDAO {
         return orders;
     }
 	
-	private void addOrderDetails(Order order, Connection connection) {
+	private void getOrderDetails(Order order, Connection connection) {
         String query = "SELECT * FROM OrderDetails WHERE order_id = ?";
         try (PreparedStatement ps = connection.prepareStatement(query)) {
             ps.setInt(1, order.getOrderId());
@@ -129,7 +129,7 @@ public class OrderDAO {
             		order.setOrderDate(orderDate);
             		order.setStatus(status);
 
-            		addOrderDetails(order, connection);
+            		getOrderDetails(order, connection);
             	}
             }
         } catch (SQLException e) {

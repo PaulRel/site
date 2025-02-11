@@ -63,7 +63,7 @@ public class AdminView {
         
         rootPane.getChildren().addAll(v.getHeader(), createLeftMenu(), createMainSection());
         
-        Scene adminScene = new Scene(rootPane, mainView.getPrimaryStage().getWidth(), mainView.getPrimaryStage().getHeight());
+        Scene adminScene = new Scene(rootPane, 1368, 690);
         adminScene.getStylesheets().add(this.getClass().getResource("/style.css").toExternalForm());
         mainView.getPrimaryStage().setScene(adminScene);
     }

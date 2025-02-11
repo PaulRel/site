@@ -68,7 +68,7 @@ public class CartView {
 	    HeaderView v = new HeaderView(mainView);
 	    rootPane.getChildren().addAll(v.getHeader(), root);
 	    
-	    Scene createAccountScene = new Scene(rootPane);
+	    Scene createAccountScene = new Scene(rootPane, 1368, 690);
 	    createAccountScene.getStylesheets().add(this.getClass().getResource("/style.css").toExternalForm());
 	        
 	    mainView.getPrimaryStage().setScene(createAccountScene);

@@ -23,7 +23,7 @@ public class AuthentificationView {
     	rootPane = new AnchorPane();
         createBox(mainView);
         
-        Scene authScene = new Scene(rootPane);
+        Scene authScene = new Scene(rootPane, 1368, 690);
         
         HeaderView v=new HeaderView(mainView);      
         rootPane.getChildren().addAll(v.getHeader()); 

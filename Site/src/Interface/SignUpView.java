@@ -141,26 +141,16 @@ public class SignUpView {
         
         VBox root = new VBox(20, main);
         AnchorPane.setTopAnchor(root, 116.0);
-        //root.setPrefSize(1350, 550);
+        root.setPrefSize(1368, 574);
         root.setStyle("-fx-background-color: #EEEEEE");
         root.setAlignment(Pos.CENTER);
-        mainView.getPrimaryStage().widthProperty().addListener((observable, oldValue, newValue) -> {
-            root.setPrefWidth(newValue.doubleValue()); // Ajuste la largeur
-        });       
-        mainView.getPrimaryStage().heightProperty().addListener((observable, oldValue, newValue) -> {
-            root.setPrefHeight(newValue.doubleValue()-116); // Ajuste la hauteur
-        });
-        root.prefWidthProperty().bind(mainView.getPrimaryStage().widthProperty());
-        root.prefHeightProperty().bind(mainView.getPrimaryStage().heightProperty().subtract(118));
         
         HeaderView v = new HeaderView(mainView);
 
         AnchorPane rootPane = new AnchorPane();
         rootPane.getChildren().addAll(root, v.getHeader());
         
-        Scene createAccountScene = new Scene(rootPane);
-
-         
+        Scene createAccountScene = new Scene(rootPane, 1368, 690);        
         createAccountScene.getStylesheets().add(this.getClass().getResource("/style.css").toExternalForm());
         
         mainView.getPrimaryStage().setScene(createAccountScene);

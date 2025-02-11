@@ -34,9 +34,9 @@ public class SearchAdvancedView {
         
         rootPane.getChildren().addAll(v.getHeader(), createAdvancedSearchSection(mainView));
         
-        Scene accountScene = new Scene(rootPane);
-        accountScene.getStylesheets().add(this.getClass().getResource("/style.css").toExternalForm());
-        mainView.getPrimaryStage().setScene(accountScene);	
+        Scene searchScene = new Scene(rootPane, 1368, 690);
+        searchScene.getStylesheets().add(this.getClass().getResource("/style.css").toExternalForm());
+        mainView.getPrimaryStage().setScene(searchScene);
 	}
 	
 	private VBox createAdvancedSearchSection(MainView mainView) {
@@ -78,6 +78,7 @@ public class SearchAdvancedView {
         VBox root = new VBox(20, scrollPane);
         root.setStyle("-fx-background-color: derive(#ececec,26.4%)");
         root.setAlignment(Pos.CENTER); //Centrer verticalement
+        root.setPrefSize(1368, 690);
         AnchorPane.setTopAnchor(root, 118.0);
         AnchorPane.setBottomAnchor(root, 0.0);
 

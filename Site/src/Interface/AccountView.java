@@ -34,7 +34,7 @@ public class AccountView {
         createLeftMenu(mainView);
         createMainSection();
      
-        Scene accountScene = new Scene(rootPane, mainView.getPrimaryStage().getWidth(), mainView.getPrimaryStage().getHeight());
+        Scene accountScene = new Scene(rootPane, 1368, 690);
         
         HeaderView v = new HeaderView(mainView);
         rootPane.getChildren().addAll(v.getHeader());    
