@@ -149,7 +149,9 @@ public class SearchAdvancedView {
                         parameters.add("%" + searchValue.toLowerCase() + "%");
                     }
                 } else {
-                    query.append(selectedCriteria).append(" LIKE ?");
+                	// Adapter le critère sélectionné à la colonne correspondante en base de données
+                    String columnName = getColumnName(selectedCriteria);
+                    query.append(columnName).append(" LIKE ?");
                     parameters.add("%" + searchValue.toLowerCase() + "%");
                 }
             }
@@ -177,5 +179,21 @@ public class SearchAdvancedView {
             e.printStackTrace();
         }
         return results;
+    }
+    
+    /**
+     * Méthode pour mapper les noms affichés en français avec les colonnes réelles en anglais.
+     */
+    private String getColumnName(String selectedValue) {
+        return switch (selectedValue) {
+            case "Nom" -> "name";
+            case "Description" -> "description";
+            case "Type" -> "type";
+            case "Marque" -> "brand";
+            case "Couleur" -> "color";
+            case "Genre" -> "gender";
+            case "Surface" -> "surface";
+            default -> "name"; // Valeur par défaut pour éviter les erreurs
+        };
     }
 }

@@ -10,6 +10,8 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 
 public class AuthentificationView {
@@ -47,6 +49,30 @@ public class AuthentificationView {
         
         PasswordField passwordField = new PasswordField();
         passwordField.setPromptText("Mot de passe *");
+        TextField textField = new TextField();
+    	textField.setVisible(false); // Masquer le TextField initialement
+    	
+    	passwordField.textProperty().bindBidirectional(textField.textProperty()); // Synchronisation du texte entre les champs
+        
+        Button showPasswordButton = new Button();       
+        showPasswordButton.setStyle("-fx-background-color: white; -fx-padding: 5;");
+        ImageView showIcon = new ImageView(new Image(AccountView.class.getResource("/Image/Icons/eyeIcon.png").toExternalForm()));
+        ImageView hideIcon = new ImageView(new Image(AccountView.class.getResource("/Image/Icons/eyeOffIcon.png").toExternalForm()));
+        showIcon.setFitHeight(20);
+        showIcon.setFitWidth(20);
+        hideIcon.setFitHeight(20);
+        hideIcon.setFitWidth(20);
+        showPasswordButton.setGraphic(showIcon);
+        
+        showPasswordButton.setOnAction(e -> {
+        	boolean isMasked = passwordField.isVisible();
+    	    passwordField.setVisible(!isMasked);
+    	    textField.setVisible(isMasked);
+            showPasswordButton.setGraphic(isMasked? hideIcon : showIcon);
+        });
+        
+        HBox passwordBox = new HBox();
+        passwordBox.getChildren().addAll(passwordField, textField, showPasswordButton);
         
         //Hyperlink forgotPasswordLink = new Hyperlink("Mot de passe oublié ?");
         //forgotPasswordLink.setOnAction(event -> MainView.showAlert("Mot de passe oublié", null, "Un mail vient de vous être envoyé sur "+ MainView.getCurrentCustomer().getEmail() + "/n"+MainView.getCurrentCustomer().getPassword(), AlertType.INFORMATION));
@@ -75,7 +101,7 @@ public class AuthentificationView {
         	}
         });
         
-        existingCustomerBox.getChildren().addAll(existingLabel, instructionLabel, emailField, passwordField, loginButton);
+        existingCustomerBox.getChildren().addAll(existingLabel, instructionLabel, emailField, passwordBox, loginButton);
         
         
         

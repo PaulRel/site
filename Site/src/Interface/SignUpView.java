@@ -98,6 +98,9 @@ public class SignUpView {
             showPasswordButton.setGraphic(isMasked? hideIcon:showIcon);
         });
         
+        Label passwordConditions = new Label("min 8 caractères, 1 majuscule, 1 minuscule, 1 chiffre, et 1 caractère spécial");
+        passwordConditions.setStyle("-fx-font-weight: normal; -fx-font-size:10");
+        
         for (Label label : new Label[]{civilityLabel, firstNameLabel, lastNameLabel, addressLabel, cityLabel, emailLabel, passwordLabel}) {
         	label.setStyle("-fx-font-weight: normal;");
         }
@@ -129,8 +132,9 @@ public class SignUpView {
         gridPane.add(passwordField, 1, 6);
         gridPane.add(visiblePasswordField, 1, 6);
         gridPane.add(showPasswordButton, 2, 6);
-        gridPane.add(newsletterCheckBox, 0, 8, 2, 1);
-        gridPane.add(termsCheckBox, 0, 9, 2, 1);
+        gridPane.add(passwordConditions, 1, 7);
+        gridPane.add(newsletterCheckBox, 0, 9, 2, 1);
+        gridPane.add(termsCheckBox, 0, 10, 2, 1);
 
         // Mise en page principale
         VBox main = new VBox(mainLabel, gridPane, buttonBox);
@@ -222,20 +226,27 @@ public class SignUpView {
 		alert.getButtonTypes().setAll(loginButton);
 		Optional<ButtonType> result = alert.showAndWait();
 		if (result.isPresent() && result.get() == loginButton) {
-			// Si c'est l'admin qui ajoute un client
-			if (MainView.getCurrentCustomer().getRole()==Role.ADMIN) {
-				new AdminView(mainView);
+			
+			if (MainView.getCurrentCustomer() == null || MainView.getCurrentCustomer().getRole() == Role.CUSTOMER) {  
+			    // Si CurrentCustomer est null ou si le rôle est CUSTOMER
+			    MainView.setCurrentCustomer(newCustomer); // Initialise la session
+			    
+			    Cart cart = CartManager.getTempCart();
+			    if (cart != null) {
+			        AuthentificationView.syncUserCart();
+			    }
+			    
+			    new AccountView(mainView); // Affiche la vue du compte
+			    
+			} else if (MainView.getCurrentCustomer().getRole() == Role.ADMIN) {  
+			    // Si c'est l'admin qui ajoute un client
+			    new AdminView(mainView);  
+			} else {  
+			    // Cas par défaut
+			    new AccountView(mainView);  
 			}
-    		else
-    			// Initialise la session
-				MainView.setCurrentCustomer(newCustomer);
-				Cart cart = CartManager.getTempCart();
-				if (cart!=null) {
-					AuthentificationView.syncUserCart();
-				}
-    			new AccountView(mainView);
-    	}
         }
+	}
 	}
 	
 	

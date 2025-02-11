@@ -91,7 +91,10 @@ public class InvoiceView {
 		// Ajout des adresses en haut de la facture
 		String customerLastName = order.getCustomer().getLastName();
 		String customerFirstName = order.getCustomer().getFirstName();
-		String customerPhoneNumber = order.getCustomer().getPhoneNumber();
+		String customerPhoneNumber;
+		if (order.getCustomer().getPhoneNumber()!=null) {
+		customerPhoneNumber = order.getCustomer().getPhoneNumber();
+		}else {customerPhoneNumber ="";}
 		
         float[] columnWidths = {1, 1}; // 2 colonnes de taille égale
         Table addressesTable = new Table(columnWidths);
@@ -195,6 +198,7 @@ public class InvoiceView {
         totalCell.setPaddingTop(30);
         totalCell.setBorder(Border.NO_BORDER);
         totalCell.setTextAlignment(TextAlignment.RIGHT);
+        System.out.println(invoice);
         totalCell.add(new Paragraph("Total produits TTC           " + String.format("%.2f €", order.getTotalPrice())));
         totalCell.add(new Paragraph("Total frais de port           "+ String.format("%.2f €", invoice.getShippingPrice())));
         totalCell.add(new Paragraph("Total HT           " + String.format("%.2f €", order.getTotalPrice()/1.2 + invoice.getShippingPrice())));

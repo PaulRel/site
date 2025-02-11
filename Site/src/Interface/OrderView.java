@@ -35,7 +35,7 @@ public class OrderView {
         HBox mainBox = new HBox();
         mainBox.setPadding(new Insets(20)); // Espace  Haut, Droite>, Bas, Gauche<  de l'AnchorPane
         mainBox.setSpacing(20); // Espacement entre mainBox et Panier
-        mainBox.setPrefSize(1368, 690);
+        mainBox.setPrefSize(1368, 572);
         mainBox.setStyle("-fx-background-color: #EEEEEE");
         mainBox.getChildren().addAll(MainView.createScrollPane(createOrderZone(mainView, order)), createInfoBar(order));
         
@@ -283,7 +283,7 @@ public class OrderView {
 		String shippingMethod = selectedShippingOption != null ? selectedShippingOption.getText() : "";
 		double shippingPrice = getShippingPrice(shippingMethod);
 		
-		HBox subTotalLine = createLine("\nTotal produits TTC", String.format("%.2f €", order.getTotalPrice()));
+		HBox subTotalLine = createLine("\nTotal produits TTC", "\n"+String.format("%.2f €", order.getTotalPrice()));
 		HBox htLine = createLine("Total HT", String.format("%.2f €", order.getTotalPrice() / 1.2));
 		HBox tvaLine = createLine("TVA (20%)", String.format("%.2f €", order.getTotalPrice() * 0.2));
 		HBox shippingLine = createLine("Frais de Port", String.format("%.2f €", shippingPrice));

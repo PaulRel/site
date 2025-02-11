@@ -260,7 +260,7 @@ public class AccountView {
     		
             else {
     	    // Mise à jour de la BDD
-    	    Customer newCustomer = new Customer(customer.getId(), newLastName, newFirstName, customer.getCivility(), newEmail, newPhone, customer.getPassword(), customer.getRole(), newAddress);
+    	    Customer newCustomer = new Customer(customer.getId(), newLastName, newFirstName, customer.getCivility(), newEmail, newPhone, newPassword, customer.getRole(), newAddress);
     	    new CustomerDAO().updateCustomer(newCustomer);
     	    
     	    // Mise à jour du client actuel surtout si c currentCustomer
@@ -269,6 +269,7 @@ public class AccountView {
         	customer.setEmail(newEmail);
         	customer.setPhoneNumber(newPhone);
         	customer.setAddress(newAddress);
+        	customer.setPassword(newPassword);
             }	
     	});
 

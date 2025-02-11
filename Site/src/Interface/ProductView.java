@@ -140,17 +140,21 @@ public class ProductView {
        filterBox.getChildren().addAll(brandFilterLabel, asicsBrand, adidasBrand, babolatBrand);
        
        Label sizeFilterLabel = new Label("Tailles");
+       Label sizeClothingLabel = new Label("Tailles vêtements");
        sizeXS = new CheckBox("Taille XS");
        sizeS = new CheckBox("Taille S");
        sizeM = new CheckBox("Taille M");
        sizeL = new CheckBox("Taille L");
+       Label sizeShoesLabel = new Label("Tailles chaussures");
        size36 = new CheckBox("36");
        size37 = new CheckBox("37");
        size38 = new CheckBox("38");
        size39 = new CheckBox("39");
        size40 = new CheckBox("40");
        size41 = new CheckBox("41");
-       filterBox.getChildren().addAll(sizeFilterLabel, sizeXS, sizeS, sizeM, sizeL, size36, size37, size38, size39, size40, size41);
+       sizeClothingLabel.setStyle("-fx-font-size: 11px; -fx-font-weight: normal; -fx-padding: 0");
+       sizeShoesLabel.setStyle("-fx-font-size: 11px; ; -fx-font-weight: normal; -fx-padding: 0");
+       filterBox.getChildren().addAll(sizeFilterLabel, sizeClothingLabel, sizeXS, sizeS, sizeM, sizeL, sizeShoesLabel, size36, size37, size38, size39, size40, size41);
        
        Label clothingTypeFilterLabel = new Label("Types");
        tankTop = new CheckBox("Debardeur");
@@ -171,9 +175,10 @@ public class ProductView {
        priceSlider.setBlockIncrement(20); // Incréments avec le clavier ou la souris
        Label priceLabel = new Label("Prix maximum sélectionné : " + (int) priceSlider.getValue() + " €");
        priceLabel.setStyle("-fx-font-size: 10px; -fx-font-weight: normal");
+       
        filterBox.getChildren().addAll(priceFilterLabel, priceSlider, priceLabel);
        
-       for (Label labels : new Label[]{sizeFilterLabel, genderFilterLabel, brandFilterLabel, clothingTypeFilterLabel, priceFilterLabel}) {
+       for (Label labels : new Label[]{sizeFilterLabel,  genderFilterLabel, brandFilterLabel, clothingTypeFilterLabel, priceFilterLabel}) {
     	   labels.setStyle("-fx-font-weight: normal ");
           }
        
