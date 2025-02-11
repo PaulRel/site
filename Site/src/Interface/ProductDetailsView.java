@@ -44,13 +44,19 @@ public class ProductDetailsView {
         // Affichage des informations du produit
         Label nameLabel = new Label(product.getName());
         Label priceLabel = new Label("Prix : " + product.getPrice() + "€");
-        Label descriptionLabel = new Label(product.getDescription() + "\nChoisir la taille :");
+        Label descriptionLabel = new Label(product.getDescription());
+        Label sizeLabel = new Label("Choisir la taille :");
         Label selectedQuantityLabel = new Label("Quantité souhaitée :  ");
-        descriptionLabel.setStyle("-fx-font-weight: normal");
+        
+        descriptionLabel.setStyle("-fx-font-weight: normal; -fx-font-size: 14px");
         descriptionLabel.setWrapText(true);
         
         Button addToCartButton = new Button("Ajouter au panier");
         addToCartButton.setDisable(true); // Le bouton est désactivé par défaut
+        ImageView addCartIcon = new ImageView(new Image(getClass().getResource("/Image/Icons/addCartIcon.png").toExternalForm()));
+        addCartIcon.setFitHeight(20);
+        addCartIcon.setFitWidth(20);
+		addToCartButton.setGraphic(addCartIcon);
         
      // ComboBox for the desired quantity
         ComboBox<Integer> quantityComboBox = new ComboBox<>();
@@ -125,7 +131,9 @@ public class ProductDetailsView {
         	 addProductLabel.setText("Produit ajouté au panier!");
         });
         
-        VBox descriptionBox = new VBox (nameLabel, priceLabel, descriptionLabel, sizeChoiceBox, selectedQuantityLabel, quantityComboBox, addToCartButton, addProductLabel);
+        VBox descriptionBox = new VBox (nameLabel, priceLabel, descriptionLabel, sizeLabel, sizeChoiceBox, selectedQuantityLabel, quantityComboBox, addToCartButton, addProductLabel);
+        
+        descriptionBox.setSpacing(5.0);
         
         // Ajouter les éléments à la boîte de détails
         detailsBox.getChildren().addAll(imageView, descriptionBox);

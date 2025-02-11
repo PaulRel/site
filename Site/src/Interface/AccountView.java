@@ -7,7 +7,6 @@ import customer.Customer;
 import customer.Order;
 import database.CustomerDAO;
 import database.OrderDAO;
-import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -60,16 +59,21 @@ public class AccountView {
         menuBox.setPadding(new Insets(20));
         menuBox.setStyle("-fx-background-color: #F8F8F8;");
 
-        // Section utilisateur
         VBox userBox = new VBox(10);
         userBox.setAlignment(Pos.CENTER);
         userBox.setPadding(new Insets(10));
         ImageView profileIcon = new ImageView(new Image(getClass().getResource("/Image/Icons/accountIcon.png").toExternalForm()));
         profileIcon.setFitWidth(60);
         profileIcon.setFitHeight(60);
+        
         Label userNameLabel = new Label("Bonjour,\n" + MainView.getCurrentCustomer().getFirstName() + " " + MainView.getCurrentCustomer().getLastName());
         userNameLabel.setStyle("-fx-font-weight: bold; -fx-text-align: center;");   
+        
         Button logoutButton = new Button("Déconnexion");
+        ImageView logoutIcon = new ImageView(new Image(getClass().getResource("/Image/Icons/logoutIcon.png").toExternalForm()));
+        logoutIcon.setFitHeight(20);
+        logoutIcon.setFitWidth(20);
+        logoutButton.setGraphic(logoutIcon);
         logoutButton.setOnAction(e -> {
         	MainView.setCurrentCustomer(null);
         	mainView.showProductView(Product.class, null);
@@ -77,6 +81,7 @@ public class AccountView {
         
         userBox.getChildren().addAll(profileIcon, userNameLabel, logoutButton);
 
+        
         Button dashboardButton = new Button("Mon Tableau de bord");
         Button accountInfoButton = new Button("Mes informations");
         Button ordersButton = new Button("Mes commandes");

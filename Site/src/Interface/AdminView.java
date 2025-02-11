@@ -78,22 +78,31 @@ public class AdminView {
 	    menuBox.setStyle("-fx-background-color: linear-gradient(to bottom right, #2d658c, #2ca772)");
 	    
 		//#F8F8F8
-		Button statsButton = new Button("Statistiques globales");
+		Button statsButton = new Button("Statistiques");
 		Button customersButton = new Button("Clients");
 		Button stockManagementButton = new Button("Gestion des stocks");
 		Button editInvoiceButton = new Button("Modifier les factures");
 		Button logoutButton = new Button("Déconnexion");
 		
+		addIcon(statsButton, "monitoringIcon");
+		addIcon(customersButton, "manageAccountIcon2");
+		addIcon(stockManagementButton, "stockIcon");
+		addIcon(editInvoiceButton, "invoiceIcon");
+		addIcon(logoutButton, "logoutIcon");
+		
+		logoutButton.setPrefWidth(220.0);
+		logoutButton.setStyle("-fx-background-color: #2d658c; -fx-border-color: WHITE");
+		
 		for (Button button : new Button[]{statsButton, customersButton, stockManagementButton, editInvoiceButton}) {
-	              button.setStyle("-fx-background-color: transparent; -fx-font-size: 16px; -text-fill:#fff; -fx-padding: 10; -fx-border-color: transparent");
-	        	  button.setPrefWidth(220.0);
-	        	  button.setOnMouseEntered(event -> {
-	                  button.setStyle("-fx-background-color: #3A7F9C; -fx-border-color: WHITE");
-	              });
-	        	  button.setOnMouseExited(event -> {
-	                  button.setStyle("-fx-background-color: transparent; -fx-border-color: transparent");
-	              });
-	        }
+			button.setStyle("-fx-background-color: transparent; -fx-font-size: 16px; -text-fill:#fff; -fx-padding: 7; -fx-border-color: transparent");
+			button.setPrefWidth(220.0);
+			button.setOnMouseEntered(event -> {
+				button.setStyle("-fx-background-color: #3A7F9C; -fx-border-color: WHITE; -fx-padding: 7;");
+			});
+	        button.setOnMouseExited(event -> {
+	            button.setStyle("-fx-background-color: transparent; -fx-border-color: transparent; -fx-padding: 7;-fx-padding: 7;");
+	        });
+	    }
 		
 		statsButton.setOnAction(e -> showStats());
 		customersButton.setOnAction(e -> showClients());
@@ -106,6 +115,13 @@ public class AdminView {
 		
 		menuBox.getChildren().addAll(statsButton, customersButton, stockManagementButton, editInvoiceButton, logoutButton);
 		return menuBox;
+	}
+	
+	private void addIcon(Button button, String iconName) {
+		ImageView icon = new ImageView(new Image(getClass().getResource("/Image/Icons/"+iconName+".png").toExternalForm()));
+		icon.setFitHeight(20);
+		icon.setFitWidth(20);
+		button.setGraphic(icon);
 	}
 	
 	public ScrollPane createMainSection() {
@@ -247,7 +263,7 @@ public class AdminView {
 	private VBox createVBox(Label label, Chart chart) {
 		VBox vBox = new VBox();
 		vBox.getChildren().addAll(label, chart);
-		vBox.setStyle("-fx-padding: 10;-fx-spacing:10;-fx-background-color: #FFFFFF; -fx-background-radius:10;");
+		vBox.setStyle("-fx-padding: 10;-fx-spacing:10;-fx-background-color: #FFFFFF; -fx-background-radius:10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 5)");
 		return vBox;
 	}
 	
@@ -1123,6 +1139,12 @@ public class AdminView {
                 if (empty) {
                     setGraphic(null); // Pas de bouton pour les lignes vides
                 } else {
+                	Invoice invoice = getTableView().getItems().get(getIndex());
+                    String orderStatus = invoice.getOrder().getStatus();
+                    
+                    // Afficher shipInvoiceButton seulement si la commande est "Validée"
+                    shipInvoiceButton.setVisible("Validée".equals(orderStatus));
+
                     setGraphic(buttonContainer); // Afficher le bouton pour les lignes valides
                 }
             }
@@ -1131,12 +1153,12 @@ public class AdminView {
         invoicesTable.getColumns().add(actionColumn);
         invoicesTable.getColumns().add(colId);
         invoicesTable.getColumns().add(colOrderId);
+        invoicesTable.getColumns().add(colOrderStatus);
         invoicesTable.getColumns().add(colCustomerName);
         invoicesTable.getColumns().add(colBillingAddress);
         invoicesTable.getColumns().add(colShippingAddress);
         invoicesTable.getColumns().add(colShippingMethod);
         invoicesTable.getColumns().add(colPaymentMethod);
-        invoicesTable.getColumns().add(colOrderStatus);
         invoicesTable.setItems(invoicesList);
         
         invoicesTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {

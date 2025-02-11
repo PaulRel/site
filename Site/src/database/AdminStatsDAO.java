@@ -235,6 +235,13 @@ public class AdminStatsDAO {
                  pieChart.getData().add(new PieChart.Data(type, totalVendus));
                  pieChart.setLegendVisible(false);
              }
+             double total = pieChart.getData().stream().mapToDouble(PieChart.Data::getPieValue).sum();
+
+             // Ajout des pourcentages aux labels des tranches
+             for (PieChart.Data data : pieChart.getData()) {
+            	 double percentage = (data.getPieValue() / total) * 100;
+            	 data.setName(data.getName() + " (" + String.format("%.1f", percentage) + "%)");
+             }
         } catch (SQLException e) {
         	MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);
         	e.printStackTrace();
@@ -369,7 +376,7 @@ public class AdminStatsDAO {
 
         // Série pour les ventes en euros
         XYChart.Series<String, Number> seriesVentes = new XYChart.Series<>();
-        seriesVentes.setName("Ventes en euros  / 10");
+        seriesVentes.setName("Ventes en euros  / 100");
         
         // Série pour le nombre de produits vendus
         XYChart.Series<String, Number> seriesProduits = new XYChart.Series<>();
@@ -391,7 +398,7 @@ public class AdminStatsDAO {
         		ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                 	String marque = rs.getString("brand"); // Nom de la marque
-                    double ventes = rs.getDouble("ventes_euros") / 10;  // Ventes en euros
+                    double ventes = rs.getDouble("ventes_euros") / 100;  // Ventes en euros
                     int produitsVendus = rs.getInt("produits_vendus"); // Nombre de produits vendus
                     seriesVentes.getData().add(new XYChart.Data<>(marque, ventes));
                     seriesProduits.getData().add(new XYChart.Data<>(marque, produitsVendus));
