@@ -1283,7 +1283,7 @@ public class AdminView {
                 	Invoice invoice = getTableView().getItems().get(getIndex());
                     // Afficher la facture
                 	invoice.getOrder().deliverOrder();
-        	        MainView.showAlert("Succès", null, "Commande livrée avec succès: ", AlertType.INFORMATION);
+        	        MainView.showAlert("Succès", null, "Commande livrée avec succès. ", AlertType.INFORMATION);
         	        SendEmail.sendOrderDeliveryEmail("fourel.pauline@gmail.com"); // Modifier ici pour insérer la vrai adresse mail d'un client
         	        invoicesTable.setItems(FXCollections.observableArrayList(invoiceDAO.getAllInvoices()));
                 });

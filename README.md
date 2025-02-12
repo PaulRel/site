@@ -7,9 +7,9 @@ Assurez-vous d'avoir installé :
 - Java version 17
 - Javafx
 - MySQL
-Télécharger le dossier Site.zip en local.
+Télécharger le dossier Fourel.zip en local.
 
-Executer le script .sql pour créer la base de données.
+Executer les scripts create_database.sql et insert_data pour créer et insérer les données dans la base de données.
 
 ## Execution
 - Ouvrir le terminal

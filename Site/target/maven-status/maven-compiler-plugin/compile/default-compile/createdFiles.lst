@@ -6,6 +6,7 @@ Interface\SignUpView.class
 Interface\ProductView$1.class
 customer\CartManager.class
 Interface\ProductDetailsView.class
+database\SendEmail.class
 Interface\CartView.class
 customer\Customer.class
 Interface\ProductView.class
@@ -24,6 +25,7 @@ Interface\SearchAdvancedView.class
 products\Clothing$TypeVetement.class
 products\ProductWithSize.class
 Interface\InvoiceView.class
+database\SendEmail$1.class
 Interface\AdminView$1.class
 Interface\AuthentificationView.class
 database\CustomerDAO.class

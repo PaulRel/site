@@ -788,7 +788,7 @@ VALUES
 ('Roger', 'Federer', 'M', 'roger.federer@example.com', '0123456789', 'Password123*', 'Customer', '1 Swiss Lane, Basel, Switzerland'),
 ('Serena', 'Williams', 'Mme', 'serena.williams@example.com', '0312551234', 'securePassword456!', 'Customer', '12 Champion Drive, Palm Beach, FL, USA'),
 ('Rafael', 'Nadal', 'M', 'rafael.nadal@example.com', '0911223344', 'Topspin789', 'Customer', 'Mallorca Avenue, Manacor, Spain'),
-('Pauline', 'Fourel', 'Mme', 'pauline.fourel@dauphine.eu', '0611223344', 'Tennis16!', 'Customer', 'Rue du chateau, Paris, France'),
+('Pauline', 'Fourel', 'Mme', 'fourel.pauline@gmail.comvueproduits', '0611223344', 'Tennis16!', 'Customer', 'Rue du chateau, Paris, France'),
 ('Pre`name`', '`name`', 'M', 'admin', '0911223344', 'mdp', 'Admin', 'Mallorca Avenue, Manacor, Spain'),
 ('Richard', 'Gasquet', 'M', 'richard.gasquet@free.fr', '0645215794', 'BonjourTous3!', 'Customer', '11 rue Clovis, Neuchâtel, Suisse'),
 ('Noémie', 'DUPONT', 'Mme', 'no.dupont@free.fr', '456734', 'Lala8843!', 'Customer', '11 rue Martin, Paris, France'),

@@ -41,7 +41,7 @@ public class SendEmail {
 
             // Envoi de l'e-mail
             Transport.send(message);
-            MainView.showAlert("Succès", null, "Email envoyé avec succès ", AlertType.INFORMATION);
+            MainView.showAlert("Succès", null, "Un email vous a été envoyé. ", AlertType.INFORMATION);
         } catch (MessagingException e) {
             e.printStackTrace();
         }
@@ -92,7 +92,8 @@ public class SendEmail {
         String to = email; // Email du client
         CustomerDAO customerDAO = new CustomerDAO();
         Customer customer = customerDAO.getCustomerByEmail(email);
-        
+        if (customer == null) {MainView.showAlert("Erreur", null, "L'adresse mail saisie dans le champ mail est incorrecte.", AlertType.ERROR);}
+        else {
         String customerPassword = customer.getPassword();
 
         // Sujet et corps du message
@@ -105,6 +106,7 @@ public class SendEmail {
 
         // Envoi de l'e-mail
         sendEmail(session, to, subject, body);
+        }
     }
 
 }
