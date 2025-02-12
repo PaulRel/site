@@ -4,7 +4,6 @@ import java.util.HashMap;
 
 public class Clothing extends Product implements ProductWithSize{
 	
-
 	public enum TypeVetement{
 		SHORT, SWEAT, DEBARDEUR, TSHIRT, ROBE, VESTE
 	}

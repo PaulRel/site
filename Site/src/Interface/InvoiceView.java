@@ -25,9 +25,19 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * Classe représentant la vue de gestion des factures.
+ * Cette classe permet de générer, afficher et gérer les factures sous format PDF.
+ */
 public class InvoiceView {
 	
 	Invoice invoice;
+	
+	/**
+     * Génère une facture PDF pour une commande donnée.
+     * 
+     * @param order La commande pour laquelle générer la facture.
+     */
 	public void generateInvoice(Order order) {
 		// Récupération des informations de la facture
 		InvoiceDAO invoiceDAO = new InvoiceDAO();

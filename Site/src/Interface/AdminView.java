@@ -50,12 +50,23 @@ import products.Product;
 import products.ProductWithSize;
 import products.Clothing;
 
+
+/**
+ * Classe représentant la vue administrateur de l'application.
+ * Elle permet la gestion des statistiques, des clients, des stocks et des factures.
+ */
 public class AdminView {
 	
 	AdminStatsDAO adminStatsDAO;
 	VBox mainContent;
 	MainView mainView;
 	
+	/**
+     * Constructeur de la classe AdminView.
+     * Initialise l'interface administrateur et configure la scène.
+     *
+     * @param mainView La vue principale de l'application.
+     */
 	public AdminView(MainView mainView) {        
         AnchorPane rootPane = new AnchorPane();     
         HeaderView v = new HeaderView(mainView);
@@ -68,6 +79,11 @@ public class AdminView {
         mainView.getPrimaryStage().setScene(adminScene);
     }
 	
+	/**
+     * Crée le menu latéral gauche contenant les boutons de navigation.
+     *
+     * @return Un VBox contenant le menu.
+     */
 	public VBox createLeftMenu() {
 		VBox menuBox = new VBox(20);
 		
@@ -117,6 +133,12 @@ public class AdminView {
 		return menuBox;
 	}
 	
+	/**
+     * Ajoute une icône à un bouton spécifique.
+     *
+     * @param button   Le bouton auquel ajouter l'icône.
+     * @param iconName Le nom du fichier icône.
+     */
 	private void addIcon(Button button, String iconName) {
 		ImageView icon = new ImageView(new Image(getClass().getResource("/Image/Icons/"+iconName+".png").toExternalForm()));
 		icon.setFitHeight(20);
@@ -124,6 +146,12 @@ public class AdminView {
 		button.setGraphic(icon);
 	}
 	
+	
+	/**
+     * Crée la section principale avec un ScrollPane.
+     *
+     * @return Un ScrollPane contenant la section principale.
+     */
 	public ScrollPane createMainSection() {
 		mainContent = new VBox(20);
 	    mainContent.setStyle("-fx-background-color: derive(#ececec,26.4%); -fx-padding: 20;");
@@ -142,6 +170,9 @@ public class AdminView {
 	}
 	
 	
+	/**
+     * Affiche les statistiques clés de l'administrateur.
+     */
 	private void showStats() {
 		VBox topVBox = new VBox();
 		Label topVBoxTitle = new Label("CHIFFRES CLES");
@@ -241,25 +272,38 @@ public class AdminView {
 		mainContent.getChildren().setAll(topVBox, midHBox, midHBox2, bottomHBox);
 	}
 	
-	
+	 /**
+     * Affiche la liste des clients.
+     */
 	private void showClients() {
 		HBox statsUsersBox = getStatsUsersBox();
 		VBox customerTableView = getCustomerTableBox();
 		mainContent.getChildren().setAll(statsUsersBox, customerTableView);
 	}
 	
-	
+	/**
+     * Gère l'affichage et la modification des stocks.
+     */
 	private void manageStocks() {
 		VBox editProductsBox = editProducts();
 		VBox outOfStockProductBox = getOutOfStockProductTable();
 		mainContent.getChildren().setAll(editProductsBox, outOfStockProductBox);
 	}
 	
+	 /**
+     * Gère l'affichage et la modification des factures.
+     */
 	private void manageInvoice() {
 		mainContent.getChildren().setAll(editInvoiceBox());
 	}
-	
-	
+
+	/**
+     * Crée un VBox contenant un graphique et un titre.
+     *
+     * @param label Le titre du graphique.
+     * @param chart Le graphique à afficher.
+     * @return Un VBox contenant le titre et le graphique.
+     */
 	private VBox createVBox(Label label, Chart chart) {
 		VBox vBox = new VBox();
 		vBox.getChildren().addAll(label, chart);
@@ -268,8 +312,15 @@ public class AdminView {
 	}
 	
 	
+	
 	// STATISTIQUES
 		
+	
+	/**
+    * Crée une table affichant les produits les plus vendus.
+    *
+    * @return Une TableView contenant les produits les plus vendus.
+    */
 	private TableView<Map.Entry<String, Integer>> createBestProductsTable() {
 		TableView<Map.Entry<String, Integer>> tableView = new TableView<>();
         // Configurer les colonnes
@@ -292,8 +343,15 @@ public class AdminView {
 	}
 	
 	
+	
 	// GESTION DES CLIENTS
 	
+	
+	/**
+     * Obtient les statistiques des utilisateurs sous forme de boîte horizontale.
+     *
+     * @return Un HBox contenant les statistiques des utilisateurs.
+     */
 	private HBox getStatsUsersBox() {
 		Label totalUsers = new Label("Nombre total de clients " );	
 		Label total = new Label(""+ adminStatsDAO.getTotalUsers());
@@ -318,6 +376,12 @@ public class AdminView {
 		return box;	
 	}
 	
+	
+	/**
+     * Crée un VBox contenant la table des clients et un bouton d'ajout.
+     *
+     * @return Un VBox contenant la table des clients et un bouton d'ajout.
+     */
 	private VBox getCustomerTableBox() {
         VBox box = new VBox();
 		box.setStyle("-fx-padding: 10;-fx-spacing:10;-fx-background-color: #FFFFFF; -fx-background-radius:10;");
@@ -332,7 +396,11 @@ public class AdminView {
 		return box;	
 	}
 	
-	
+	/**
+     * Crée et configure une table affichant la liste des clients.
+     *
+     * @return Une TableView contenant les clients.
+     */
 	private TableView<Customer> getCustomerTableView() {
 		CustomerDAO customerDAO = new CustomerDAO();
 	    ObservableList<Customer> customersList = FXCollections.observableArrayList(customerDAO.getAllCustomers());
@@ -452,6 +520,11 @@ public class AdminView {
 	private GridPane productGridPane;
 	HashMap<String, Integer> sizesStock;
 	
+	
+	/**
+     * Crée et retourne l'interface d'édition des produits.
+     * @return VBox contenant les composants d'édition de produits.
+     */
 	private VBox editProducts() {
 		VBox editProductsBox = new VBox();
 		editProductsBox.setStyle("-fx-padding: 10;-fx-spacing:10;-fx-background-color: #FFFFFF; -fx-background-radius:10;");
@@ -515,6 +588,11 @@ public class AdminView {
 		return editProductsBox;
 	}
 	
+	
+	/**
+     * Crée et configure la grille pour l'édition des produits.
+     * @return GridPane contenant les champs et boutons d'édition de produits.
+     */
 	private GridPane createProductGridPane() {
 		GridPane gridPane = new GridPane();
         gridPane.setPadding(new Insets(15));
@@ -572,7 +650,15 @@ public class AdminView {
         return gridPane;
 	}
 	
-	  
+
+	/**
+     * Crée et retourne une ComboBox permettant de sélectionner un type de produit (chaussures, vêtement ou sac). 
+     * Selon le type sélectionné, une ComboBox de taille adaptée (chaussures ou vêtements) sera affichée, 
+     * permettant de sélectionner une taille. Des composants associés à chaque catégorie de produit sont également 
+     * affichés ou masqués dynamiquement.
+     *
+     * @return ComboBox La ComboBox permettant de sélectionner le type de produit.
+     */
     public ComboBox<String> getComboBox(){
         ComboBox<String> typeComboBox = new ComboBox<String>();
         sizeComboBox = new ComboBox<>();
@@ -615,6 +701,10 @@ public class AdminView {
         return typeComboBox;
     }    
 	
+    
+    /**
+     * Ajoute un produit à la base de données après vérification.
+     */
     private void addProduct() {
     	clearField();
     	
@@ -677,7 +767,9 @@ public class AdminView {
         });
     }
     
-    
+    /**
+     * Met à jour les informations d'un produit sélectionné.
+     */
     public void updateProduct(){
     	if(!idField.getText().isEmpty() && idField.getText().matches("\\d+") && !checkIfEmpty() && checkIfValid()) {
     		int id = Integer.parseInt(idField.getText());
@@ -710,7 +802,9 @@ public class AdminView {
         }
     }
     
-    
+    /**
+     * Supprime un produit sélectionné de la base de données.
+     */
     public void deleteProduct(){ 
     	if(!checkIfEmpty()) {
         	productDAO.deleteProduct(Integer.parseInt(idField.getText()));
@@ -719,7 +813,10 @@ public class AdminView {
         }
     }
     
-    
+    /**
+     * Retourne le bouton permettant d'importer une image pour un produit.
+     * @return Bouton configuré pour importer une image.
+     */
     public Button getImportImageButton(){       
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Import Image File");
@@ -756,49 +853,56 @@ public class AdminView {
         return button;
     }
     
+    /**
+     * Retourne une table affichant tous les produits enregistrés.
+     * @return TableView contenant la liste des produits.
+     */
+    public TableView<Product> getProductTableView(){
+    	ObservableList<Product> productsList = FXCollections.observableArrayList(productDAO.getAllProducts());
+    	TableView<Product> tableView = new TableView<>();
+        
+        TableColumn<Product, Integer> colId = new TableColumn<>("ID");
+        colId.setCellValueFactory(new PropertyValueFactory<>("id"));
+
+        TableColumn<Product, String> colName = new TableColumn<>("Nom");
+        colName.setCellValueFactory(new PropertyValueFactory<>("name"));
+        colName.setStyle("-fx-alignment: CENTER-LEFT;");
+
+        TableColumn<Product, String> colType = new TableColumn<>("Type");
+        colType.setCellValueFactory(new PropertyValueFactory<>("type"));
+
+        TableColumn<Product, String> colBrand = new TableColumn<>("Marque");
+        colBrand.setCellValueFactory(new PropertyValueFactory<>("brand"));
+
+        TableColumn<Product, Double> colPrice = new TableColumn<>("Prix");
+        colPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
+        
+        TableColumn<Product, String> colDescription = new TableColumn<>("Description");
+        colDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
+        colDescription.setStyle("-fx-alignment: CENTER-LEFT;");
+        
+        tableView.getColumns().add(colId);
+        tableView.getColumns().add(colName);
+        tableView.getColumns().add(colType);
+        tableView.getColumns().add(colBrand);
+        tableView.getColumns().add(colPrice);
+        tableView.getColumns().add(colDescription);
+        tableView.setItems(productsList);
     
-	    public TableView<Product> getProductTableView(){
-	    	ObservableList<Product> productsList = FXCollections.observableArrayList(productDAO.getAllProducts());
-	    	TableView<Product> tableView = new TableView<>();
-	        
-	        TableColumn<Product, Integer> colId = new TableColumn<>("ID");
-	        colId.setCellValueFactory(new PropertyValueFactory<>("id"));
-	
-	        TableColumn<Product, String> colName = new TableColumn<>("Nom");
-	        colName.setCellValueFactory(new PropertyValueFactory<>("name"));
-	        colName.setStyle("-fx-alignment: CENTER-LEFT;");
-	
-	        TableColumn<Product, String> colType = new TableColumn<>("Type");
-	        colType.setCellValueFactory(new PropertyValueFactory<>("type"));
-	
-	        TableColumn<Product, String> colBrand = new TableColumn<>("Marque");
-	        colBrand.setCellValueFactory(new PropertyValueFactory<>("brand"));
-	
-	        TableColumn<Product, Double> colPrice = new TableColumn<>("Prix");
-	        colPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
-	        
-	        TableColumn<Product, String> colDescription = new TableColumn<>("Description");
-	        colDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
-	        colDescription.setStyle("-fx-alignment: CENTER-LEFT;");
-	        
-	        tableView.getColumns().add(colId);
-	        tableView.getColumns().add(colName);
-	        tableView.getColumns().add(colType);
-	        tableView.getColumns().add(colBrand);
-	        tableView.getColumns().add(colPrice);
-	        tableView.getColumns().add(colDescription);
-	        tableView.setItems(productsList);
-        
         tableView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) { // Vérifie qu'une ligne est sélectionnée
-                productSelect();
-            }
+        	if (newValue != null) { // Vérifie qu'une ligne est sélectionnée
+        		productSelect();
+        	}
         });
-        
+    
         return tableView;
     }
        
     
+    /**
+     * Met à jour les champs du formulaire avec les informations du produit sélectionné dans la table.
+     * Les composants sont ensuite ajustés en fonction du type de produit (chaussures, vêtements, etc.).
+     */
     private void productSelect(){
         Product product = productTableView.getSelectionModel().getSelectedItem();
         
@@ -837,6 +941,11 @@ public class AdminView {
     }
     
     
+    /**
+     * Retourne un VBox contenant la liste des produits en rupture de stock, avec les informations sur les tailles.
+     * 
+     * @return VBox contenant la liste des produits en rupture de stock.
+     */
     private VBox getOutOfStockProductTable() {
     	VBox outOfStockBox = new VBox();
     	outOfStockBox.setStyle("-fx-padding: 10;-fx-spacing:10;-fx-background-color: #FFFFFF; -fx-background-radius:10; -fx-max-width: 700px; -fx-max-height: 300px;");
@@ -880,6 +989,9 @@ public class AdminView {
     }
     
     
+    /**
+     * Efface tous les champs du formulaire, réinitialise les éléments d'interface associés et masque les composants spécifiques.
+     */
     public void clearField(){
         idField.setText("");
         nameField.setText("");
@@ -902,7 +1014,9 @@ public class AdminView {
         productGridPane.add(qtyField, 3, 1);
     }
     
-    
+    /**
+     * Récupère les valeurs des champs de texte et les convertit dans les variables correspondantes.
+     */
     private void getTextFieldValues() {
     	name = nameField.getText();
     	description = descriptionField.getText();
@@ -912,6 +1026,11 @@ public class AdminView {
     	qty = Integer.parseInt(qtyField.getText()); 	
     }
     
+    /**
+     * Vérifie si tous les champs nécessaires sont remplis.
+     * 
+     * @return true si l'un des champs est vide, sinon false.
+     */
     private boolean checkIfEmpty() {
     	 if(nameField.getText().isEmpty()
                  || descriptionField.getText().isEmpty()
@@ -926,6 +1045,11 @@ public class AdminView {
     	 return false;	
     }
     
+    /**
+     * Vérifie si les valeurs saisies dans les champs de texte sont valides selon les critères définis.
+     * 
+     * @return true si tous les champs sont valides, sinon false.
+     */
     private boolean checkIfValid() {
     	if (nameField.getText().matches("[a-zA-Z0-9\\s'-]+") // Vérifie que le nom contient des lettres, des espaces, des apostrophes ou des tirets
     			&& brandField.getText().matches("[a-zA-Z\\s'-]+") // Vérifie que la marque contient seulement des lettres, des espaces, des apostrophes ou des tirets
@@ -937,7 +1061,9 @@ public class AdminView {
     	return false;
    }
 
-    
+    /**
+     * Affiche les composants spécifiques pour les chaussures dans l'interface (surface, genre, couleur).
+     */
     private void showShoesComponents() {
     	surfaceLabel.setVisible(true);
         genderLabel.setVisible(true);
@@ -948,6 +1074,9 @@ public class AdminView {
         colorField.setVisible(true);
     }
     
+    /**
+     * Affiche les composants spécifiques pour les vêtements dans l'interface (type de vêtement, genre, couleur).
+     */
     private void showClothesComponents() {
     	typeVLabel.setVisible(true);
         genderLabel.setVisible(true);
@@ -958,6 +1087,9 @@ public class AdminView {
         colorField.setVisible(true);
     }
     
+    /**
+     * Masque les composants spécifiques aux chaussures dans l'interface.
+     */
     private void hideShoesComponents() {
     	surfaceLabel.setVisible(false);
         genderLabel.setVisible(false);
@@ -971,6 +1103,9 @@ public class AdminView {
         colorField.setText("");
     }
     
+    /**
+    * Masque les composants spécifiques aux vêtements dans l'interface.
+    */
     private void hideClothesComponents() {
     	typeVLabel.setVisible(false);
         genderLabel.setVisible(false);
@@ -987,6 +1122,7 @@ public class AdminView {
     
     
     
+    
     // EDIT INVOICE
     
     Label invoiceIdLabel;
@@ -999,6 +1135,12 @@ public class AdminView {
     String billingAddress, shippingAddress, shippingMethod, paymentMethod;
     GridPane invoiceGridPane;
     
+    /**
+     * Crée et retourne un conteneur VBox pour l'édition des factures.
+     * Ce conteneur inclut une table des factures et un formulaire de modification.
+     * 
+     * @return VBox contenant les composants d'édition de facture.
+     */
     private VBox editInvoiceBox() {
     	invoiceGridPane = createInvoiceGridPane();
     	invoicesTable = getInvoiceTableView();
@@ -1007,6 +1149,12 @@ public class AdminView {
     	return editInvoiceBox;
     }
     
+    
+    /**
+     * Crée et retourne une grille contenant les champs de modification d'une facture.
+     * 
+     * @return GridPane contenant les champs d'édition de facture.
+     */
     private GridPane createInvoiceGridPane() {
     	GridPane gridPane = new GridPane();
     	gridPane.setPadding(new Insets(15));
@@ -1050,7 +1198,12 @@ public class AdminView {
     	return gridPane;
     }
 
-    
+    /**
+     * Crée et retourne une table affichant la liste des factures.
+     * La table inclut des colonnes pour les détails des factures ainsi que des boutons d'actions : supprimer, visualiser, livrer la commande
+     * 
+     * @return TableView contenant la liste des factures.
+     */
     private TableView<Invoice> getInvoiceTableView(){
     	invoiceDAO = new InvoiceDAO();
     	ObservableList<Invoice> invoicesList = FXCollections.observableArrayList(invoiceDAO.getAllInvoices());
@@ -1173,6 +1326,11 @@ public class AdminView {
         return invoicesTable;
     }
     
+    
+    /**
+     * Récupère les informations de la facture sélectionnée dans la table et 
+     * remplit les champs du formulaire d'édition.
+     */
     private void invoiceSelect(){
         Invoice invoice = invoicesTable.getSelectionModel().getSelectedItem();
         invoiceId = invoice.getInvoiceId();
@@ -1186,6 +1344,10 @@ public class AdminView {
     	paymentMethodComboBox.setValue(invoice.getPaymentMethod());
     }
     
+    /**
+     * Met à jour la facture sélectionnée avec les nouvelles valeurs saisies.
+     * Vérifie d'abord que tous les champs sont remplis avant d'appliquer les modifications.
+     */
     private void updateInvoice() {
     	if(!checkIfEmptyInvoice()) {
     		getInvoiceTextFieldValues();
@@ -1197,6 +1359,10 @@ public class AdminView {
     	}
     }
     
+    
+    /**
+     * Récupère les valeurs saisies dans les champs du formulaire de modification de facture.
+     */
     private void getInvoiceTextFieldValues() {
     	billingAddress = billingAddressField.getText();
     	shippingAddress = shippingAddressField.getText();
@@ -1204,6 +1370,9 @@ public class AdminView {
     	paymentMethod = paymentMethodComboBox.getValue();
     }
     
+    /**
+     * Réinitialise tous les champs du formulaire de modification de facture.
+     */
     private void clearInvoiceField(){
     	billingAddressField.setText("");
     	shippingAddressField.setText("");
@@ -1211,6 +1380,12 @@ public class AdminView {
     	paymentMethodComboBox.getSelectionModel().clearSelection();;
     }
     
+    /**
+     * Vérifie si un ou plusieurs champs du formulaire de modification de facture sont vides.
+     * Affiche une alerte en cas de champ vide.
+     * 
+     * @return true si au moins un champ est vide, false sinon.
+     */
     private boolean checkIfEmptyInvoice() {
     	if(billingAddressField.getText().isEmpty()
                 || shippingAddressField.getText().isEmpty()

@@ -13,11 +13,19 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
-
+/**
+ * Classe représentant l'interface d'authentification des clients.
+ * Permet aux utilisateurs de se connecter ou de créer un compte.
+ */
 public class AuthentificationView {
     private AnchorPane rootPane;
     private Label mainLabel;
 
+    /**
+     * Constructeur de la vue d'authentification.
+     *
+     * @param mainView La vue principale de l'application.
+     */
     public AuthentificationView(MainView mainView) {
     	// Création des labels principaux
         mainLabel = new Label("Identifiez-vous ou créez un compte");
@@ -33,6 +41,12 @@ public class AuthentificationView {
         mainView.getPrimaryStage().setScene(authScene);
     }
 
+    
+    /**
+     * Crée l'interface utilisateur de la page d'authentification.
+     *
+     * @param mainView La vue principale de l'application.
+     */
     private void createBox(MainView mainView) {        
         // Section pour les clients existants (VBox gauche)
         VBox existingCustomerBox = new VBox(10);
@@ -54,7 +68,8 @@ public class AuthentificationView {
     	
     	passwordField.textProperty().bindBidirectional(textField.textProperty()); // Synchronisation du texte entre les champs
     	passwordField.setStyle("-fx-font-size: 14px; -fx-max-width: 300px; -fx-min-width: 300px; -fx-min-height: 50px; -fx-pref-height: 50px; -fx-max-height: 50px;");
-        
+    	
+    	// Bouton pour afficher/masquer le mot de passe
         Button showPasswordButton = new Button();       
         showPasswordButton.setStyle("-fx-background-color: white; -fx-padding: 5;");
         ImageView showIcon = new ImageView(new Image(AccountView.class.getResource("/Image/Icons/eyeIcon.png").toExternalForm()));
@@ -71,7 +86,7 @@ public class AuthentificationView {
         StackPane stackPane = new StackPane();
         stackPane.getChildren().addAll(textField, passwordField);
 
-        // Assurer que les champs ont la même taille et sont alignés
+        // Synchronisation des dimensions
         textField.prefWidthProperty().bind(passwordField.widthProperty());
         textField.prefHeightProperty().bind(passwordField.heightProperty());
         
@@ -88,6 +103,7 @@ public class AuthentificationView {
         //Hyperlink forgotPasswordLink = new Hyperlink("Mot de passe oublié ?");
         //forgotPasswordLink.setOnAction(event -> MainView.showAlert("Mot de passe oublié", null, "Un mail vient de vous être envoyé sur "+ MainView.getCurrentCustomer().getEmail() + "/n"+MainView.getCurrentCustomer().getPassword(), AlertType.INFORMATION));
         
+        // Bouton de connexion
         Button loginButton = new Button("CONNEXION");
         loginButton.setOnAction(e -> { 
         	// Récupère les valeurs saisies par l'utilisateur
@@ -136,8 +152,7 @@ public class AuthentificationView {
         
         
         
-        
-        
+          
         // Mise en page principale (Hbox contenant 2 Vbox)
         HBox mainBox = new HBox(20);
         mainBox.setPadding(new Insets(20));
@@ -156,6 +171,13 @@ public class AuthentificationView {
         rootPane.getChildren().addAll(root);
     }
     
+    
+    /**
+     * Gère le processus de connexion d'un utilisateur.
+     *
+     * @param email L'adresse email saisie par l'utilisateur.
+     * @param password Le mot de passe saisi.
+     */
     private void handleLogin(String email, String password) {
     	Customer customer = new CustomerDAO().authenticate(email, password);
     	
@@ -171,18 +193,22 @@ public class AuthentificationView {
         }
     }
     
+    
+    /**
+     * Synchronise le panier temporaire avec le panier de l'utilisateur authentifié.
+     */
     public static void syncUserCart() {
     	Customer customer = MainView.getCurrentCustomer();
         if (customer != null) {
         	Cart userCart = customer.getCart();
         	Cart tempCart = CartManager.getTempCart();
 
-        	// Merge the temporary cart into the user's cart
+        	//Fusionner le panier temporaire avec le panier de l'utilisateur
         	for (CartItem tempItem : tempCart.getItems()) {
         		userCart.addProduct(tempItem.getProduct(), tempItem.getSize(), tempItem.getQuantity());
         	}
 
-        	// Clear the temporary cart
+        	// Vider le panier temporaire
         	CartManager.clearTempCart();
         } else {
         	MainView.showAlert("Echec", null, "Utilisateur non reconnu", AlertType.ERROR);;

@@ -6,13 +6,6 @@ public class Product {
 	private String description, name, type, brand, imagePath;
 	private double price;
 
-	/**
-	 * Represente un produit pour l'instant
-	 * @param Description
-	 * @param Price
-	 * @param QtDispo
-	 * @param Type
-	 */
 	public Product(int id, String name, String description, String type, String brand, double price, String imagePath) {
 		this.id = id;
 		this.name = name;

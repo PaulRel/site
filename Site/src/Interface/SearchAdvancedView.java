@@ -24,10 +24,20 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import products.Product;
 
+/**
+ * Représente la vue de recherche avancée permettant de rechercher des produits
+ * en utilisant différents critères.
+ */
 public class SearchAdvancedView {
 	
 	private VBox criteriaContainer;
 	
+	/**
+     * Constructeur pour initialiser la vue de recherche avancée.
+     * Cette méthode crée la scène avec tous les éléments nécessaires.
+     *
+     * @param mainView La vue principale du programme qui contient la scène actuelle.
+     */
 	public SearchAdvancedView(MainView mainView) {
 		AnchorPane rootPane = new AnchorPane();
         HeaderView v = new HeaderView(mainView); 
@@ -39,6 +49,13 @@ public class SearchAdvancedView {
         mainView.getPrimaryStage().setScene(searchScene);
 	}
 	
+	/**
+     * Crée la section de recherche avancée avec les champs nécessaires 
+     * pour effectuer la recherche des produits.
+     *
+     * @param mainView La vue principale contenant la scène.
+     * @return VBox Le conteneur de la section de recherche avancée.
+     */
 	private VBox createAdvancedSearchSection(MainView mainView) {
 		
 		Label mainLabel = new Label("Recherche Avancée");
@@ -85,6 +102,11 @@ public class SearchAdvancedView {
         return root;
     }
 
+	/**
+     * Ajoute un nouveau critère de recherche dans la section des critères.
+     * Un critère est composé d'un ComboBox pour le type de critère, d'un champ de texte pour la recherche
+     * et d'un bouton pour supprimer ce critère.
+     */
     private void addSearchCriterion() {
         // ComboBox pour les critères
         ComboBox<String> criteriaBox = new ComboBox<>();
@@ -120,6 +142,12 @@ public class SearchAdvancedView {
         }
 	}
     
+    /**
+     * Exécute la recherche sur la base de données en fonction des critères sélectionnés et
+     * retourne la liste des produits correspondants.
+     *
+     * @return Liste des produits correspondant à la recherche.
+     */
     @SuppressWarnings("unchecked")
 	private List<Product> executeSearch() {
         StringBuilder query = new StringBuilder("SELECT product_id FROM vueproduits WHERE ");
@@ -182,7 +210,10 @@ public class SearchAdvancedView {
     }
     
     /**
-     * Méthode pour mapper les noms affichés en français avec les colonnes réelles en anglais.
+     * Mappe les noms de critères affichés en français avec les colonnes correspondantes dans la base de données.
+     *
+     * @param selectedValue Le nom du critère sélectionné par l'utilisateur.
+     * @return Le nom de la colonne correspondant à ce critère dans la base de données.
      */
     private String getColumnName(String selectedValue) {
         return switch (selectedValue) {

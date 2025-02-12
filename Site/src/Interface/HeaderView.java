@@ -19,13 +19,30 @@ import products.Shoes;
 import products.Product;
 import products.Clothing;
 
+/**
+ * La classe HeaderView représente l'en-tête de l'application.
+ * Il contient le logo, le nom du magasin, un champ de recherche, 
+ * des boutons pour l'authentification, le panier et le menu de navigation.
+ */
 public class HeaderView{
     private VBox header;
 
+    /**
+     * Constructeur de la classe HeaderView.
+     * Initialise et affiche l'en-tête.
+     * 
+     * @param mainView La vue principale de l'application.
+     */
     public HeaderView(MainView mainView){
         createHeader(mainView);
     }
 
+    /**
+     * Constructeur de la classe HeaderView.
+     * Initialise et affiche l'en-tête.
+     * 
+     * @param mainView La vue principale de l'application.
+     */
     private void createHeader(MainView mainView) {
         header = new VBox();
         
@@ -83,11 +100,13 @@ public class HeaderView{
         HBox.setHgrow(leftSpacer, Priority.ALWAYS);
         HBox.setHgrow(rightSpacer, Priority.ALWAYS);
         
+        // Champ de recherche
         TextField searchField = new TextField();
         searchField.setPromptText("Rechercher un produit...");
         searchField.setPrefSize(300, 40); 
         searchField.setOnAction(event -> performSearch(searchField.getText(), mainView)); 
         
+        // Bouton de recherche
         Button searchButton = new Button();
         ImageView searchIcon = new ImageView(new Image(getClass().getResource("/Image/Icons/searchIcon.png").toExternalForm()));
         searchIcon.setFitHeight(30);
@@ -96,6 +115,7 @@ public class HeaderView{
         searchButton.setStyle("-fx-background-color:transparent; -fx-border-color: #e0e0e0; -fx-pref-width: 50px; -fx-pref-height: 50px; -fx-padding: 0 0 0 0; -fx-border-radius: 0;");
         searchButton.setOnAction(event -> performSearch(searchField.getText(), mainView));
         
+        // Lien pour la recherche avancée
         Hyperlink hyperlink = new Hyperlink("Recherche avancée");
         hyperlink.setOnAction(event -> new SearchAdvancedView(mainView));
 
@@ -133,12 +153,23 @@ public class HeaderView{
         AnchorPane.setTopAnchor(header, 10.0);
     }
     
+    /**
+     * Effectue une recherche de produits en fonction du terme entré par l'utilisateur.
+     * 
+     * @param searchTerm Le terme de recherche saisi par l'utilisateur.
+     * @param mainView   La vue principale où les résultats seront affichés.
+     */
     private void performSearch(String searchTerm, MainView mainView) {
         SearchDAO searchDAO = new SearchDAO();
         List<Product> products = searchDAO.search(searchTerm);
         mainView.showProductView(Product.class, products);
     }
 
+    /**
+     * Retourne l'en-tête de l'application.
+     * 
+     * @return Un VBox contenant l'en-tête.
+     */
     public VBox getHeader() {
         return header;
     }

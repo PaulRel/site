@@ -30,6 +30,12 @@ public class OrderView {
 	private AnchorPane rootPane;
 	private VBox orderBox;
 	
+	/**
+	 * Constructeur pour initialiser la vue de commande avec la vue principale et la commande fournies.
+	 * 
+	 * @param mainView La vue principale contenant l'application.
+	 * @param order La commande à afficher dans la vue.
+	 */
 	public OrderView(MainView mainView, Order order) {
 		rootPane = new AnchorPane();
         HBox mainBox = new HBox();
@@ -48,7 +54,13 @@ public class OrderView {
         mainView.getPrimaryStage().setScene(orderScene);
 	}
 	
-	
+	/**
+	 * Crée la zone de commande incluant les informations de facturation, de livraison et les options de paiement pour la commande.
+	 * 
+	 * @param mainView La vue principale contenant l'application.
+	 * @param order La commande contenant les informations à afficher.
+	 * @return Une boîte verticale (VBox) contenant les sections de la commande.
+	 */
 	public VBox createOrderZone(MainView mainView, Order order) {
 		VBox billingInfoBox = createBillingInfoBox();
 		VBox deliveryInfoBox = createDeliveryInfoBox();
@@ -72,11 +84,23 @@ public class OrderView {
         return orderBox;
 	}
 	
+	
+	/**
+	 * Permet de revenir à la vue précédente avec un message d'alerte.
+	 * 
+	 * @param mainView La vue principale contenant l'application.
+	 */
 	private void goBack(MainView mainView) {
 		MainView.showAlert("Commande en cours", "Vous avez 2 jours pour finaliser votre commande.", "Votre commande sera ANNULEE dans 2 jours et les produits choisis seront remis en vente", AlertType.INFORMATION);
 		new AccountView(mainView);
 	}
 	
+	/**
+	 * Continue le processus de commande, valide la commande et crée la facture si tout est valide.
+	 * 
+	 * @param mainView La vue principale contenant l'application.
+	 * @param order La commande à valider et pour laquelle une facture sera créée.
+	 */
 	private void continueProcess(MainView mainView, Order order) {
 		if (!isOrderValid()) {
 			MainView.showAlert("Erreur", null, "Veuillez remplir tous les champs", AlertType.ERROR);
@@ -88,6 +112,12 @@ public class OrderView {
 		}
 	}
 	
+	/**
+	 * Crée et retourne la barre d'informations qui affiche le récapitulatif de la commande, avec les produits et les totaux.
+	 * 
+	 * @param order La commande dont le récapitulatif doit être affiché.
+	 * @return Une ScrollPane contenant la barre d'informations avec les produits et totaux de la commande.
+	 */
 	private ScrollPane createInfoBar(Order order) {
 		Label recapTitle = new Label("Récapitulatif");
 		VBox orderProductsBox = createOrderProductsBox(order);
@@ -108,6 +138,12 @@ public class OrderView {
 	
 	
 	// ORDER ZONE
+	
+	/**
+	 * Crée la section des informations de facturation dans la vue de commande, y compris le champ de saisie de l'adresse.
+	 * 
+	 * @return Une boîte verticale (VBox) avec les informations de facturation.
+	 */
 	private VBox createBillingInfoBox() {
 		Label billing  = new Label("1 - Informations de facturation");
 		Label billingInfo  = new Label("Sélectionnez l'adresse de facturation");
@@ -120,6 +156,12 @@ public class OrderView {
         return vbox;
 	}	
 	
+	
+	/**
+	 * Crée la section des informations de livraison dans la vue de commande, y compris le champ de saisie de l'adresse de livraison.
+	 * 
+	 * @return Une boîte verticale (VBox) avec les informations de livraison.
+	 */
 	private VBox createDeliveryInfoBox() {
 		Label delivery = new Label("2 - Informations de livraison");
 		Label deliveryInfo = new Label("Sélectionnez l'adresse de livraison");
@@ -133,6 +175,11 @@ public class OrderView {
 	}
 	
 	
+	/**
+	 * Crée la section des options de livraison dans la vue de commande, avec les options de mode de livraison disponibles.
+	 * 
+	 * @return Une boîte verticale (VBox) avec les options de livraison.
+	 */
 	private VBox createDeliveryOptionsBox() {
 		Label deliveryModeTitle = new Label("3 - Mode de livraison");
 		Label deliveryModeInfo = new Label("Choisissez votre mode de livraison");
@@ -163,7 +210,11 @@ public class OrderView {
         return vbox;
 	}
 	
-	
+	/**
+	 * Crée la section des options de paiement dans la vue de commande, avec les méthodes de paiement disponibles.
+	 * 
+	 * @return Une boîte verticale (VBox) avec les options de paiement.
+	 */
 	private VBox createPaymentOptionsBox() {	
         Label titleLabel = new Label("4 - Informations de paiement");
 
@@ -192,7 +243,15 @@ public class OrderView {
         return vbox;
 	}
 	
+	
 	// CREATION FACTURE
+	
+	/**
+	 * Crée une facture pour la commande avec les informations de facturation, de livraison, de mode de livraison et de paiement,
+	 * puis insère la facture dans la base de données.
+	 * 
+	 * @param order La commande pour laquelle la facture doit être créée.
+	 */
 	private void createInvoice(Order order) {
 		// Récupère les valeurs saisies par l'utilisateur
 		TextField billingField = (TextField) ((VBox) orderBox.getChildren().get(0)).getChildren().get(2);
@@ -221,6 +280,11 @@ public class OrderView {
         invoiceDAO.insertInvoice(invoice);
     }
 	
+	/**
+	 * Valide si la commande est complète avec toutes les informations nécessaires (facturation, livraison, livraison et paiement).
+	 * 
+	 * @return true si la commande est valide, sinon false.
+	 */
 	private boolean isOrderValid() {
 		TextField billingField = (TextField) ((VBox) orderBox.getChildren().get(0)).getChildren().get(2);
 	    TextField deliveryField = (TextField) ((VBox) orderBox.getChildren().get(1)).getChildren().get(2);
@@ -235,6 +299,14 @@ public class OrderView {
 	
 	
 	// RECAP ZONE
+	
+	
+	/**
+	 * Crée la section affichant les produits dans la commande avec leurs détails (nom, taille, quantité, prix).
+	 * 
+	 * @param order La commande contenant les produits à afficher.
+	 * @return Une boîte verticale (VBox) contenant les informations des produits de la commande.
+	 */
 	private VBox createOrderProductsBox(Order order) {
 		VBox orderProductsBox = new VBox();
 		orderProductsBox.setSpacing(10);
@@ -275,6 +347,13 @@ public class OrderView {
 		return orderProductsBox;
 	}
 	
+	
+	/**
+	 * Crée et retourne la section des totaux montrant la répartition des prix pour la commande, incluant les frais de port et la TVA.
+	 * 
+	 * @param order La commande pour laquelle les totaux doivent être calculés et affichés.
+	 * @return Une boîte verticale (VBox) contenant les lignes de totaux pour la commande.
+	 */
 	private VBox createTotalBox(Order order) {
 		VBox totalBox = new VBox();
 		
@@ -307,6 +386,13 @@ public class OrderView {
 		return totalBox;
 	}
 	
+	/**
+	 * Crée une boîte horizontale (HBox) pour afficher un label et une valeur pour la tarification de la commande.
+	 * 
+	 * @param labelText Le texte du label à afficher.
+	 * @param valueText Le texte de la valeur associée au label.
+	 * @return Une boîte horizontale (HBox) contenant un label et sa valeur.
+	 */
 	private HBox createLine(String labelText, String valueText) {
 	    Label textLabel = new Label(labelText);
 	    Label valueLabel = new Label(valueText);
@@ -323,6 +409,13 @@ public class OrderView {
 	    return line;
 	}
 	
+	
+	/**
+	 * Calcule le prix de la livraison en fonction de la méthode de livraison choisie.
+	 * 
+	 * @param shippingMethod Le mode de livraison sélectionné par l'utilisateur.
+	 * @return Le prix des frais de livraison pour la méthode choisie.
+	 */
 	private double getShippingPrice(String shippingMethod) {	
         double shippingPrice = 0.0;
 		if (shippingMethod != null) {

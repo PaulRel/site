@@ -31,6 +31,11 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import products.Product;
 
+/**
+ * Classe représentant l'interface graphique du panier.
+ * Elle permet d'afficher les articles ajoutés au panier, de les modifier ou de les supprimer,
+ * et de passer une commande.
+ */
 public class CartView {
 	private TableView<CartItem> cartTable = new TableView<CartItem>();
     Cart cart = CartManager.getTempCart();
@@ -38,6 +43,11 @@ public class CartView {
     private HBox buttonsBox;
     private Button continueButton, orderButton;
 	
+    /**
+     * Constructeur de la vue du panier.
+     *
+     * @param mainView La vue principale de l'application.
+     */
 	public CartView(MainView mainView) {
 		
 		// Lorsque l'utilisateur clique sur le bouton Continuer vos achats, la vue des produits est affichée
@@ -75,10 +85,12 @@ public class CartView {
 	}
 	
 	/**
-	 * Affiche le panier dans une TableView avec le détail des articles et l'action supprimer
-	 * Ajoute les boutons "Continuer" et "Commander"
-	 * Met en page les composants dans la VBox root
-	 */
+     * Affiche le panier sous forme de table avec les détails des articles et l'option de suppression.
+     * Ajoute également les boutons "Continuer" et "Commander".
+     * Met en page les composants dans la VBox root
+     *
+     * @param mainView La vue principale de l'application.
+     */
 	public void displayCart(MainView mainView) {
 		
 		if (cartTable.getColumns().isEmpty()) {			
@@ -133,6 +145,8 @@ public class CartView {
 	                }
 	            }
 	        });
+	        
+	        // Ajout des colonnes à la table
 	        cartTable.getColumns().add(imageColumn);
 	        cartTable.getColumns().add(productColumn);
 	        cartTable.getColumns().add(sizeColumn);
@@ -140,6 +154,7 @@ public class CartView {
 	        cartTable.getColumns().add(quantityColumn);
 	        cartTable.getColumns().add(actionColumn);
 	        
+	        // Définition des largeurs minimales des colonnes
 	        imageColumn.setMinWidth(100);
 	        productColumn.setMinWidth(450);
 	        sizeColumn.setMinWidth(100);
@@ -149,11 +164,16 @@ public class CartView {
 	        
 	    }
 	
+		// Ajout des articles à la table
 		ObservableList<CartItem> observableItems = FXCollections.observableArrayList(cart.getItems());
 	    cartTable.setItems(observableItems);
 	    cartTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+	    
+	    // Bouton de commande
 	    orderButton = new Button("Commander");
 	    orderButton.setOnAction(e -> validateOrder(mainView));
+	    
+	    // Ajout des boutons sous la table
 	    buttonsBox = new HBox(100, continueButton, orderButton);
 	    root = new VBox(30, cartTable, buttonsBox);
 		AnchorPane.setTopAnchor(root, 118.0);
@@ -166,6 +186,8 @@ public class CartView {
 	 * - Synchronise le panier de l'utilisateur avec la base de données.
 	 * - Crée une nouvelle commande et y associe les articles du panier.
 	 * - Insère la commande dans la base de données, décrémente les stocks des produits commandés et vide le panier.
+	 * 
+	 * @param mainView La vue principale de l'application.
 	 */
 	private void validateOrder(MainView mainView) {
 		if (MainView.getCurrentCustomer()==null) {
@@ -176,18 +198,27 @@ public class CartView {
 			Order order = new Order(MainView.getCurrentCustomer());
 			order.setProducts(cart.getItems());
 			
+			// Inserer la commande dans la base de données
 			OrderDAO orderDAO = new OrderDAO();
             orderDAO.insertOrder(order);
 
+            // Décrémenter le stock pour chaque produit commandé
 			for (CartItem item : cart.getItems()) {
 				order.decrementStock(item.getProduct().getId(), item.getSize(), item.getQuantity());
 			}
+			
+			// Vider le panier et afficher la page de commande
 			cart.clearCart();
 			new OrderView(mainView, order);
 		}
 	}
 	
-	
+	/**
+     * Affiche une alerte demandant à l'utilisateur de se connecter avant de passer commande.
+     * Propose un bouton permettant d'accéder à la page de connexion.
+     *
+     * @param mainView La vue principale de l'application.
+     */
 	public void displayLoginWarning(MainView mainView) {
 		Alert alert = new Alert(Alert.AlertType.WARNING);
 		alert.setTitle("Authentification requise");

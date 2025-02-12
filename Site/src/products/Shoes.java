@@ -3,7 +3,6 @@ package products;
 import java.util.HashMap;
 
 public class Shoes extends Product implements ProductWithSize{
-
 	
 	private String gender, color, surface;
 	private HashMap<String, Integer> sizeStock;

@@ -29,7 +29,14 @@ public class AccountView {
 	private AnchorPane rootPane;
 	private VBox mainContent;
 	private MainView mainView;
+	
 
+	/**
+     * Constructeur de la classe AccountView.
+     * Initialise l'interface utilisateur pour la gestion du compte.
+     *
+     * @param mainView L'instance principale de la vue.
+     */
     public AccountView(MainView mainView) {      
         rootPane = new AnchorPane();
         
@@ -56,8 +63,11 @@ public class AccountView {
         mainView.getPrimaryStage().setHeight(currentHeight);
     }
     
-
-    // Menu de gauche avec les boutons Deconnexion, Mon tableau de Bord, Mes commandes, Supprimer le compte
+    /**
+     * Crée et ajoute le menu latéral gauche contenant les boutons de gestion du compte: Deconnexion, Mon tableau de Bord, Mes commandes, Supprimer le compte
+     * 
+     * @param mainView L'instance principale de la vue.
+     */
     public void createLeftMenu(MainView mainView) {
         VBox menuBox = new VBox(15);
         AnchorPane.setTopAnchor(menuBox, 116.0);
@@ -113,6 +123,9 @@ public class AccountView {
         rootPane.getChildren().add(menuBox);
     }
     
+    /**
+     * Initialise et affiche la section principale contenant les informations et les commandes.
+     */
     public void createMainSection() {
         mainContent = new VBox(15);
         mainContent.setMaxSize(900, 800);
@@ -136,6 +149,11 @@ public class AccountView {
         rootPane.getChildren().add(scrollPane);
     }
     
+    
+    /**
+     * Affiche le tableau de bord de l'utilisateur, contenant un aperçu des informations du compte
+     * et des commandes récentes.
+     */
     private void showDashboard() {
     	Label dashboardTitle = new Label("Mon tableau de bord");
         Label dashboardDesc = new Label("Depuis le tableau de bord 'Mon compte', vous pouvez avoir un aperçu de vos récentes activités et mettre à jour les informations de votre compte. Sélectionnez un lien ci-dessous pour voir ou modifier les informations.");
@@ -175,6 +193,13 @@ public class AccountView {
         mainContent.getChildren().setAll(dashboardTitle, dashboardDesc, tableHeader, tableSection, infoHeader, clientInfoBox);    	
     }
     
+    
+    /**
+     * Génère une interface permettant de modifier les informations personnelles de l'utilisateur.
+     *
+     * @param customer Le client dont les informations doivent être modifiées.
+     * @return Un VBox contenant le formulaire de modification des informations.
+     */
     public static VBox editCustomerInfo(Customer customer) {
     	VBox editCustomerInfoBox = new VBox(15);
     	editCustomerInfoBox.setSpacing(10);
@@ -298,6 +323,9 @@ public class AccountView {
     }
 
     
+    /**
+     * Affiche la liste complète des commandes passées par l'utilisateur.
+     */
     private void showCustomerOrders() {
     	Label ordersTitle = new Label ("Toutes mes commandes");
     	
@@ -311,6 +339,11 @@ public class AccountView {
         mainContent.getChildren().setAll(ordersTitle, subtitle, ordersTable);
     }
     
+    /**
+     * Crée et retourne une TableView affichant la liste des commandes de l'utilisateur.
+     *
+     * @return Un TableView contenant les commandes de l'utilisateur.
+     */
     private TableView<Order> createOrdersTable() {    	
     	TableView<Order> ordersTable = new TableView<>();
         ordersTable.setMaxHeight(200);

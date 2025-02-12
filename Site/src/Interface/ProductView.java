@@ -24,6 +24,11 @@ import products.Product;
 import products.Clothing;
 import products.ProductWithSize;
 
+/**
+ * La classe ProductView est responsable de l'affichage des produits dans l'interface utilisateur.
+ * Elle permet de filtrer, trier et afficher une liste de produits dans une grille, avec des options de filtrage par taille, genre, marque, type de vêtement, et prix.
+ * Elle gère également l'interaction avec les produits (par exemple, la sélection de produit pour voir les détails).
+ */
 public class ProductView {
 	
 	private AnchorPane root;
@@ -35,13 +40,29 @@ public class ProductView {
 	private CheckBox sizeXS, sizeS, sizeM, sizeL, size36, size37, size38, size39, size40, size41, male, female, asicsBrand, babolatBrand, adidasBrand, tankTop, sweat, shorts, tshirt, dress;
 	private double maxPrice = 200.0;
 	
+	/**
+     * Constructeur de la vue des produits. 
+     * Initialise l'affichage des produits en fonction des filtres et tri sélectionnés.
+     *
+     * @param mainView La vue principale de l'application.
+     * @param productType Le type de produit à afficher (chaussures, vêtements, etc.).
+     * @param products Liste de produits à afficher.
+     */
 	public ProductView(MainView mainView, Class<? extends Product> productType, List<Product> products) {
 		root = new AnchorPane();
         root.getChildren().addAll(MainView.createScrollPane(createFilterBox(mainView)), displayProducts(mainView, productType, products));
         root.prefWidthProperty().bind(mainView.getPrimaryStage().widthProperty());
         root.prefHeightProperty().bind(mainView.getPrimaryStage().heightProperty());
 	}
-
+	
+	/**
+     * Affiche les produits dans une grille avec des informations de base sur chaque produit (image, nom, prix).
+     *
+     * @param mainView La vue principale de l'application.
+     * @param typeProduct Le type de produit à afficher.
+     * @param products Liste de produits à afficher.
+     * @return Un ScrollPane contenant la grille de produits.
+     */
    public ScrollPane displayProducts(MainView mainView, Class<? extends Product> typeProduct, List<Product> products) {
 	   if (productsGrid == null) {
 		   productsGrid = new FlowPane();
@@ -75,10 +96,12 @@ public class ProductView {
    }   
    
    /**
-    * Crée un conteneur VBox pour afficher chaque produit avec ses informations.
-    * 
-    * @param product      Le produit à afficher.
-    * @return Un VBox contenant l'image, le nom et le prix du produit.
+    * Crée un conteneur VBox pour afficher un produit avec ses informations (image, nom, prix).
+    * Permet également d'ajouter un événement de clic pour afficher les détails du produit.
+    *
+    * @param mainView La vue principale de l'application.
+    * @param product Le produit à afficher.
+    * @return Un VBox contenant l'image, le nom, et le prix du produit.
     */
    private VBox createProductBox(MainView mainView, Product product) {
    		// Création des composants pour chaque produit
@@ -113,8 +136,11 @@ public class ProductView {
     }
    
    /**
-    * Crée une boîte latérale contenant des filtres de produits.
-    */
+     * Crée une boîte de filtres permettant de sélectionner des critères de filtrage (taille, genre, marque, type de vêtement, prix).
+     *
+     * @param mainView La vue principale de l'application.
+     * @return Un VBox contenant les filtres.
+     */
    private VBox createFilterBox(MainView mainView) {
        VBox filterBox = new VBox();
        filterBox.setPrefWidth(230);
@@ -217,6 +243,12 @@ public class ProductView {
        return filterBox;
    }
    
+   
+   /**
+    * Applique les filtres sélectionnés pour afficher les produits correspondants.
+    *
+    * @param mainView La vue principale de l'application.
+    */
    private void applyFilters(MainView mainView) {
 	   // Collecte des filtres sélectionnés	
 	    sizeSelected.clear();  	
@@ -249,6 +281,13 @@ public class ProductView {
 	    updateProductDisplay(mainView);
 	}
    
+   
+   /**
+    * Trie les produits en fonction de la sélection de l'utilisateur dans le ComboBox.
+    * Le tri peut être effectué par prix croissant, prix décroissant, ou par nom (ordre alphabétique ou inverse).
+    *
+    * @return Un Comparator qui définit l'ordre de tri des produits.
+    */
    private Comparator<Product> sort() {
 	    if ("Prix croissant".equals(sortComboBox.getValue())) {
 	        return Comparator.comparingDouble(Product::getPrice); // Tri par prix croissant
@@ -262,6 +301,12 @@ public class ProductView {
 	    return (p1, p2) -> 0; // Par défaut, aucun tri spécifique
 	}
 
+   /**
+    * Filtre les produits en fonction des attributs sélectionnés par l'utilisateur (taille, genre, marque, type de vêtement).
+    * 
+    * @param product Le produit à filtrer.
+    * @return true si le produit correspond aux filtres sélectionnés, sinon false.
+    */
    private boolean filterByAttributes(Product product) {
 	    boolean matchSize = sizeSelected.isEmpty() || ((ProductWithSize) product).getSizeStock().keySet().stream().anyMatch(sizeSelected::contains);
 	    boolean matchGender = genderSelected.isEmpty() || genderSelected.contains(((ProductWithSize) product).getGender());
@@ -278,11 +323,22 @@ public class ProductView {
 	    return matchSize && matchGender && matchBrand && matchClothingType;
    }
    
+   /**
+    * Filtre les produits en fonction du prix maximum sélectionné par l'utilisateur.
+    * 
+    * @param product Le produit à filtrer.
+    * @return true si le produit est en dessous ou égal au prix maximum, sinon false.
+    */
    private boolean filterByPrice(Product product) {
 	    return product.getPrice() <= maxPrice;
 	}
 
-   
+   /**
+    * Met à jour l'affichage des produits en appliquant les filtres sélectionnés et le tri choisi.
+    * Les produits sont triés, filtrés par attributs et par prix, puis affichés dans le GridPane.
+    * 
+    * @param mainView La vue principale de l'application.
+    */
    private void updateProductDisplay(MainView mainView) {
 	    productsGrid.getChildren().clear(); // Nettoie l'affichage actuel
 	    actualProducts.stream()
@@ -295,10 +351,20 @@ public class ProductView {
 	    });
 	}
 
+   /**
+    * Obtient le panneau racine (AnchorPane) contenant la vue des produits.
+    * 
+    * @return Le panneau racine (AnchorPane).
+    */
    public AnchorPane getRoot() {
 	   return root;
    }
 
+   /**
+    * Définit le panneau racine (AnchorPane) contenant la vue des produits.
+    * 
+    * @param root Le panneau racine (AnchorPane) à définir.
+    */
    public void setRoot(AnchorPane root) {
 	   this.root = root;
    }

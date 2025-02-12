@@ -29,7 +29,19 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
+
+/**
+ * Classe responsable de la création de la vue d'inscription pour l'utilisateur afin de créer un compte.
+ * Fournit des champs de saisie pour les détails de l'utilisateur tels que la civilité, le prénom, le nom, l'email, le mot de passe, etc.
+ * Valide les informations saisies et gère le processus d'inscription, y compris la création du compte dans la base de données.
+ */
 public class SignUpView {
+	
+	/**
+     * Constructeur pour initialiser la vue d'inscription.
+     * 
+     * @param mainView la vue principale pour définir la scène de l'interface utilisateur.
+     */
 	public SignUpView(MainView mainView) {
 		Label mainLabel = new Label("Créer un compte");
 
@@ -160,7 +172,20 @@ public class SignUpView {
         mainView.getPrimaryStage().setScene(createAccountScene);
 	}
 	
-	
+	/**
+     * Gère la soumission du formulaire d'inscription.
+     * Valide les champs du formulaire et crée un nouveau client dans le système.
+     * 
+     * @param mainView la vue principale pour définir la scène de l'interface utilisateur.
+     * @param mrRadio le bouton radio pour l'option "M" (M. civilité).
+     * @param firstNameField le champ de texte pour le prénom.
+     * @param lastNameField le champ de texte pour le nom.
+     * @param addressField le champ de texte pour l'adresse.
+     * @param cityField le champ de texte pour la ville.
+     * @param emailField le champ de texte pour l'email.
+     * @param passwordField le champ de texte pour le mot de passe.
+     * @param termsCheckBox la case à cocher pour accepter les termes et conditions.
+     */
 	private void handleSubmitButton(MainView mainView, RadioButton mrRadio, TextField firstNameField, TextField lastNameField, TextField addressField, TextField cityField, TextField emailField, TextField passwordField, CheckBox termsCheckBox) {
 		// Récupère les valeurs saisies par l'utilisateur
     	Civility civility;
@@ -249,8 +274,13 @@ public class SignUpView {
 	}
 	}
 	
-	
-	// Méthode pour vérifier la validité de l'email (avec @ et nom de domaine obligatoire
+	/**
+     * Valide le format de l'adresse email saisie par l'utilisateur 
+     * (avec @ et nom de domaine obligatoire)
+     * 
+     * @param email l'adresse email à valider.
+     * @return true si l'email est valide, false sinon.
+     */ 
     public static boolean isValidEmail(String email) {
         // Expression régulière pour une adresse email basique
         String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
@@ -258,7 +288,18 @@ public class SignUpView {
         return pattern.matcher(email).matches();
     }
 
-	// Méthode pour valider le mot de passe
+    /**
+     * Valide le format du mot de passe saisi par l'utilisateur.
+     * Le mot de passe doit respecter les critères suivants :
+     * - Au moins 8 caractères
+     * - Contient au moins une lettre majuscule
+     * - Contient au moins une lettre minuscule
+     * - Contient au moins un chiffre
+     * - Contient au moins un caractère spécial
+     * 
+     * @param password le mot de passe à valider.
+     * @return true si le mot de passe respecte les critères, false sinon.
+     */
 	public static boolean isValidPassword(String password) {
 	    // Longueur minimale
 	    if (password.length() < 8) {

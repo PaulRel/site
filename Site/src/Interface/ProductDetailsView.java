@@ -20,18 +20,31 @@ import javafx.scene.layout.VBox;
 import products.ProductWithSize;
 import products.Product;
 
+/**
+ * Classe représentant la vue des détails d'un produit spécifique.
+ * Elle permet d'afficher les informations détaillées sur un produit (image, nom, prix, description, taille, etc.)
+ * et permet à l'utilisateur d'ajouter ce produit à son panier.
+ */
 public class ProductDetailsView {
 	private int chosenQuantity;
 	Cart cart = CartManager.getTempCart();
 	
+	/**
+     * Constructeur pour afficher les détails d'un produit spécifique dans une nouvelle scène.
+     * 
+     * @param mainView La vue principale de l'application.
+     * @param product  Le produit dont les détails sont à afficher.
+     */
 	public ProductDetailsView(MainView mainView, Product product) {
 		showProductDetails(mainView, product);
 	}
+	
+	
 	/**
      * Affiche les détails d'un produit spécifique dans une nouvelle scène.
      * 
-     * @param primaryStage La scène principale de l'application.
-     * @param produit      Le produit dont les détails sont à afficher.
+     * @param mainView La vue principale de l'application.
+     * @param product  Le produit dont les détails sont à afficher.
      */
     public void showProductDetails(MainView mainView, Product product) {
         // Création d'un nouveau conteneur pour les détails du produit
@@ -131,8 +144,8 @@ public class ProductDetailsView {
         	 addProductLabel.setText("Produit ajouté au panier!");
         });
         
-        VBox descriptionBox = new VBox (nameLabel, priceLabel, descriptionLabel, sizeLabel, sizeChoiceBox, selectedQuantityLabel, quantityComboBox, addToCartButton, addProductLabel);
-        
+        // Boîte contenant toutes les informations du produit
+        VBox descriptionBox = new VBox (nameLabel, priceLabel, descriptionLabel, sizeLabel, sizeChoiceBox, selectedQuantityLabel, quantityComboBox, addToCartButton, addProductLabel);       
         descriptionBox.setSpacing(5.0);
         
         // Ajouter les éléments à la boîte de détails
@@ -140,6 +153,7 @@ public class ProductDetailsView {
         detailsBox.prefWidthProperty().bind(mainView.getPrimaryStage().widthProperty());
         detailsBox.prefHeightProperty().bind(mainView.getPrimaryStage().heightProperty().subtract(118));
         
+        // Créer l'entête
         HeaderView v=new HeaderView(mainView);
         AnchorPane rootPane = new AnchorPane();
         rootPane.getChildren().addAll(v.getHeader(), detailsBox);

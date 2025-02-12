@@ -22,7 +22,6 @@ database\InvoiceDAO.class
 Interface\MainView.class
 Interface\SearchAdvancedView.class
 products\Clothing$TypeVetement.class
-products\Bag.class
 products\ProductWithSize.class
 Interface\InvoiceView.class
 Interface\AdminView$1.class
