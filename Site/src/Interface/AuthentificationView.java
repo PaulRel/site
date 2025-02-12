@@ -6,6 +6,7 @@ import customer.CartManager;
 import customer.Customer;
 import customer.Customer.Role;
 import database.CustomerDAO;
+import database.SendEmail;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -100,8 +101,11 @@ public class AuthentificationView {
         HBox passwordBox = new HBox();
         passwordBox.getChildren().addAll(stackPane, showPasswordButton);
         
-        //Hyperlink forgotPasswordLink = new Hyperlink("Mot de passe oublié ?");
-        //forgotPasswordLink.setOnAction(event -> MainView.showAlert("Mot de passe oublié", null, "Un mail vient de vous être envoyé sur "+ MainView.getCurrentCustomer().getEmail() + "/n"+MainView.getCurrentCustomer().getPassword(), AlertType.INFORMATION));
+        Hyperlink forgotPasswordLink = new Hyperlink("Mot de passe oublié ?");
+        forgotPasswordLink.setOnAction(event -> {
+        	SendEmail.sendPasswordToCustomer(emailField.getText());
+        	MainView.showAlert("Mot de passe oublié", null, "Un mail vient de vous être envoyé sur "+ emailField.getText() + "/n", AlertType.INFORMATION);
+        });
         
         // Bouton de connexion
         Button loginButton = new Button("CONNEXION");

@@ -9,6 +9,7 @@ import customer.Customer;
 import customer.Customer.Civility;
 import customer.Customer.Role;
 import database.CustomerDAO;
+import database.SendEmail;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -125,7 +126,7 @@ public class SignUpView {
         Button submitButton = new Button("VALIDER");       
         HBox buttonBox = new HBox(submitButton);
         buttonBox.setAlignment(Pos.CENTER);        
-        submitButton.setOnAction(e -> handleSubmitButton(mainView, mrRadio, firstNameField, lastNameField, addressField, cityField, emailField, passwordField, termsCheckBox));
+        submitButton.setOnAction(e -> handleSubmitButton(mainView, mrRadio, firstNameField, lastNameField, addressField, cityField, emailField, passwordField, termsCheckBox, newsletterCheckBox));
 
         // Disposition du formulaire
         GridPane gridPane = new GridPane();
@@ -185,8 +186,9 @@ public class SignUpView {
      * @param emailField le champ de texte pour l'email.
      * @param passwordField le champ de texte pour le mot de passe.
      * @param termsCheckBox la case à cocher pour accepter les termes et conditions.
+     * @param newsletterCheckBox la case à cocher pour recevoir les newsletter par email.
      */
-	private void handleSubmitButton(MainView mainView, RadioButton mrRadio, TextField firstNameField, TextField lastNameField, TextField addressField, TextField cityField, TextField emailField, TextField passwordField, CheckBox termsCheckBox) {
+	private void handleSubmitButton(MainView mainView, RadioButton mrRadio, TextField firstNameField, TextField lastNameField, TextField addressField, TextField cityField, TextField emailField, TextField passwordField, CheckBox termsCheckBox, CheckBox newsletterCheckBox) {
 		// Récupère les valeurs saisies par l'utilisateur
     	Civility civility;
         if (mrRadio.isSelected()) {
@@ -208,6 +210,10 @@ public class SignUpView {
         }
         else if (!termsCheckBox.isSelected()) {
         	MainView.showAlert("Erreur", null, "Merci d'accepter les règles de confidentialité ", AlertType.ERROR);
+        }
+        
+        else if(newsletterCheckBox.isSelected()) {
+        	SendEmail.sendNewsletterEmail("fourel.pauline@gmail.com"); // A remplacer par email si l'email du client réel (ici envoie à moi-même)
         }
         
         // Vérifier que les noms et prénoms ne contiennent pas de chiffres

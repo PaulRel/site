@@ -206,4 +206,36 @@ public class CustomerDAO {
         }
         return customer;
     }
+	
+	// Méthode pour récupérer un Customer par son email
+	public Customer getCustomerByEmail(String email) {
+	    String query = "SELECT * FROM Customer WHERE email = ?";
+	    Customer customer = null;  // Initialiser à null pour l'instant, si aucun produit n'est trouvé
+
+	    try (Connection connection = DatabaseConnection.getConnection();
+	         PreparedStatement statement = connection.prepareStatement(query)) {
+
+	        statement.setString(1, email);
+
+	        try (ResultSet resultSet = statement.executeQuery()) {
+	            if (resultSet.next()) {
+	                int id = resultSet.getInt("CustomerID");
+	                String firstName = resultSet.getString("first_name");
+	                String lastName = resultSet.getString("last_name");
+	                Civility civility = Civility.valueOf(resultSet.getString("civility"));
+	                
+	                String phoneNumber = resultSet.getString("phone_number");
+	                String password = resultSet.getString("password");
+	                Role role = Role.valueOf(resultSet.getString("role").toUpperCase());
+	                String address = resultSet.getString("address");
+
+	                customer = new Customer(id, firstName, lastName, civility, email, phoneNumber, password, role, address);
+	            }
+	        }
+	    } catch (SQLException e) {
+	        MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);
+	        e.printStackTrace();
+	    }
+	    return customer;
+	}
 }
