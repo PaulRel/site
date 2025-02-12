@@ -53,6 +53,7 @@ public class AuthentificationView {
     	textField.setVisible(false); // Masquer le TextField initialement
     	
     	passwordField.textProperty().bindBidirectional(textField.textProperty()); // Synchronisation du texte entre les champs
+    	passwordField.setStyle("-fx-font-size: 14px; -fx-max-width: 300px; -fx-min-width: 300px; -fx-min-height: 50px; -fx-pref-height: 50px; -fx-max-height: 50px;");
         
         Button showPasswordButton = new Button();       
         showPasswordButton.setStyle("-fx-background-color: white; -fx-padding: 5;");
@@ -64,6 +65,16 @@ public class AuthentificationView {
         hideIcon.setFitWidth(20);
         showPasswordButton.setGraphic(showIcon);
         
+        emailField.setStyle("-fx-font-size: 14px; -fx-max-width: 300px; -fx-min-height: 50px; -fx-pref-height: 50px; -fx-max-height: 50px;");
+        
+        // StackPane pour superposer les champs
+        StackPane stackPane = new StackPane();
+        stackPane.getChildren().addAll(textField, passwordField);
+
+        // Assurer que les champs ont la même taille et sont alignés
+        textField.prefWidthProperty().bind(passwordField.widthProperty());
+        textField.prefHeightProperty().bind(passwordField.heightProperty());
+        
         showPasswordButton.setOnAction(e -> {
         	boolean isMasked = passwordField.isVisible();
     	    passwordField.setVisible(!isMasked);
@@ -72,7 +83,7 @@ public class AuthentificationView {
         });
         
         HBox passwordBox = new HBox();
-        passwordBox.getChildren().addAll(passwordField, textField, showPasswordButton);
+        passwordBox.getChildren().addAll(stackPane, showPasswordButton);
         
         //Hyperlink forgotPasswordLink = new Hyperlink("Mot de passe oublié ?");
         //forgotPasswordLink.setOnAction(event -> MainView.showAlert("Mot de passe oublié", null, "Un mail vient de vous être envoyé sur "+ MainView.getCurrentCustomer().getEmail() + "/n"+MainView.getCurrentCustomer().getPassword(), AlertType.INFORMATION));

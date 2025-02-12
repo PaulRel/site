@@ -119,8 +119,8 @@ public class InvoiceDAO {
 	}
 	
 	
-	// RECUPERATION UNE FACTURE A PARTIR DE SON ID
-	public Invoice getInvoiceById(Order order) {
+	// RECUPERATION UNE FACTURE A PARTIR DE L'ID de sa commande
+	public Invoice getInvoiceByOrderId(Order order) {
         String query = "SELECT * FROM invoice WHERE order_id = ?";
         try (Connection connection = DatabaseConnection.getConnection();
         		PreparedStatement pstmt = connection.prepareStatement(query);){
@@ -164,5 +164,26 @@ public class InvoiceDAO {
     	}catch (SQLException e) {
              MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);
     	}
-	}	
+	}
+	
+	
+	public Order getOrderByInvoiceId(int invoiceId) {
+	    String query = "SELECT order_id FROM invoice WHERE invoice_id = ?";
+	    try (Connection connection = DatabaseConnection.getConnection();
+	         PreparedStatement statement = connection.prepareStatement(query)) {
+	        
+	        statement.setInt(1, invoiceId);
+	        try (ResultSet rs = statement.executeQuery()) {
+	            if (rs.next()) {
+	                int orderId = rs.getInt("order_id"); // Récupération de l'order_id
+	                OrderDAO orderDAO = new OrderDAO();
+	                return orderDAO.getOrderById(orderId); // Retourne l'objet Order correspondant
+	            }
+	        }
+	    } catch (SQLException e) {
+	        MainView.showAlert("Erreur", null, "Une erreur est survenue : " + e.getMessage(), AlertType.ERROR);
+	    }
+	    return null; // Retourne null si aucune correspondance n'est trouvée
+	}
+
 }

@@ -99,7 +99,7 @@ public class SignUpView {
         });
         
         Label passwordConditions = new Label("min 8 caractères, 1 majuscule, 1 minuscule, 1 chiffre, et 1 caractère spécial");
-        passwordConditions.setStyle("-fx-font-weight: normal; -fx-font-size:10");
+        passwordConditions.setStyle("-fx-font-weight: normal; -fx-font-size:10; -fx-padding: 0;");
         
         for (Label label : new Label[]{civilityLabel, firstNameLabel, lastNameLabel, addressLabel, cityLabel, emailLabel, passwordLabel}) {
         	label.setStyle("-fx-font-weight: normal;");

@@ -31,7 +31,7 @@ public class InvoiceView {
 	public void generateInvoice(Order order) {
 		// Récupération des informations de la facture
 		InvoiceDAO invoiceDAO = new InvoiceDAO();
-		invoice = invoiceDAO.getInvoiceById(order);
+		invoice = invoiceDAO.getInvoiceByOrderId(order);
 
 	    // Si la facture est introuvable, afficher une erreur
 	    if (invoice == null) {
@@ -198,7 +198,6 @@ public class InvoiceView {
         totalCell.setPaddingTop(30);
         totalCell.setBorder(Border.NO_BORDER);
         totalCell.setTextAlignment(TextAlignment.RIGHT);
-        System.out.println(invoice);
         totalCell.add(new Paragraph("Total produits TTC           " + String.format("%.2f €", order.getTotalPrice())));
         totalCell.add(new Paragraph("Total frais de port           "+ String.format("%.2f €", invoice.getShippingPrice())));
         totalCell.add(new Paragraph("Total HT           " + String.format("%.2f €", order.getTotalPrice()/1.2 + invoice.getShippingPrice())));

@@ -1021,7 +1021,10 @@ public class AdminView {
     	Label paymentMethodLabel = new Label("Méthode de paiement");
         
     	updateInvoiceButton = new Button("Mettre à jour");
-    	updateInvoiceButton.setOnAction(event -> updateInvoice());  	
+    	updateInvoiceButton.setOnAction(event -> {
+    		updateInvoice();
+    		
+    	});
     	
     	billingAddressField = new TextField();
     	shippingAddressField = new TextField();
@@ -1189,6 +1192,8 @@ public class AdminView {
     		invoiceDAO.updateInvoice(billingAddress, shippingAddress, shippingMethod, paymentMethod, invoiceId);
     		clearInvoiceField();
     		invoicesTable.setItems(FXCollections.observableArrayList(invoiceDAO.getAllInvoices()));
+    		InvoiceView invoiceView = new InvoiceView();
+            invoiceView.generateInvoice(invoiceDAO.getOrderByInvoiceId(invoiceId));
     	}
     }
     

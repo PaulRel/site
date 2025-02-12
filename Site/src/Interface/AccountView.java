@@ -362,6 +362,9 @@ public class AccountView {
                     case "Validée":
                         setGraphic(viewButton);
                         break;
+                    case "Livrée":
+                        setGraphic(viewButton);
+                        break;
                     case "Annulée":
                         setGraphic(canceledLabel);
                         break;

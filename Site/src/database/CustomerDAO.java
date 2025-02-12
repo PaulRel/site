@@ -113,14 +113,15 @@ public class CustomerDAO {
 	
 	public void updateCustomer(Customer customer) {
 		try (Connection conn = DatabaseConnection.getConnection()){
-	        String updateQuery = "UPDATE Customer SET first_name = ?, last_name = ?, email = ?, phone_number = ?, address = ? WHERE CustomerID = ?";
+	        String updateQuery = "UPDATE Customer SET first_name = ?, last_name = ?, email = ?, phone_number = ?, address = ?, password = ? WHERE CustomerID = ?";
 	        PreparedStatement updateStmt = conn.prepareStatement(updateQuery);
 	        updateStmt.setString(1, customer.getFirstName());
 	        updateStmt.setString(2, customer.getLastName());
 	        updateStmt.setString(3, customer.getEmail());
 	        updateStmt.setString(4, customer.getPhoneNumber());
 	        updateStmt.setString(5, customer.getAddress());
-	        updateStmt.setInt(6, customer.getId());
+	        updateStmt.setString(6, customer.getPassword());
+	        updateStmt.setInt(7, customer.getId());
 	        int rowsAffected = updateStmt.executeUpdate();
 
 	        if (rowsAffected > 0) {
