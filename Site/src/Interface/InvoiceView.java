@@ -40,7 +40,7 @@ public class InvoiceView {
 	    }
 
 	    // Chemin pour enregistrer le PDF
-	    String pdfFilePath = "facture_" + invoice.getInvoiceId() + ".pdf";
+	    String pdfFilePath = "resources/Invoice/facture_" + invoice.getInvoiceId() + ".pdf";
 
 	    try {
 	        // Création du PDF
@@ -104,7 +104,7 @@ public class InvoiceView {
         Cell billingAddressCell = new Cell();
         billingAddressCell.setBorder(Border.NO_BORDER); billingAddressCell.setPadding(10); billingAddressCell.setMargin(10);
         billingAddressCell.add(new Paragraph("Adresse de facturation").setBold());
-        billingAddressCell.add(new Paragraph(customerFirstName + customerLastName));
+        billingAddressCell.add(new Paragraph(customerFirstName + " " + customerLastName));
         billingAddressCell.add(new Paragraph(invoice.getBillingAddress()));
         billingAddressCell.add(new Paragraph(customerPhoneNumber));
         addressesTable.addCell(billingAddressCell);
@@ -209,7 +209,7 @@ public class InvoiceView {
 	
 	public void showInvoice(Invoice invoice) {
 	    // Chemin du fichier PDF de la facture
-	    String pdfFilePath = "facture_" + invoice.getInvoiceId() + ".pdf";
+	    String pdfFilePath = "resources/Invoice/facture_" + invoice.getInvoiceId() + ".pdf";
 
 	    // Vérification si le fichier PDF existe
 	    File pdfFile = new File(pdfFilePath);

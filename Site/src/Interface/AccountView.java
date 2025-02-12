@@ -20,6 +20,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import products.Product;
 
+/**
+ * La classe AccountView représente la vue du compte utilisateur dans l'application.
+ * Elle affiche les informations personnelles, les commandes et permet des actions
+ * comme la modification des informations ou la suppression du compte.
+ */
 public class AccountView {
 	private AnchorPane rootPane;
 	private VBox mainContent;
