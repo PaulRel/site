@@ -9,7 +9,7 @@ Assurez-vous d'avoir installé :
 - MySQL
 Télécharger le dossier Fourel.zip en local.
 
-Executer les scripts create_database.sql et insert_data pour créer et insérer les données dans la base de données.
+Executer les scripts create_database.sql et insert_data (que vous trouverez dans le dossier doc) pour créer et insérer les données dans la base de données.
 
 ## Execution
 - Ouvrir le terminal
